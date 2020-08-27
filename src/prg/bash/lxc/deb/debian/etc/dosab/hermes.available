@@ -1,0 +1,15 @@
+# If the server is avalable perform all the following commands.
+
+# Mount my NFS shares on the server.
+# This expects the shares to be specified in the fstab file with the noauto
+# option so that they are not automatically mounted at boot.
+#mount /mnt/hermesshare/publish
+#mount /mnt/hermesshare/share
+
+# Add my APT repository on that server to my apt sources.
+cp /etc/dosab/hermes.list /etc/apt/sources.list.d
+
+# Allow apt caching on that server
+cp /etc/dosab/bintray.list.available /etc/apt/sources.list.d/bintray.list
+cp /etc/dosab/sources.list.available /etc/apt/sources.list
+

@@ -1,0 +1,13 @@
+# A default connection URI to use
+connecturi=qemu:///system
+# The disk name from the domain xml file
+diskname=vda
+# If a bridge is available assign it here, otherwise leave as bridge=
+bridge=br0
+# The prefix for ethernet interfaces usually enp or eth
+ethernetprefix=enp
+# In sequential start, how many VMs to start concurrently
+maxconcvms=1
+# The VMs to start when using sequential-start
+seqstartvms=Pericles Leonidas Cleomenes Minerva
+

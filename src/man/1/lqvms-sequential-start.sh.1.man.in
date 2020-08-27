@@ -1,0 +1,46 @@
+NAME
+lqvms-sequential-start.sh -- Start a list of VMs sequentially.
+SYNOPSIS
+lqvms-sequential-start.sh [OPTIONS]
+DESCRIPTION
+lqvms-sequential-start.sh uses a Key / Value pair in lqvm.conf to provide a list
+of VMs to start sequentially. A further Key / Value pair in lqvm.conf specifies
+how many machines can be running concurrently.
+OPTIONS
+-h, --help  Display the help information.
+
+-u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
+default stored in lqvm.conf.
+
+-v, --vm-name The name of the VM to operate on. This is a mandatory option.
+
+-V, --version  Print script version information.
+EXIT STATUS
+0 - Success
+
+1 - General failure
+
+64 - Error in command line
+
+77 - Permission denied / Illegal action
+FILES
+lqvm.conf  The script reads the configuration file to set default values.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright (C) 2020 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+lqvm.conf(5) lqvm-shutdown.sh(1) lqvm-snap.sh(1) lqvms-snap.sh(1)
+.br
+lqvm-start.sh(1)
+

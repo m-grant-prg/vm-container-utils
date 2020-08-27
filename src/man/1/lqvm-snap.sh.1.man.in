@@ -1,0 +1,75 @@
+NAME
+lqvm-snap.sh -- Manage the internal and external snapshots for a VM.
+SYNOPSIS
+lqvm-snap.sh [OPTIONS]
+DESCRIPTION
+lqvm-snap.sh facilitates the creation, deletion and revertion of internal and
+external snapshots.
+OPTIONS
+-a, --delete-all  Delete all snapshots for this VM. This option merges the data of each snapshot with the backing store and deletes the snapshots.
+
+-c, --create 'snapshot-name'  Create the named snapshot, -i or -e is mandatory.
+
+-d, --delete 'snapshot-name'  Delete the named snapshot. This option merges the
+snapshot data with the backing store and deletes the snapshot.
+
+-D, --description 'snapshot-description'  Plain text description for the
+snapshot. Can only be used with -c.
+
+-e, --external  Use external snapshots. With internal, can only / must be used
+with the creation options.
+
+-h, --help  Display the help information.
+
+-i, --internal  Use internal snapshots. With external, can only / must be used
+with the creation options.
+
+-r, --revert  Revert to the state before this snapshot was taken. The current
+snapshot is deleted, (ie removed), without affecting the backing store, hence
+reverting back to it's pre-snapshot state.
+
+-s, --create-auto-seq  Create an automatically named sequential snapshot. A
+name for the snapshot is automatically generated using the form
+.br
+Auto-YYMMDD-X where X is a sequence number automatically incremented if
+required.
+
+-t, --delete-to-current  Delete all snapshots taken before the current snapshot.
+This option merges the data of each snapshot with the backing store and deletes
+the snapshots.
+
+-u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
+default stored in lqvm.conf.
+
+-v, --vm-name The name of the VM to operate on.
+
+-V, --version  Print script version information.
+EXIT STATUS
+0 - Success
+
+1 - General failure
+
+64 - Error in command line
+
+77 - Permission denied / Illegal action
+FILES
+lqvm.conf  The script reads the configuration file to set default values.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright (C) 2020 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+lqvm.conf(5) lqvm-shutdown(1) lqvms-sequential-start.sh(1)
+.br
+lqvms-snap.sh(1) lqvm-start.sh(1)
+

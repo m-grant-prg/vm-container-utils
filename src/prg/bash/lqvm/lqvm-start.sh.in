@@ -1,0 +1,416 @@
+#! @bashlocation@
+#########################################################################
+#									#
+#	lqvm-start.sh is automatically generated,			#
+#		please do not modify!					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Script ID: lqvm-start.sh						#
+# Author: Copyright (C) 2020  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# A script to start a VM with external, internal or no snapshot.	#
+#                                                            	  	#
+# Syntax:      lqvm-start.sh [ -c or --create 'snapshot-name'		#
+#			|| -D or --description 'snapshot-description'	#
+#			|| -e or --external				#
+#			|| -h or --help					#
+#			|| -i or --internal				#
+#			|| -n or --no-snapshot				#
+#			|| -u or --connect-uri 'connection-URI'		#
+#			|| -v or --vm-name				#
+#			|| -V or --version ]				#
+#									#
+# Exit codes used:-							#
+# Bash standard Exit Codes:	0 - success				#
+#				1 - general failure			#
+# User-defined exit code range is 64 - 113				#
+#	C/C++ Semi-standard exit codes from sysexits.h range is 64 - 78	#
+#		EX_USAGE	64	command line usage error	#
+#		EX_DATAERR	65	data format error		#
+#		EX_NOINPUT	66	cannot open input		#
+#		EX_NOUSER	67	addressee unknown		#
+#		EX_NOHOST	68	host name unknown		#
+#		EX_UNAVAILABLE	69	service unavailable		#
+#		EX_SOFTWARE	70	internal software error		#
+#		EX_OSERR	71	system error (e.g., can't fork)	#
+#		EX_OSFILE	72	critical OS file missing	#
+#		EX_CANTCREAT	73	can't create (user) output file	#
+#		EX_IOERR	74	input/output error		#
+#		EX_TEMPFAIL	75	temp failure; user is invited	#
+#					to retry			#
+#		EX_PROTOCOL	76	remote error in protocol	#
+#		EX_NOPERM	77	permission denied		#
+#		EX_CONFIG	78	configuration error		#
+#	User-defined (here) exit codes range 79 - 113:			#
+#		None							#
+#									#
+# Further Info:								#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 22/08/2020	MG	1.0.1	Created.				#
+#									#
+#########################################################################
+
+
+##################
+# Init variables #
+##################
+readonly outputprefix="$(basename $0):"
+
+readonly version=1.0.1				# Script version
+readonly packageversion=@pkgversion@		# Package version
+
+readonly etclocation=@sysconfdir@		# Path to config directory
+
+create=false
+external=false
+internal=false
+intextset=false
+no_snapshot=false
+
+
+#############
+# Functions #
+#############
+
+# -h --help output.
+# No parameters
+# No return value
+usage()
+{
+cat << EOF
+Usage is $0 [options]
+	-c or --create 'snapshot-name' Create the snapshot using 'snapshot-name'
+	-D or --description 'snapshot-description' Plain text description
+	-e or --external Create an external snapshot
+	-h or --help Display this help information
+	-i or --internal Create an internal snapshot
+	-n or --no-snapshot Do not create a snapshot
+	-u or --connect-uri Use the named connection URI
+	-v or --vm-name The name of the VM to operate on
+	-V or --version Print script version information
+EOF
+}
+
+# Standard function to emit messages depending on various parameters.
+# Parameters -	$1 What:-	The message to emit.
+#		$2 Where:-	stdout == 0
+#				stderr == 1
+# No return value.
+output()
+{
+	if (( !$2 )); then
+		printf "%s\n" "$1"
+	else
+		printf "%s\n" "$1" 1>&2
+	fi
+}
+
+# Standard function to tidy up and return exit code.
+# Parameters - 	$1 is the exit code.
+# No return value.
+script_exit()
+{
+	exit $1
+}
+
+# Standard function to test command error and exit if non-zero.
+# Parameters - 	$1 is the exit code, (normally $? from the preceeding command).
+# No return value.
+std_cmd_err_handler()
+{
+	if (( $1 )); then
+		script_exit $1
+	fi
+}
+
+# Standard trap exit function.
+# No parameters.
+# No return value.
+trap_exit()
+{
+	local -i exit_code=$?
+	local msg
+
+	msg="Script terminating with exit code $exit_code due to trap received."
+	output "$msg" 1
+	script_exit $exit_code
+}
+
+# Setup trap
+trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Process the config file just for the parameters of interest.
+# Parameters - None
+# No return value.
+proc_config_file()
+{
+	local input=()
+	local oldIFS=$IFS
+
+	IFS="="
+
+	exec 3<"$etclocation/lqvm.conf"
+	while read -u3 -ra input; do
+		case ${input[0]} in
+		connecturi)
+			connect_uri=${input[1]}
+			;;
+		bridge)
+			bridge=${input[1]}
+			;;
+		ethernetprefix)
+			ethernet_prefix=${input[1]}
+			;;
+		esac
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+}
+
+# Process command line arguments with GNU getopt.
+# Parameters -	$1 is the command line.
+# No return value.
+proc_CL()
+{
+	local GETOPTTEMP
+	local msg
+	local tmp
+
+	tmp="getopt -o c:D:ehinu:v:V --long create:,description:,external,help"
+	tmp+=",internal,no-snapshot,connect-uri:,vm-name:,version"
+	GETOPTTEMP=$($tmp -n "$0" -- "$@")
+	std_cmd_err_handler $?
+
+	eval set -- "$GETOPTTEMP"
+	std_cmd_err_handler $?
+
+	while true; do
+		case "$1" in
+		-c|--create)
+			create=true
+			snapshot_name=$2
+			shift 2
+			;;
+		-D|--description)
+			snapshot_description=$2
+			shift 2
+			;;
+		-e|--external)
+			if $internal || $no_snapshot; then
+				msg="Options e, i and n are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			external=true
+			intextset=true
+			shift
+			;;
+		-h|--help)
+			usage
+			shift
+			script_exit 0
+			;;
+		-i|--internal)
+			if $external || $no_snapshot; then
+				msg="Options e, i and n are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			internal=true
+			intextset=true
+			shift
+			;;
+		-n|--no_snapshot)
+			if $external || $internal; then
+				msg="Options e, i and n are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			no_snapshot=true
+			shift
+			;;
+		-u|--connect-uri)
+			connect_uri=$2
+			shift 2
+			;;
+		-v|--vm-name)
+			vm_name=$2
+			shift 2
+			;;
+		-V|--version)
+			printf "%s Script version %s\n" $0 $version
+			printf "%s Package version %s\n" $0 $packageversion
+			shift
+			script_exit 0
+			;;
+		--)	shift
+			break
+			;;
+		*)	output "Internal error." 1
+			script_exit 64
+			;;
+		esac
+	done
+
+	# Script does not accept other arguments.
+	if (( $# > 0 )); then
+		output "Invalid argument." 1
+		script_exit 64
+	fi
+
+	# One option has to be selected.
+	if ! $external && ! $internal && ! $no_snapshot; then
+		msg="Either e, i or n must be set."
+		output "$msg" 1
+		script_exit 64
+	fi
+	if ( $create || [[ -n $snapshot_description ]]) && $no_snapshot; then
+		msg="Options c and D cannot be used in conjunction with"
+		msg+=" option n."
+		output "$msg" 1
+		script_exit 64
+	fi
+	if [[ -z $vm_name ]]; then
+		output "Option v must be set." 1
+		script_exit 64
+	fi
+}
+
+# Validate the VM name.
+# Parameters - none
+# Return value - none
+validate_vm_name()
+{
+	local -i vm_name_matches
+
+	vm_name_matches=$(virsh -c $connect_uri list --all \
+		| grep "\<$vm_name\>" | wc -l)
+	std_cmd_err_handler $?
+	if (( !$vm_name_matches )); then
+	output "No such VM $vm_name" 1
+	script_exit 64
+	fi
+}
+
+# Determine if the VM is running and set the golbal variable accordingly.
+# Parameters - none.
+# Return value - none.
+is_vm_running()
+{
+	local -i vm_running_matches
+
+	vm_running_matches=$(virsh -c $connect_uri list \
+		| grep "\<$vm_name\>" | wc -l)
+	std_cmd_err_handler $?
+	if (( $vm_running_matches )); then
+		vm_running=true
+	else
+		vm_running=false
+	fi
+}
+
+# Create the snapshot.
+# Parameters - none.
+# Return value - none
+create_snapshot()
+{
+	local cmd
+
+	cmd="lqvm-snap.sh -u $connect_uri"
+
+	if $external; then
+		cmd+=" -e"
+	else
+		cmd+=" -i"
+	fi
+
+	if $create; then
+		cmd+=" -c \"$snapshot_name\""
+	else
+		cmd+=" -s"
+	fi
+
+	if [[ -n $snapshot_description ]]; then
+		cmd+=" -D \"$snapshot_description\""
+	fi
+
+	cmd+=" -v $vm_name"
+	eval "$cmd"
+	std_cmd_err_handler $?
+}
+
+# If a bridge is available use it if the ethernet is hard-wired.
+# Parameters - none.
+# Return value - none.
+process_bridge()
+{
+	# Get the mac address of the bridge.
+	mac_addr=$(virsh -c $connect_uri domiflist $vm_name \
+		| grep "bridge    \<$bridge\>" \
+		| awk '{ print $5 }')
+	std_cmd_err_handler $?
+	if [[ -z "$mac_addr" ]]; then
+		output "Cannot find mac address." 1
+		exit 77
+	fi
+
+	# Enable / disable bridge VNI depending on hard-wired ethernet port
+	# status.
+	if (($(ip link show | grep "$ethernet_prefix.*$bridge.*state UP" \
+		| wc -l))); then
+		virsh -c $connect_uri domif-setlink $vm_name $mac_addr up
+		std_cmd_err_handler $?
+	else
+		virsh -c $connect_uri domif-setlink $vm_name $mac_addr down
+		std_cmd_err_handler $?
+	fi
+}
+
+
+########
+# Main #
+########
+
+proc_config_file
+
+proc_CL "$@"
+
+validate_vm_name
+
+is_vm_running
+if $vm_running; then
+	output "VM is already running." 1
+	script_exit 77
+fi
+
+if [[ -n $bridge ]]; then
+	process_bridge
+fi
+
+if $intextset; then
+	create_snapshot
+fi
+
+output "Starting VM $vm_name" 0
+virsh -c $connect_uri start "$vm_name"
+std_cmd_err_handler $?
+
+# And exit.
+script_exit 0
+

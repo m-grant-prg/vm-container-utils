@@ -1,0 +1,916 @@
+#! @bashlocation@
+#########################################################################
+#									#
+#	lqvm-snap.sh is automatically generated,			#
+#		please do not modify!					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Script ID: lqvm-snap.sh						#
+# Author: Copyright (C) 2020  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# A script to control snapshots for libvirt, Qemu and KVM virtual	#
+# machines. This includes create, delete and revert for both internal	#
+# and external snapshots.						#
+#                                                            	  	#
+# Syntax:      lqvm-snap.sh [ -a or --delete-all			#
+#			|| -c or --create 'snapshot-name'		#
+#			|| -d or --delete 'snapshot-name'		#
+#			|| -D or --description 'snapshot-description'	#
+#			|| -e or --external				#
+#			|| -h or --help					#
+#			|| -i or --internal				#
+#			|| -r or --revert				#
+#			|| -s or --create-auto-seq			#
+#			|| -t or --delete-to-current			#
+#			|| -u or --connect-uri 'connection-URI'		#
+#			|| -v or --vm-name				#
+#			|| -V or --version ]				#
+#									#
+# Exit codes used:-							#
+# Bash standard Exit Codes:	0 - success				#
+#				1 - general failure			#
+# User-defined exit code range is 64 - 113				#
+#	C/C++ Semi-standard exit codes from sysexits.h range is 64 - 78	#
+#		EX_USAGE	64	command line usage error	#
+#		EX_DATAERR	65	data format error		#
+#		EX_NOINPUT	66	cannot open input		#
+#		EX_NOUSER	67	addressee unknown		#
+#		EX_NOHOST	68	host name unknown		#
+#		EX_UNAVAILABLE	69	service unavailable		#
+#		EX_SOFTWARE	70	internal software error		#
+#		EX_OSERR	71	system error (e.g., can't fork)	#
+#		EX_OSFILE	72	critical OS file missing	#
+#		EX_CANTCREAT	73	can't create (user) output file	#
+#		EX_IOERR	74	input/output error		#
+#		EX_TEMPFAIL	75	temp failure; user is invited	#
+#					to retry			#
+#		EX_PROTOCOL	76	remote error in protocol	#
+#		EX_NOPERM	77	permission denied		#
+#		EX_CONFIG	78	configuration error		#
+#	User-defined (here) exit codes range 79 - 113:			#
+#		None							#
+#									#
+# Further Info:								#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 16/08/2020	MG	1.0.1	Created.				#
+#									#
+#########################################################################
+
+
+##################
+# Init variables #
+##################
+readonly outputprefix="$(basename $0):"
+
+readonly version=1.0.1				# Script version
+readonly packageversion=@pkgversion@		# Package version
+
+readonly etclocation=@sysconfdir@		# Path to config directory
+
+create=false
+create_auto_seq=false
+delete=false
+delete_all=false
+delete_to_current=false
+external=false
+internal=false
+intextset=false
+revert=false
+
+
+#############
+# Functions #
+#############
+
+# -h --help output.
+# No parameters
+# No return value
+usage()
+{
+cat << EOF
+Usage is $0 [options]
+	-a or --delete-all Delete all snapshots for this vm
+	-c or --create 'snapshot-name' Create the named snapshot
+	-d or --delete 'snapshot-name' Delete the named snapshot
+	-D or --description 'snapshot-description' Plain text description
+	-e or --external Use external snapshots
+	-h or --help Display this help information
+	-i or --internal Use internal snapshots
+	-r or --revert Revert to the state before this snapshot was taken
+	-s or --create-auto-seq Create an automatically named sequential
+				snapshot
+	-t or --delete-to-current Delete all snapshots taken before the current
+				snapshot
+	-u or --connect-uri Use the named connection URI
+	-v or --vm-name The name of the VM to operate on
+	-V or --version Print script version information
+EOF
+}
+
+# Standard function to emit messages depending on various parameters.
+# Parameters -	$1 What:-	The message to emit.
+#		$2 Where:-	stdout == 0
+#				stderr == 1
+# No return value.
+output()
+{
+	if (( !$2 )); then
+		printf "%s\n" "$1"
+	else
+		printf "%s\n" "$1" 1>&2
+	fi
+}
+
+# Standard function to tidy up and return exit code.
+# Parameters - 	$1 is the exit code.
+# No return value.
+script_exit()
+{
+	exit $1
+}
+
+# Standard function to test command error and exit if non-zero.
+# Parameters - 	$1 is the exit code, (normally $? from the preceeding command).
+# No return value.
+std_cmd_err_handler()
+{
+	if (( $1 )); then
+		script_exit $1
+	fi
+}
+
+# Standard trap exit function.
+# No parameters.
+# No return value.
+trap_exit()
+{
+	local -i exit_code=$?
+	local msg
+
+	msg="Script terminating with exit code $exit_code due to trap received."
+	output "$msg" 1
+	script_exit $exit_code
+}
+
+# Setup trap
+trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Process the config file just for the parameters of interest.
+# Parameters - None
+# No return value.
+proc_config_file()
+{
+	local input=()
+	local oldIFS=$IFS
+
+	IFS="="
+
+	exec 3<"$etclocation/lqvm.conf"
+	while read -u3 -ra input; do
+		case ${input[0]} in
+		connecturi)
+			connect_uri=${input[1]}
+			;;
+		diskname)
+			disk_name=${input[1]}
+			;;
+		esac
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+}
+
+# Process command line arguments with GNU getopt.
+# Parameters -	$1 is the command line.
+# No return value.
+proc_CL()
+{
+	local GETOPTTEMP
+	local msg
+	local tmp
+
+	tmp="getopt -o ac:d:D:ehirstu:v:V --long delete-all,create:,delete:"
+	tmp+=",description:,external,help,internal,revert,create-auto-seq"
+	tmp+=",delete-to-current,connect-uri:,vm-name:,version"
+	GETOPTTEMP=$($tmp -n "$0" -- "$@")
+	std_cmd_err_handler $?
+
+	eval set -- "$GETOPTTEMP"
+	std_cmd_err_handler $?
+
+	while true; do
+		case "$1" in
+		-a|----delete-all)
+			if $delete || $create || $revert || $create_auto_seq \
+				|| $delete_to_current; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			delete_all=true
+			shift
+			;;
+		-c|--create)
+			if $delete_all || $delete || $revert \
+				|| $create_auto_seq \
+				|| $delete_to_current; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			create=true
+			snapshot_name=$2
+			shift 2
+			;;
+		-d|--delete)
+			if $delete_all || $create || $revert \
+				|| $create_auto_seq \
+				|| $delete_to_current; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			delete=true
+			snapshot_name=$2
+			shift 2
+			;;
+		-D|--description)
+			snapshot_description=$2
+			shift 2
+			;;
+		-e|--external)
+			if $internal; then
+				msg="Options e and i are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			external=true
+			intextset=true
+			shift
+			;;
+		-h|--help)
+			usage
+			shift
+			script_exit 0
+			;;
+		-i|--internal)
+			if $external; then
+				msg="Options e and i are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			internal=true
+			intextset=true
+			shift
+			;;
+		-r|--revert)
+			if $delete_all || $create || $delete \
+				|| $create_auto_seq \
+				|| $delete_to_current; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			revert=true
+			shift
+			;;
+		-s|--create-auto-seq)
+			if $delete_all || $create || $delete \
+				|| $revert \
+				|| $delete_to_current; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			create_auto_seq=true
+			shift
+			;;
+		-t|--delete-to-current)
+			if $delete_all || $create || $delete \
+				|| $revert \
+				|| $create_auto_seq; then
+				msg="Options a, c, d, r, s and t are all "
+				msg+="mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			delete_to_current=true
+			shift
+			;;
+		-u|--connect-uri)
+			connect_uri=$2
+			shift 2
+			;;
+		-v|--vm-name)
+			vm_name=$2
+			shift 2
+			;;
+		-V|--version)
+			printf "%s Script version %s\n" $0 $version
+			printf "%s Package version %s\n" $0 $packageversion
+			shift
+			script_exit 0
+			;;
+		--)	shift
+			break
+			;;
+		*)	output "Internal error." 1
+			script_exit 64
+			;;
+		esac
+	done
+
+	# Script does not accept other arguments.
+	if (( $# > 0 )); then
+		output "Invalid argument." 1
+		script_exit 64
+	fi
+
+	# One option has to be selected.
+	if ! $delete_all && ! $delete && ! $create && ! $revert \
+		&& ! $create_auto_seq && ! $delete_to_current; then
+		msg="Either a, c, d, r, s or t must be set"
+		output "$msg" 1
+		script_exit 64
+	fi
+	if $delete_all || $delete || $revert || $delete_to_current; then
+		if $intextset; then
+			msg="Options e and i cannot be used in conjunction with"
+			msg+=" options a, d, r and t."
+			output "$msg" 1
+			script_exit 64
+		fi
+	elif ! $external && ! $internal; then
+		output "Either e or i must be set." 1
+		script_exit 64
+	fi
+	if [[ -z $vm_name ]]; then
+		output "Option v must be set." 1
+		script_exit 64
+	fi
+}
+
+# Validate the VM name.
+# Parameters - none
+# Return value - none
+validate_vm_name()
+{
+	local -i vm_name_matches
+
+	vm_name_matches=$(virsh -c $connect_uri list --all \
+		| grep "\<$vm_name\>" | wc -l)
+	std_cmd_err_handler $?
+	if (( !$vm_name_matches )); then
+	output "No such VM $vm_name" 1
+	script_exit 64
+	fi
+}
+
+# Determine if the VM is running and set the golbal variable accordingly.
+# Parameters - none.
+# Return value - none.
+is_vm_running()
+{
+	local -i vm_running_matches
+
+	vm_running_matches=$(virsh -c $connect_uri list \
+		| grep "\<$vm_name\>" | wc -l)
+	std_cmd_err_handler $?
+	if (( $vm_running_matches )); then
+		vm_running=true
+	else
+		vm_running=false
+	fi
+}
+
+# Create a snapshot with the given name.
+# Parameters - none.
+# Return value - none.
+create_snapshot()
+{
+	local cmd
+
+	if $vm_running; then
+		output "VM $vm_name is running, please shutdown first." 1
+		script_exit 77
+	fi
+	output "Creating snapshot $snapshot_name for VM $vm_name" 0
+	cmd="virsh -c $connect_uri snapshot-create-as $vm_name"
+	cmd+=" $snapshot_name \"$snapshot_description\""
+	if $external; then
+		cmd+=" --disk-only"
+	fi
+	eval "$cmd"
+	std_cmd_err_handler $?
+}
+
+# Create an auto named and sequenced snapshot.
+# Parameters - none.
+# Return value - none.
+create_auto_snapshot()
+{
+	local found
+	local -i seq=0
+	local snapname
+	local snapname_determined=false
+	local snapshot
+	local snapshots
+
+	if $vm_running; then
+		output "VM $vm_name is running, please shutdown first." 1
+		script_exit 77
+	fi
+
+	snapshot_name="Auto-$(date +%y%m%d)-$seq"
+	snapshots=$(virsh --connect qemu:///system snapshot-list "$vm_name" \
+		| tail --lines=+3)
+	std_cmd_err_handler $?
+
+	while ( ! $snapname_determined ); do
+		found=false
+
+		for snapshot in $snapshots; do
+			snapname=$(echo "$snapshot" | awk '
+				BEGIN { FS=" " }
+				{print $1 }')
+			if [[ $snapname == $snapshot_name ]]; then
+				found=true
+				break
+			fi
+		done
+		if $found; then
+			(( seq++ ))
+			snapshot_name="Auto-$(date +%y%m%d)-$seq"
+			continue
+		fi
+		snapname_determined=true
+	done
+
+	if [[ -z $snapshot_description ]]; then
+		snapshot_description="Auto-generated sequenced snapshot."
+	fi
+	create_snapshot
+}
+
+# Determine whether a snapshot is internal or external.
+# Parameters - $1 is the snapshot to check.
+# Return value - none.
+type_snapshot()
+{
+	local tmp
+
+	tmp=$(virsh -c $connect_uri snapshot-dumpxml $vm_name $1 \
+		| xmlstarlet select -t -v \
+		"/domainsnapshot/disks/disk[@name='$disk_name']/@snapshot" -n)
+	std_cmd_err_handler $?
+	if [[ $tmp == "internal" ]]; then
+		internal=true
+		external=false
+	else
+		internal=false
+		external=true
+	fi
+}
+
+# Delete an internal named snapshot.
+# Parameters - none.
+# Return value - none.
+delete_internal_snapshot()
+{
+	# We know that the vm is not running, that the snapshot exists and the
+	# snapshot is internal.
+
+	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name
+		std_cmd_err_handler $?
+}
+
+# Delete an external named snapshot.
+# Logic:-
+# Read through virsh snaphot list until snapshot match
+#	Data fetch
+#		In the snapshot to delete
+#			get the snapshots source filename (A)
+#			get the parents driver type;  qcow2, raw etc (B)
+#			get the parents backing store (source filename) (C)
+#		In the child (next) snapshot
+#			get this childs snapshot source filename (D)
+#	Processing
+#		qemu commit A
+#		qemu rebase -u -b C D
+#		rm A
+#		If child exists then in child
+#			replace parents driver type; qcow2, raw etc with B
+#			replace parents backing store with C
+#		else no child so in domain xml
+#			replace driver type; qcow2, raw etc with B
+#			replace backing store with C
+#		virsh snapshot-delete $snapshot_name --metadata
+#
+# Processing for 2 snapshot availabilty scenarios
+#	Scenario 1			Scenario 2
+#	==========			==========
+#	Snapshots			Snapshots
+#	---------			---------
+#	parent / image			parent / image
+#	snap2del			snap2del
+#	child
+#
+#	Processing			Processing
+#	----------			----------
+#	commit snap2del			commit snap2del
+#	rebase child to parent
+#	rm snap2del			rm snap2del
+#	virsh child point 2 parent
+#					virsh domainxml update backing store
+#	virsh snapshot-delete		virsh snapshot-delete
+#
+# Parameters - none.
+# Return value -none.
+delete_external_snapshot()
+{
+	local snapshot_child
+	local snapshot_child_file
+	local snapshot_file
+	local snapshot_parent_driver_type
+	local snapshot_parent_file
+	local tmp
+	local tmpdumpxmlfile
+	local tmp_snapshot
+	local tmp_snapshot_child
+	local tmp_snapshot_parent
+
+	# We know that the vm is not running, that the snapshot exists and the
+	# snapshot is external.
+
+	tmp_snapshot=$(virsh -c $connect_uri snapshot-list $vm_name \
+		--current --tree)
+	std_cmd_err_handler $?
+
+	# Determine if there is a child of $snapshot_name to take care of.
+	while [[ $tmp_snapshot != "-" ]]; do
+		tmp_snapshot_parent=$(virsh -c $connect_uri snapshot-info \
+			$vm_name $tmp_snapshot \
+			| awk '$0 ~ /^Parent/ { print $2 }')
+		std_cmd_err_handler $?
+
+		# The child may be an internal snapshot, so always store the
+		# last external snapshot found.
+		type_snapshot $tmp_snapshot
+		if $external; then
+			tmp_snapshot_child=$tmp_snapshot
+		fi
+
+		if [[ $tmp_snapshot_parent == $snapshot_name ]]; then
+			snapshot_child=$tmp_snapshot_child
+			break
+		fi
+		tmp_snapshot=$tmp_snapshot_parent
+	done
+
+	# Get snapshot-to-delete source filename (A)
+	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+		$snapshot_name | xmlstarlet select -t -v \
+		"/domainsnapshot/disks/disk[@name='$disk_name']/source/@file" \
+		-n)
+	std_cmd_err_handler $?
+
+	# Get parent driver type (B)
+	snapshot_parent_driver_type=$(virsh -c $connect_uri snapshot-dumpxml \
+		$vm_name $snapshot_name \
+		| xmlstarlet select -t -v \
+		"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
+		-n)
+	std_cmd_err_handler $?
+
+	# Get parent backing store (C)
+	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+		$snapshot_name \
+		| xmlstarlet select -t -v \
+		"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
+		-n)
+	std_cmd_err_handler $?
+
+	# Get snapshot child source filename (D)
+	if [[ -n "$snapshot_child" ]]; then
+		snapshot_child_file=$(virsh -c $connect_uri snapshot-dumpxml \
+			$vm_name $snapshot_child \
+			| xmlstarlet select -t -v \
+			"/domainsnapshot/disks/disk[@name='$disk_name']/source/@file" \
+			-n)
+	std_cmd_err_handler $?
+	fi
+
+	# Commit the snapshot file (A) to it's backing store.
+	sudo qemu-img commit $snapshot_file
+	std_cmd_err_handler $?
+
+	# Rebase snap2del child (D) onto snap2del parent (C).
+	if [[ -n "$snapshot_child" ]]; then
+		sudo qemu-img rebase -u -b $snapshot_parent_file \
+			$snapshot_child_file
+		std_cmd_err_handler $?
+	fi
+
+	# Remove the snap2del file.
+	rm -f $snapshot_file
+
+	# If child exists then in child
+	#	replace parents driver type; qcow2, raw etc with B
+	#	replace parents backing store with C
+	# else no child so in domain xml
+	#	replace driver type; qcow2, raw etc with B
+	#	replace backing store with C
+	tmpdumpxmlfile=/tmp/$$.$(basename $0).xml
+	if [[ -n "$snapshot_child" ]]; then
+		virsh -c $connect_uri snapshot-dumpxml $vm_name \
+			$snapshot_child > $tmpdumpxmlfile
+		std_cmd_err_handler $?
+		xmlstarlet edit -L -u \
+			"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
+			-v $snapshot_parent_driver_type $tmpdumpxmlfile
+		xmlstarlet edit -L -u \
+			"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
+			-v $snapshot_parent_file $tmpdumpxmlfile
+		std_cmd_err_handler $?
+		virsh -c $connect_uri snapshot-create $vm_name $tmpdumpxmlfile \
+			--redefine 1>/dev/null
+		std_cmd_err_handler $?
+	else
+		virsh -c $connect_uri dumpxml --inactive --security-info \
+			$vm_name > $tmpdumpxmlfile
+		std_cmd_err_handler $?
+		xmlstarlet edit -L -u \
+			"/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
+			-v $snapshot_parent_driver_type $tmpdumpxmlfile
+		std_cmd_err_handler $?
+		xmlstarlet edit -L -u \
+			"/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
+			-v $snapshot_parent_file $tmpdumpxmlfile
+		std_cmd_err_handler $?
+		virsh -c $connect_uri define $tmpdumpxmlfile 1>/dev/null
+		std_cmd_err_handler $?
+	fi
+
+	rm $tmpdumpxmlfile
+
+	# Now finally remove the snapshot in virsh.
+	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name --metadata
+	std_cmd_err_handler $?
+}
+
+# Delete a named snapshot.
+# Parameters - none.
+# Return value - none.
+delete_snapshot()
+{
+	if $vm_running; then
+		output "VM $vm_name is running, please shutdown first." 1
+		script_exit 77
+	fi
+
+	# Snapshot must exist.
+	virsh -c $connect_uri snapshot-info $vm_name $snapshot_name 1>/dev/null
+	std_cmd_err_handler $?
+
+	output "Deleting snapshot $snapshot_name for VM $vm_name" 0
+
+	type_snapshot $snapshot_name
+	if $internal; then
+		delete_internal_snapshot
+	else
+		delete_external_snapshot
+	fi
+}
+
+# Delete all or to-current snapshots.
+# Parameters - none.
+# Return value - none.
+delete_multiple_snapshots()
+{
+	local snap_is_current
+	local snap_list
+
+	if $vm_running; then
+		output "VM $vm_name is running, please shutdown first." 1
+		script_exit 77
+	fi
+
+	output "Deleting snapshots for VM $vm_name" 0
+
+	virsh -c $connect_uri snapshot-list $vm_name --tree
+	std_cmd_err_handler $?
+
+	# Get ordered list of snapshots from root (oldest pointing at base file)
+	# to current (youngest).
+	# This ordering is important as deleting the snapshot merges it into
+	# it's parent. If the parent is not the main disk backing store then the
+	# data gets sequentially merged up the chain, ie it ends up being
+	# processed as often as there are snapshots to delete. This way,
+	# however, just processes it once into the main file.
+	snap_list=$(virsh -c $connect_uri snapshot-list $vm_name --roots --name)
+	std_cmd_err_handler $?
+	if [[ -n $snap_list ]]; then
+		snap_list+=" "$(virsh -c $connect_uri snapshot-list $vm_name \
+			--name --from \
+			$(virsh -c $connect_uri snapshot-list $vm_name --roots \
+			--name) --descendants)
+		std_cmd_err_handler $?
+	fi
+
+	for snapshot_name in $snap_list; do
+		snap_is_current=$(virsh -c $connect_uri snapshot-info $vm_name \
+			$snapshot_name | awk '$0 ~ /^Current/ { print $2 }')
+		std_cmd_err_handler $?
+		if [[ $snap_is_current == "yes" ]] && $delete_to_current; then
+			break;
+		else
+			delete_snapshot
+		fi
+	done
+}
+
+# Revert a named internal snapshot.
+# Parameters - none.
+# Return value - none.
+revert_internal_snapshot()
+{
+	# We know that the vm is not running, that the snapshot exists and the
+	# snapshot is internal.
+
+	virsh -c $connect_uri snapshot-revert $vm_name $snapshot_name
+	std_cmd_err_handler $?
+	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name
+		std_cmd_err_handler $?
+}
+
+# Revert a named external snapshot.
+# Logic:-
+# Data fetch
+#	In the snapshot to revert
+#		get the snapshots source filename (A)
+#		get the parents driver type;  qcow2, raw etc (B)
+#		get the parents backing store (source filename) (C)
+# Processing
+#	rm A
+#	In domain xml
+#		replace driver type; qcow2, raw etc with B
+#		replace backing store with C
+#	virsh snapshot-delete snaptorevert --metadata
+#
+# Processing
+#	Steps
+#	==========
+#	Snapshots
+#	---------
+#	parent / image
+#	snap2revert
+#
+#	Processing
+#	----------
+#	rm snap2revert
+#	virsh domainxml update backing store
+#	virsh snapshot-delete
+#
+# Parameters - none.
+# Return value - none.
+revert_external_snapshot()
+{
+	local snapshot_file
+	local snapshot_parent_driver_type
+	local snapshot_parent_file
+	local tmpdumpxmlfile
+
+	# We know that the vm is not running, that the snapshot exists and the
+	# snapshot is external.
+
+	# Get snapshot-to-revert source filename (A)
+	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	$snapshot_name \
+	| xmlstarlet select -t -v \
+	"/domainsnapshot/disks/disk[@name='vda']/source/@file" -n)
+	std_cmd_err_handler $?
+
+	# Get parent driver type (B)
+	snapshot_parent_driver_type=$(virsh -c $connect_uri snapshot-dumpxml \
+	$vm_name $snapshot_name \
+	| xmlstarlet select -t -v \
+	"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/driver/@type" -n)
+	std_cmd_err_handler $?
+
+	# Get parent backing store (C)
+	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	$snapshot_name \
+	| xmlstarlet select -t -v \
+	"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" -n)
+	std_cmd_err_handler $?
+
+	# Remove the snap2revert file (A).
+	rm -f $snapshot_file
+
+	# In domain xml
+	#	replace driver type; qcow2, raw etc with B
+	#	replace backing store with C
+	tmpdumpxmlfile=/tmp/$$.$(basename $0).xml
+	virsh -c $connect_uri dumpxml --inactive --security-info $vm_name \
+		> $tmpdumpxmlfile
+	std_cmd_err_handler $?
+	xmlstarlet edit -L -u \
+		"/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
+		-v $snapshot_parent_driver_type $tmpdumpxmlfile
+	std_cmd_err_handler $?
+	xmlstarlet edit -L -u \
+		"/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
+		-v $snapshot_parent_file $tmpdumpxmlfile
+	std_cmd_err_handler $?
+	virsh -c $connect_uri define $tmpdumpxmlfile 1>/dev/null
+	std_cmd_err_handler $?
+
+	rm -f $tmpdumpxmlfile
+
+	# Now finally remove the snapshot in virsh.
+	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name --metadata
+	std_cmd_err_handler $?
+}
+
+# Revert a named snapshot, ie discard the changes it represents.
+# Parameters - none.
+# Return value - none.
+revert_snapshot()
+{
+	if $vm_running; then
+		output "VM $vm_name is running, please shutdown first." 1
+		script_exit 77
+	fi
+
+	snapshot_name=$(virsh -c $connect_uri snapshot-list $vm_name --tree \
+		--current)
+	std_cmd_err_handler $?
+
+	output "Reverting current snapshot $snapshot_name for VM $vm_name" 0
+
+	type_snapshot $snapshot_name
+	if $internal; then
+		revert_internal_snapshot
+	else
+		revert_external_snapshot
+	fi
+}
+
+
+########
+# Main #
+########
+
+proc_config_file
+
+proc_CL "$@"
+
+validate_vm_name
+
+is_vm_running
+
+if $create; then
+	create_snapshot
+fi
+
+if $create_auto_seq; then
+	create_auto_snapshot
+fi
+
+if $delete; then
+	delete_snapshot
+fi
+
+if $delete_all || $delete_to_current; then
+	delete_multiple_snapshots
+fi
+
+if $revert; then
+	revert_snapshot
+fi
+
+
+# And exit.
+script_exit 0
+

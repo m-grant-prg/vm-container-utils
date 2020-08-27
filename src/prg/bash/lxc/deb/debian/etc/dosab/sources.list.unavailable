@@ -1,0 +1,10 @@
+# apt sources file.
+
+deb https://deb.debian.org/debian @dist@ main contrib non-free
+
+deb https://deb.debian.org/debian-security/ @dist@/updates main contrib non-free
+
+deb https://deb.debian.org/debian @dist@-updates main contrib non-free
+
+deb https://deb.debian.org/debian @dist@-backports main contrib non-free
+

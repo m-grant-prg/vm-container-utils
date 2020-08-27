@@ -1,0 +1,9 @@
+# If the server is unavalable perform all the following commands.
+
+# Remove my APT repository on that server from my apt sources.
+rm -f /etc/apt/sources.list.d/hermes.list
+
+# Dis-allow apt caching on that server
+cp /etc/dosab/bintray.list.unavailable /etc/apt/sources.list.d/bintray.list
+cp /etc/dosab/sources.list.unavailable /etc/apt/sources.list
+

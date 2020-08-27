@@ -1,0 +1,248 @@
+#! @bashlocation@
+#########################################################################
+#									#
+#	lqvms-sequential-start.sh is automatically generated,		#
+#		please do not modify!					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Script ID: lqvms-sequential-start.sh					#
+# Author: Copyright (C) 2020  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# A script to start VMs listed in the conf file in sequence. The conf	#
+# file also controls the number of VMs to start in parallel.		#
+#                                                            	  	#
+# Syntax:      lqvms-sequential-start.sh [ -h or --help			#
+#			|| -u or --connect-uri 'connection-URI'		#
+#			|| -V or --version ]				#
+#									#
+# Exit codes used:-							#
+# Bash standard Exit Codes:	0 - success				#
+#				1 - general failure			#
+# User-defined exit code range is 64 - 113				#
+#	C/C++ Semi-standard exit codes from sysexits.h range is 64 - 78	#
+#		EX_USAGE	64	command line usage error	#
+#		EX_DATAERR	65	data format error		#
+#		EX_NOINPUT	66	cannot open input		#
+#		EX_NOUSER	67	addressee unknown		#
+#		EX_NOHOST	68	host name unknown		#
+#		EX_UNAVAILABLE	69	service unavailable		#
+#		EX_SOFTWARE	70	internal software error		#
+#		EX_OSERR	71	system error (e.g., can't fork)	#
+#		EX_OSFILE	72	critical OS file missing	#
+#		EX_CANTCREAT	73	can't create (user) output file	#
+#		EX_IOERR	74	input/output error		#
+#		EX_TEMPFAIL	75	temp failure; user is invited	#
+#					to retry			#
+#		EX_PROTOCOL	76	remote error in protocol	#
+#		EX_NOPERM	77	permission denied		#
+#		EX_CONFIG	78	configuration error		#
+#	User-defined (here) exit codes range 79 - 113:			#
+#		None							#
+#									#
+# Further Info:								#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 26/08/2020	MG	1.0.1	Created.				#
+#									#
+#########################################################################
+
+
+##################
+# Init variables #
+##################
+readonly outputprefix="$(basename $0):"
+
+readonly version=1.0.1				# Script version
+readonly packageversion=@pkgversion@		# Package version
+
+readonly etclocation=@sysconfdir@		# Path to config directory
+
+
+#############
+# Functions #
+#############
+
+# -h --help output.
+# No parameters
+# No return value
+usage()
+{
+cat << EOF
+Usage is $0 [options]
+	-h or --help Display this help information
+	-u or --connect-uri Use the named connection URI
+	-V or --version Print script version information
+EOF
+}
+
+# Standard function to emit messages depending on various parameters.
+# Parameters -	$1 What:-	The message to emit.
+#		$2 Where:-	stdout == 0
+#				stderr == 1
+# No return value.
+output()
+{
+	if (( !$2 )); then
+		printf "%s\n" "$1"
+	else
+		printf "%s\n" "$1" 1>&2
+	fi
+}
+
+# Standard function to tidy up and return exit code.
+# Parameters - 	$1 is the exit code.
+# No return value.
+script_exit()
+{
+	exit $1
+}
+
+# Standard function to test command error and exit if non-zero.
+# Parameters - 	$1 is the exit code, (normally $? from the preceeding command).
+# No return value.
+std_cmd_err_handler()
+{
+	if (( $1 )); then
+		script_exit $1
+	fi
+}
+
+# Standard trap exit function.
+# No parameters.
+# No return value.
+trap_exit()
+{
+	local -i exit_code=$?
+	local msg
+
+	msg="Script terminating with exit code $exit_code due to trap received."
+	output "$msg" 1
+	script_exit $exit_code
+}
+
+# Setup trap
+trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Process the config file just for the parameters of interest.
+# Parameters - None
+# No return value.
+proc_config_file()
+{
+	local input=()
+	local oldIFS=$IFS
+
+	IFS="="
+
+	exec 3<"$etclocation/lqvm.conf"
+	while read -u3 -ra input; do
+		case ${input[0]} in
+		connecturi)
+			connect_uri=${input[1]}
+			;;
+		maxconcvms)
+			max_conc_vms=${input[1]}
+			;;
+		seqstartvms)
+			machines=${input[1]}
+			;;
+		esac
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+}
+
+# Process command line arguments with GNU getopt.
+# Parameters -	$1 is the command line.
+# No return value.
+proc_CL()
+{
+	local GETOPTTEMP
+	local msg
+	local tmp
+
+	tmp="getopt -o hu:V --long help,connect-uri:,version"
+	GETOPTTEMP=$($tmp -n "$0" -- "$@")
+	std_cmd_err_handler $?
+
+	eval set -- "$GETOPTTEMP"
+	std_cmd_err_handler $?
+
+	while true; do
+		case "$1" in
+		-h|--help)
+			usage
+			shift
+			script_exit 0
+			;;
+		-u|--connect-uri)
+			connect_uri=$2
+			shift 2
+			;;
+		-V|--version)
+			printf "%s Script version %s\n" $0 $version
+			printf "%s Package version %s\n" $0 $packageversion
+			shift
+			script_exit 0
+			;;
+		--)	shift
+			break
+			;;
+		*)	output "Internal error." 1
+			script_exit 64
+			;;
+		esac
+	done
+
+	# Script does not accept other arguments.
+	if (( $# > 0 )); then
+		output "Invalid argument." 1
+		script_exit 64
+	fi
+}
+
+
+########
+# Main #
+########
+
+proc_config_file
+
+proc_CL "$@"
+
+# Ensure no running VMs.
+tmp=$(virsh -c $connect_uri list | wc -l)
+std_cmd_err_handler $?
+
+if (( $tmp > 3 )); then
+	output "Please shutdown all running VMs." 1
+	script_exit 77
+fi
+
+# Start the selected machines.
+for machine in $machines; do
+	while (($(virsh -c $connect_uri list | tail --lines=+4 \
+		| wc -l) >= $max_conc_vms)); do
+		sleep 45
+	done
+	lqvm-start.sh -n -u $connect_uri -v $machine
+	sleep 120
+done
+
+# And exit.
+script_exit 0
+

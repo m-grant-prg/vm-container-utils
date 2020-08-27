@@ -1,0 +1,8 @@
+# apt sources file.
+
+deb http://hermes.mgent.home:3142/uk.archive.ubuntu.com/ubuntu/ @dist@-security main restricted universe multiverse
+
+deb http://hermes.mgent.home:3142/uk.archive.ubuntu.com/ubuntu/ @dist@-updates main restricted universe multiverse
+
+deb http://hermes.mgent.home:3142/uk.archive.ubuntu.com/ubuntu/ @dist@ main restricted universe multiverse
+

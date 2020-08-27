@@ -1,0 +1,45 @@
+NAME
+lqvm-shutdown.sh -- Host-based shutdown of a guest VM.
+SYNOPSIS
+lqvm-shutdown.sh [OPTIONS]
+DESCRIPTION
+lqvm-shutdown.sh is run on the host and shuts down a guest. The guest must be
+running the Guest Agent.
+OPTIONS
+-h, --help  Display the help information.
+
+-u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
+default stored in lqvm.conf.
+
+-v, --vm-name The name of the VM to operate on. This is a mandatory option.
+
+-V, --version  Print script version information.
+EXIT STATUS
+0 - Success
+
+1 - General failure
+
+64 - Error in command line
+
+77 - Permission denied / Illegal action
+FILES
+lqvm.conf  The script reads the configuration file to set default values.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright (C) 2020 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+lqvm.conf(5) lqvm-snap.sh(1) lqvms-sequential-start.sh(1)
+.br
+lqvms-snap.sh(1) lqvm-start.sh(1)
+

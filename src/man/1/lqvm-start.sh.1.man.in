@@ -1,0 +1,58 @@
+NAME
+lqvm-start.sh -- Start the specified VM with the specified snapshot.
+SYNOPSIS
+lqvm-start.sh [OPTIONS]
+DESCRIPTION
+lqvm-start.sh starts a specified VM with or without an external or internal
+snapshot. If a snapshot is to be created it can be named and furnished with a
+description. If a snapshot is specified with -e or -i and no option -c is
+supplied, then an Auto sequence name will be created, (lqvm-snap.sh -s).
+OPTIONS
+-c, --create 'snapshot-name'  Create the named snapshot.
+
+-D, --description 'snapshot-description'  Plain text description for the
+snapshot. Can only be used with -c.
+
+-e, --external  Use external snapshots. Either -e or -i must be supplied.
+
+-h, --help  Display the help information.
+
+-i, --internal  Use internal snapshots. Either -e or -i must be supplied.
+
+-n, --no-snapshot  Start the VM without creating a snapshot.
+
+-u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
+default stored in lqvm.conf.
+
+-v, --vm-name The name of the VM to operate on. This is a mandatory option.
+
+-V, --version  Print script version information.
+EXIT STATUS
+0 - Success
+
+1 - General failure
+
+64 - Error in command line
+
+77 - Permission denied / Illegal action
+FILES
+lqvm.conf  The script reads the configuration file to set default values.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright (C) 2020 Mark Grant.
+.br
+License GPLv3+: GNU GPL version 3 or later
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+lqvm.conf(5) lqvm-shutdown(1) lqvm-snap.sh(1)
+.br
+lqvms-sequential-start.sh(1) lqvms-snap.sh(1)
+
