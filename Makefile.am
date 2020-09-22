@@ -19,6 +19,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 19/08/2020	MG	1.0.1	Initial release.			#
+# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf.	#
 #									#
 #########################################################################
 
@@ -29,7 +30,7 @@ ACLOCAL_AMFLAGS = -I m4
 AM_DISTCHECK_CONFIGURE_FLAGS = --enable-distcheckfake=yes
 
 
-SUBDIRS = src/conf/etc
+SUBDIRS = src/conf/etc/lqvm
 SUBDIRS += src/man/1 src/man/5
 SUBDIRS += src/prg/bash/lqvm
 
