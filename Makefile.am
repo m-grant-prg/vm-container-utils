@@ -19,7 +19,8 @@
 # Date		Author	Version	Description				#
 #									#
 # 19/08/2020	MG	1.0.1	Initial release.			#
-# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf.	#
+# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf and	#
+#				man.					#
 #									#
 #########################################################################
 
@@ -31,7 +32,7 @@ AM_DISTCHECK_CONFIGURE_FLAGS = --enable-distcheckfake=yes
 
 
 SUBDIRS = src/conf/etc/lqvm
-SUBDIRS += src/man/1 src/man/5
+SUBDIRS += src/man/1/lqvm src/man/5/lqvm
 SUBDIRS += src/prg/bash/lqvm
 
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README

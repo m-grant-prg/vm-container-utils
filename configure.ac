@@ -49,7 +49,8 @@
 # Date		Author	Version	Description				#
 #									#
 # 19/08/2020	MG	1.0.1	Initial release.			#
-# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf.	#
+# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf and	#
+#				man.					#
 #									#
 #########################################################################
 
@@ -60,7 +61,7 @@
 #					#
 #########################################
 
-AC_REVISION([$Revision: 1.0.1 $])
+AC_REVISION([$Revision: 1.0.2 $])
 
 AC_PREREQ([2.69])
 
@@ -357,8 +358,8 @@ AC_MSG_NOTICE(processing output files)
 # Project Makefiles to create.
 AC_CONFIG_FILES([Makefile
 		src/conf/etc/lqvm/Makefile
-		src/man/1/Makefile
-		src/man/5/Makefile
+		src/man/1/lqvm/Makefile
+		src/man/5/lqvm/Makefile
 		src/prg/bash/lqvm/Makefile])
 
 AC_OUTPUT
