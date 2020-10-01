@@ -360,7 +360,23 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lqvm/Makefile
 		src/man/1/lqvm/Makefile
 		src/man/5/lqvm/Makefile
-		src/prg/bash/lqvm/Makefile])
+		src/man/1/lxcu/Makefile
+		src/man/5/lxcu/Makefile
+		src/prg/bash/lqvm/Makefile
+		src/conf/etc/lxcu/Makefile
+		src/conf/etc/lxcu/debian/apt/Makefile
+		src/conf/etc/lxcu/debian/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/basic/Makefile
+		src/conf/etc/lxcu/debian/dev/Makefile
+		src/conf/etc/lxcu/debian/dosab/Makefile
+		src/conf/etc/lxcu/ubuntu/apt/Makefile
+		src/conf/etc/lxcu/ubuntu/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/ubuntu/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/ubuntu/basic/Makefile
+		src/conf/etc/lxcu/ubuntu/dev/Makefile
+		src/conf/etc/lxcu/ubuntu/dosab/Makefile
+		src/prg/bash/lxcu/Makefile])
 
 AC_OUTPUT
 

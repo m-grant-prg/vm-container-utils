@@ -7,7 +7,7 @@
 # SPDX-License-Identifier: GPL-3.0					#
 #									#
 # Purpose:								#
-# AutoMake script file to generate LIXBackup scripts from source.	#
+# AutoMake script file to generate lqvm scripts from source.		#
 #									#
 #########################################################################
 

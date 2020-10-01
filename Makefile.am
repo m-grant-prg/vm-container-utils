@@ -33,7 +33,21 @@ AM_DISTCHECK_CONFIGURE_FLAGS = --enable-distcheckfake=yes
 
 SUBDIRS = src/conf/etc/lqvm
 SUBDIRS += src/man/1/lqvm src/man/5/lqvm
+SUBDIRS += src/man/1/lxcu src/man/5/lxcu
 SUBDIRS += src/prg/bash/lqvm
+SUBDIRS += src/conf/etc/lxcu
+SUBDIRS += src/conf/etc/lxcu/debian/apt
+SUBDIRS += src/conf/etc/lxcu/debian/apt/sources.list.d
+SUBDIRS += src/conf/etc/lxcu/debian/apt/trusted.gpg.d
+SUBDIRS += src/conf/etc/lxcu/debian/basic src/conf/etc/lxcu/debian/dev
+SUBDIRS += src/conf/etc/lxcu/debian/dosab
+SUBDIRS += src/conf/etc/lxcu/ubuntu/apt
+SUBDIRS += src/conf/etc/lxcu/ubuntu/apt/sources.list.d
+SUBDIRS += src/conf/etc/lxcu/ubuntu/apt/trusted.gpg.d
+SUBDIRS += src/conf/etc/lxcu/ubuntu/basic src/conf/etc/lxcu/ubuntu/dev
+SUBDIRS += src/conf/etc/lxcu/ubuntu/dosab
+SUBDIRS += src/prg/bash/lxcu
+
 
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README
 

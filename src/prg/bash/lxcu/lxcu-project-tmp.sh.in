@@ -1,0 +1,296 @@
+#! @bashlocation@
+#########################################################################
+#									#
+#	lxcu-project-tmp.sh is automatically generated,			#
+#		please do not modify!					#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Script ID: lxcu-project-tmp.sh					#
+# Author: Copyright (C) 2020  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0					#
+#									#
+# Purpose:								#
+# A script to copy an existing container, add the project dependencies	#
+# and start and attach to the new container. The container is destroyed	#
+# on exit.								#
+#                                                            	  	#
+# Syntax:      lxcu-project-tmp.sh [ -d or --dist 'distribution-name'	#
+#			|| -h or --help					#
+#			|| -n or --name 'container name'		#
+#			|| -p or --project-root 'root directory'	#
+#			|| -r or --rel 'release-name'			#
+#			|| -V or --version ]				#
+#									#
+# Exit codes used:-							#
+# Bash standard Exit Codes:	0 - success				#
+#				1 - general failure			#
+# User-defined exit code range is 64 - 113				#
+#	C/C++ Semi-standard exit codes from sysexits.h range is 64 - 78	#
+#		EX_USAGE	64	command line usage error	#
+#		EX_DATAERR	65	data format error		#
+#		EX_NOINPUT	66	cannot open input		#
+#		EX_NOUSER	67	addressee unknown		#
+#		EX_NOHOST	68	host name unknown		#
+#		EX_UNAVAILABLE	69	service unavailable		#
+#		EX_SOFTWARE	70	internal software error		#
+#		EX_OSERR	71	system error (e.g., can't fork)	#
+#		EX_OSFILE	72	critical OS file missing	#
+#		EX_CANTCREAT	73	can't create (user) output file	#
+#		EX_IOERR	74	input/output error		#
+#		EX_TEMPFAIL	75	temp failure; user is invited	#
+#					to retry			#
+#		EX_PROTOCOL	76	remote error in protocol	#
+#		EX_NOPERM	77	permission denied		#
+#		EX_CONFIG	78	configuration error		#
+#	User-defined (here) exit codes range 79 - 113:			#
+#		None							#
+#									#
+# Further Info:								#
+#									#
+#########################################################################
+
+#########################################################################
+#									#
+# Changelog								#
+#									#
+# Date		Author	Version	Description				#
+#									#
+# 28/09/2020	MG	1.0.1	Created.				#
+#									#
+#########################################################################
+
+
+set -o pipefail
+
+
+##################
+# Init variables #
+##################
+readonly outputprefix="$(basename $0):"
+
+readonly version=1.0.1				# Script version
+readonly packageversion=@pkgversion@		# Package version
+
+readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+
+
+#############
+# Functions #
+#############
+
+# -h --help output.
+# No parameters
+# No return value
+usage()
+{
+cat << EOF
+Usage is $0 [options]
+	-d or --dist 'distribution-name'
+	-h or --help Display this help information
+	-n or --name 'container name'
+	-p or --project-root 'project root directory'
+	-r or --rel 'release-name'
+	-V or --version Print script version information
+EOF
+}
+
+# Standard function to emit messages depending on various parameters.
+# Parameters -	$1 What:-	The message to emit.
+#		$2 Where:-	stdout == 0
+#				stderr == 1
+# No return value.
+output()
+{
+	if (( !$2 )); then
+		printf "%s\n" "$1"
+	else
+		printf "%s\n" "$1" 1>&2
+	fi
+}
+
+# Standard function to tidy up and return exit code.
+# Parameters - 	$1 is the exit code.
+# No return value.
+script_exit()
+{
+	exit $1
+}
+
+# Standard function to test command error and exit if non-zero.
+# Parameters - 	$1 is the exit code, (normally $? from the preceeding command).
+# No return value.
+std_cmd_err_handler()
+{
+	if (( $1 )); then
+		script_exit $1
+	fi
+}
+
+# Standard trap exit function.
+# No parameters.
+# No return value.
+trap_exit()
+{
+	local -i exit_code=$?
+	local msg
+
+	msg="Script terminating with exit code $exit_code due to trap received."
+	output "$msg" 1
+	script_exit $exit_code
+}
+
+# Setup trap
+trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
+
+# Process the config file just for the parameters of interest.
+# Parameters - None
+# No return value.
+proc_config_file()
+{
+	local input=()
+	local oldIFS=$IFS
+
+	IFS="="
+
+	exec 3<"$etclocation/lxcu.conf"
+	while read -u3 -ra input; do
+		case ${input[0]} in
+		dist)
+			dist=${input[1]}
+			;;
+		rel)
+			rel=${input[1]}
+			;;
+		contlocation)
+			contlocation=$(echo ${input[1]} | envsubst)
+			;;
+		esac
+	done
+	exec 3<&-
+
+	IFS=$oldIFS
+}
+
+# Process command line arguments with GNU getopt.
+# Parameters -	$1 is the command line.
+# No return value.
+proc_CL()
+{
+	local GETOPTTEMP
+	local msg
+	local tmp
+
+	tmp="getopt -o d:hn:p:r:V --long dist:,help,name:,project-root:,rel:"
+	tmp+=",version"
+	GETOPTTEMP=$($tmp -n "$0" -- "$@")
+	std_cmd_err_handler $?
+
+	eval set -- "$GETOPTTEMP"
+	std_cmd_err_handler $?
+
+	while true; do
+		case "$1" in
+		-d|--dist)
+			dist=$2
+			shift 2
+			;;
+		-h|--help)
+			usage
+			shift
+			script_exit 0
+			;;
+		-n|--name)
+			name=$2
+			shift 2
+			;;
+		-p|--project-root)
+			projectroot=$2
+			shift 2
+			;;
+		-r|--rel)
+			rel=$2
+			shift 2
+			;;
+		-V|--version)
+			printf "%s Script version %s\n" $0 $version
+			printf "%s Package version %s\n" $0 $packageversion
+			shift
+			script_exit 0
+			;;
+		--)	shift
+			break
+			;;
+		*)	output "Internal error." 1
+			script_exit 64
+			;;
+		esac
+	done
+
+	# Script does not accept other arguments.
+	if (( $# > 0 )); then
+		output "Invalid argument." 1
+		script_exit 64
+	fi
+
+	# At least container name and project root directory must be specified.
+	if [[ -z $name  || -z $projectroot ]]; then
+		msg="At least name and project root must be specified."
+		output "$msg" 1
+		script_exit 64
+	fi
+}
+
+
+
+########
+# Main #
+########
+
+proc_config_file
+
+proc_CL "$@"
+
+cd $projectroot
+fullprojectroot=$(pwd)
+cd -
+project=${fullprojectroot##*/}
+
+lxc-copy -n $name -N $project
+std_cmd_err_handler $?
+tmp="lxc.mount.entry = $fullprojectroot $contlocation/$project/rootfs/$project"
+tmp+=" none bind,create=dir 0 0"
+echo $tmp | tee -a $contlocation/$project/config
+std_cmd_err_handler $?
+
+lxc-start -n $project
+std_cmd_err_handler $?
+sleep 10
+
+if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+	cat $projectroot/lxcu/$dist/install.list \
+		| xargs lxc-attach -n $project sudo apt-get -- -y install
+	std_cmd_err_handler $?
+fi
+if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+	cat $projectroot/lxcu/$dist/$rel/install.list \
+		| xargs lxc-attach -n $project sudo apt-get -- -y install
+	std_cmd_err_handler $?
+fi
+
+lxc-attach -n $project cp -- -vr $project build
+lxc-attach -n $project -vHOME=/build/atbuild
+
+lxc-stop -n $project
+std_cmd_err_handler $?
+
+lxc-destroy -n $project
+std_cmd_err_handler $?
+
+# And exit.
+script_exit 0
+

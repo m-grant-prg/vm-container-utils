@@ -1,0 +1,13 @@
+# Default distro etc
+dist=debian
+rel=buster
+arch=amd64
+# Container location
+contlocation=/home/$USER/.local/share/lxc
+# If a bridge is available assign it here, otherwise leave as bridge=
+bridge=
+# The prefix for ethernet interfaces usually enp or eth
+ethernetprefix=enp
+# Default VNI
+vni=lxcbr0
+
