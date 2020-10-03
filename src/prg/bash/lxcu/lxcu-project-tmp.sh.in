@@ -61,6 +61,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 28/09/2020	MG	1.0.1	Created.				#
+# 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
 #									#
 #########################################################################
 
@@ -73,7 +74,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -267,9 +268,8 @@ tmp+=" none bind,create=dir 0 0"
 echo $tmp | tee -a $contlocation/$project/config
 std_cmd_err_handler $?
 
-lxc-start -n $project
+lxcu-start.sh -n $project
 std_cmd_err_handler $?
-sleep 10
 
 if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
 	cat $projectroot/lxcu/$dist/install.list \

@@ -60,6 +60,8 @@
 # Date		Author	Version	Description				#
 #									#
 # 23/09/2020	MG	1.0.1	Created.				#
+# 05/10/2020	MG	1.0.2	Replace sleeps with network wait in	#
+#				lxcu-start.sh				#
 #									#
 #########################################################################
 
@@ -72,7 +74,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -282,9 +284,8 @@ network_config()
 # No return value.
 create_deb_type()
 {
-	lxc-start -n $name
+	lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	sleep 10
 
 	if [[ -e $etclocation/$dist/$1/install.list ]]; then
 		cat $etclocation/$dist/$1/install.list \
@@ -329,17 +330,16 @@ create_deb()
 			-maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
-	# Initially install sudo.
-	lxc-start -n $name
+	lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	# Without a sleep always get Temporary failure resolving ....
-	# lxc-wait -n $4 -s RUNNING does not work.
-	sleep 10
+
+	# Initially install sudo.
 	lxc-attach -n $name apt-get update
 	std_cmd_err_handler $?
 	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
 		apt-get -- -y install sudo
 	std_cmd_err_handler $?
+
 	# Set up the dosab files.
 	lxc-attach -n $name sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
@@ -354,9 +354,9 @@ create_deb()
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
-	lxc-start -n $name
+	# Final fundamental installs.
+	lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	sleep 5
 	lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get -- -y install gnupg

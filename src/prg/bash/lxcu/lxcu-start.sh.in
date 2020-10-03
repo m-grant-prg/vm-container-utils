@@ -56,6 +56,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 25/09/2020	MG	1.0.1	Created.				#
+# 05/10/2020	MG	1.0.2	Add wait for network initialisation.	#
 #									#
 #########################################################################
 
@@ -68,7 +69,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -249,6 +250,26 @@ fi
 
 eval "$cmd"
 std_cmd_err_handler $?
+
+lxc-wait -n $name -s RUNNING
+std_cmd_err_handler $?
+
+# Allow networking to initialise, otherwise problems encountered with
+# Temporary failure resolving ....
+declare -i count
+declare -i max
+
+((max=30))
+
+until lxc-attach -n $name ping -- -c 2 www.google.com &>/dev/null ; do
+	err=$?
+	(( count++ ))
+	if (( $count == $max )); then
+		output "Networking not functioning." 1
+		std_cmd_err_handler $err
+	fi
+	sleep 2
+done
 
 # And exit.
 script_exit 0
