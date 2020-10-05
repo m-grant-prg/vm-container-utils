@@ -9,8 +9,6 @@ home directory which you need to cd to. You can then do your work, build
 testing for example, and then, when finished, on exit the container is
 destroyed.
 OPTIONS
--a, --arch 'arch-name' Architecture for the container
-
 -d, --dist 'distribution-name'
 
 -h, --help Display this help information
@@ -20,8 +18,6 @@ OPTIONS
 -p, --project-root 'project root directory'
 
 -r, --rel 'release-name'
-
--t, --type 'type-name' e.g. basic or dev.....
 
 -V, --version Print script version information
 EXIT STATUS
