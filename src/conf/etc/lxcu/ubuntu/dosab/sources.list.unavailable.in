@@ -1,8 +1,8 @@
 # apt sources file.
 
-deb http://uk.archive.ubuntu.com/ubuntu/ @dist@-security main restricted universe multiverse
+deb http://uk.archive.ubuntu.com/ubuntu/ @rel@-security main restricted universe multiverse
 
-deb http://uk.archive.ubuntu.com/ubuntu/ @dist@-updates main restricted universe multiverse
+deb http://uk.archive.ubuntu.com/ubuntu/ @rel@-updates main restricted universe multiverse
 
-deb http://uk.archive.ubuntu.com/ubuntu/ @dist@ main restricted universe multiverse
+deb http://uk.archive.ubuntu.com/ubuntu/ @rel@ main restricted universe multiverse
 
