@@ -1,3 +1,13 @@
+2020-10-07 v1.0.2 Mark Grant <m.grant.prg@gmail.com>
+	*  at: lxcu: Add Ubuntu to lxc test build setup
+	conf: lxcu: Update ubuntu release subst variable
+	man: lxcu: Correct CLI options
+	lxcu: bash: Replace sleeps with network init wait
+	lxcu: First production commit
+	at: bash: Rename lxc to lxcu
+	at: man: Separate lqvm and lxcu under man
+	at: conf: Separate lqvm and lxc files
+
 2020-08-29 v1.0.1 Mark Grant <m.grant.prg@gmail.com>
 	*  Initial release.
 
