@@ -60,6 +60,8 @@
 #									#
 # 27/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
+# 15/10/2020	MG	1.0.3	Add install.list processing as the list	#
+#				may be changed at any time.		#
 #									#
 #########################################################################
 
@@ -72,7 +74,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -247,6 +249,16 @@ upgrade_deb_type()
 	lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 
+	if [[ -e $etclocation/$dist/$1/install.list ]]; then
+		cat $etclocation/$dist/$1/install.list \
+			| xargs lxc-attach -n $name sudo apt-get -- -y install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
+		cat $etclocation/$dist/$rel/$1/install.list \
+			| xargs lxc-attach -n $name sudo apt-get -- -y install
+		std_cmd_err_handler $?
+	fi
 	if [[ -e $etclocation/$dist/$1/cache.list ]]; then
 		cat $etclocation/$dist/$1/cache.list \
 			| xargs lxc-attach -n $name sudo apt-get -- -yd install
