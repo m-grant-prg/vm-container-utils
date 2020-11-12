@@ -18,24 +18,26 @@
 # Date		Author	Version	Description				#
 #									#
 # 26/09/2020	MG	1.0.1	Initial release.			#
+# 11/11/2020	MG	1.0.2	Remove hermes.list as these files are	#
+#				used at container creation and hermes	#
+#				may not be available.			#
 #									#
 #########################################################################
 
 
 confdir = $(sysconfdir)/lxcu/ubuntu/apt/sources.list.d
 
-hermes.list launchpad.list: Makefile
+launchpad.list: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-hermes.list: $(srcdir)/hermes.list.in
 launchpad.list: $(srcdir)/launchpad.list.in
 
-conf_DATA = hermes.list launchpad.list
+conf_DATA = launchpad.list
 
-EXTRA_DIST = $(srcdir)/hermes.list.in $(srcdir)/launchpad.list.in
+EXTRA_DIST = $(srcdir)/launchpad.list.in
 
-CLEANFILES = *.tmp hermes.list launchpad.list
+CLEANFILES = *.tmp launchpad.list
 

@@ -62,6 +62,9 @@
 # 23/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Replace sleeps with network wait in	#
 #				lxcu-start.sh				#
+# 11/11/2020	MG	1.0.3	Do initial install of apt https prior	#
+#				to adding repo for server-dependency to	#
+#				avoid hang on https comms.		#
 #									#
 #########################################################################
 
@@ -317,7 +320,26 @@ create_deb_type()
 # No return value.
 create_deb()
 {
-	# Set up the apt files.
+	# Set up the initial apt files, (just sources.list).
+	sudo cp -v $etclocation/$dist/apt/* $contlocation/$name/rootfs/etc/apt
+	std_cmd_err_handler $?
+	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/apt
+	std_cmd_err_handler $?
+	sudo sed -i -e "s|@rel@|$rel|g" \
+		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+	std_cmd_err_handler $?
+
+	lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+
+	# Initially install apt https and sudo.
+	lxc-attach -n $name apt-get update
+	std_cmd_err_handler $?
+	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
+		apt-get -- -y install apt-transport-https sudo
+	std_cmd_err_handler $?
+
+	# Set up the other initial apt files.
 	sudo cp -rv $etclocation/$dist/apt/* $contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/apt
@@ -328,16 +350,6 @@ create_deb()
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt/sources.list.d \
 			-maxdepth 1 -type f)
-	std_cmd_err_handler $?
-
-	lxcu-start.sh -n $name
-	std_cmd_err_handler $?
-
-	# Initially install sudo.
-	lxc-attach -n $name apt-get update
-	std_cmd_err_handler $?
-	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
-		apt-get -- -y install sudo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.

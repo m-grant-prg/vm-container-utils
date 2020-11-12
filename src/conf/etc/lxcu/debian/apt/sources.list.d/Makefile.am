@@ -18,24 +18,26 @@
 # Date		Author	Version	Description				#
 #									#
 # 22/09/2020	MG	1.0.1	Initial release.			#
+# 11/11/2020	MG	1.0.2	Remove hermes.list as these files are	#
+#				used at container creation and hermes	#
+#				may not be available.			#
 #									#
 #########################################################################
 
 
 confdir = $(sysconfdir)/lxcu/debian/apt/sources.list.d
 
-bintray.list hermes.list: Makefile
+bintray.list: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
 bintray.list: $(srcdir)/bintray.list.in
-hermes.list: $(srcdir)/hermes.list.in
 
-conf_DATA = bintray.list hermes.list
+conf_DATA = bintray.list
 
-EXTRA_DIST = $(srcdir)/bintray.list.in $(srcdir)/hermes.list.in
+EXTRA_DIST = $(srcdir)/bintray.list.in
 
-CLEANFILES = *.tmp bintray.list hermes.list
+CLEANFILES = *.tmp bintray.list
 
