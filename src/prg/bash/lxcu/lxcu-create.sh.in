@@ -321,7 +321,8 @@ create_deb_type()
 create_deb()
 {
 	# Set up the initial apt files, (just sources.list).
-	sudo cp -v $etclocation/$dist/apt/* $contlocation/$name/rootfs/etc/apt
+	sudo cp -v $(find $etclocation/$dist/apt -maxdepth 1 -type f) \
+		$contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
@@ -336,7 +337,8 @@ create_deb()
 	lxc-attach -n $name apt-get update
 	std_cmd_err_handler $?
 	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
-		apt-get -- -y install apt-transport-https sudo
+		apt-get -- -y install apt-transport-https apt-utils \
+		ca-certificates sudo
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
@@ -373,7 +375,7 @@ create_deb()
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get -- -y install gnupg
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get -- -y install apt apt-utils agmaint
+	lxc-attach -n $name sudo apt-get -- -y install apt agmaint
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-key update
 	std_cmd_err_handler $?
