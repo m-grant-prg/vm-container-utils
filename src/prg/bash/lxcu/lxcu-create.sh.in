@@ -62,9 +62,11 @@
 # 23/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Replace sleeps with network wait in	#
 #				lxcu-start.sh				#
-# 11/11/2020	MG	1.0.3	Do initial install of apt https prior	#
+# 14/11/2020	MG	1.0.3	Do initial install of apt https prior	#
 #				to adding repo for server-dependency to	#
 #				avoid hang on https comms.		#
+#				Ensure apt update is run after changing	#
+#				repos.					#
 #									#
 #########################################################################
 
@@ -77,7 +79,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -340,6 +342,8 @@ create_deb()
 		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates sudo
 	std_cmd_err_handler $?
+	lxc-stop -n $name
+	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
 	sudo cp -rv $etclocation/$dist/apt/* $contlocation/$name/rootfs/etc/apt
@@ -355,6 +359,10 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
+	lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+	lxc-attach -n $name sudo apt-get update
+	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
 	lxc-stop -n $name
