@@ -332,10 +332,9 @@ create_deb()
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
+	# Initially install apt https and sudo.
 	lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-
-	# Initially install apt https and sudo.
 	lxc-attach -n $name apt-get update
 	std_cmd_err_handler $?
 	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
@@ -399,7 +398,6 @@ create_deb()
 }
 
 
-
 ########
 # Main #
 ########
@@ -426,7 +424,6 @@ ubuntu)
 	break
 	;;
 esac
-
 
 # And exit.
 script_exit 0
