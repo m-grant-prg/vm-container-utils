@@ -295,7 +295,6 @@ upgrade_deb()
 }
 
 
-
 ########
 # Main #
 ########
@@ -317,7 +316,6 @@ ubuntu)
 	break
 	;;
 esac
-
 
 # And exit.
 script_exit 0
