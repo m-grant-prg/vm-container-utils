@@ -62,11 +62,12 @@
 # 23/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Replace sleeps with network wait in	#
 #				lxcu-start.sh				#
-# 14/11/2020	MG	1.0.3	Do initial install of apt https prior	#
+# 18/11/2020	MG	1.0.3	Do initial install of apt https prior	#
 #				to adding repo for server-dependency to	#
 #				avoid hang on https comms.		#
 #				Ensure apt update is run after changing	#
 #				repos.					#
+#				Do apt-get update after apt-key update.	#
 #									#
 #########################################################################
 
@@ -385,6 +386,8 @@ create_deb()
 	lxc-attach -n $name sudo apt-get -- -y install apt agmaint
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-key update
+	std_cmd_err_handler $?
+	lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
