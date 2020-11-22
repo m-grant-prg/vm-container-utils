@@ -18,11 +18,12 @@
 # Date		Author	Version	Description				#
 #									#
 # 30/09/2020	MG	1.0.1	Initial release.			#
+# 21/11/2020	MG	1.0.2	Add lxcu-copy.sh.			#
 #									#
 #########################################################################
 
 
-lxcu-create.sh.1 lxcu-project-tmp.sh.1 lxcu-start.sh.1 \
+lxcu-copy.sh.1 lxcu-create.sh.1 lxcu-project-tmp.sh.1 lxcu-start.sh.1 \
 	lxcu-upgrade.sh.1: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
@@ -41,18 +42,19 @@ lxcu-create.sh.1 lxcu-project-tmp.sh.1 lxcu-start.sh.1 \
 	fi; \
 	txt2manwrap $(@F) $$section "LXCU Scripts Manual" $@.tmp $@
 	rm -f $@.tmp
+lxcu-copy.sh.1: $(srcdir)/lxcu-copy.sh.1.man.in
 lxcu-create.sh.1: $(srcdir)/lxcu-create.sh.1.man.in
 lxcu-project-tmp.sh.1: $(srcdir)/lxcu-project-tmp.sh.1.man.in
 lxcu-start.sh.1: $(srcdir)/lxcu-start.sh.1.man.in
 lxcu-upgrade.sh.1: $(srcdir)/lxcu-upgrade.sh.1.man.in
 
-man_MANS = lxcu-create.sh.1 lxcu-project-tmp.sh.1 lxcu-start.sh.1 \
-	lxcu-upgrade.sh.1
+man_MANS = lxcu-copy.sh.1 lxcu-create.sh.1 lxcu-project-tmp.sh.1 \
+	lxcu-start.sh.1 lxcu-upgrade.sh.1
 
-EXTRA_DIST = $(srcdir)/lxcu-create.sh.1.man.in \
+EXTRA_DIST = $(srcdir)/lxcu-copy.sh.1.man.in $(srcdir)/lxcu-create.sh.1.man.in \
 	$(srcdir)/lxcu-project-tmp.sh.1.man.in \
 	$(srcdir)/lxcu-start.sh.1.man.in $(srcdir)/lxcu-upgrade.sh.1.man.in
 
-CLEANFILES = *.tmp lxcu-create.sh.1 lxcu-project-tmp.sh.1 \
+CLEANFILES = *.tmp lxcu-copy.sh.1 lxcu-create.sh.1 lxcu-project-tmp.sh.1 \
 	lxcu-start.sh.1 lxcu-upgrade.sh.1
 
