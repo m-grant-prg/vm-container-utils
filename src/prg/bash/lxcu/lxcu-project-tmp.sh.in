@@ -62,6 +62,7 @@
 #									#
 # 28/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
+# 22/11/2020	MG	1.0.3	Use lxcu-copy.sh			#
 #									#
 #########################################################################
 
@@ -74,7 +75,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -260,7 +261,7 @@ fullprojectroot=$(pwd)
 cd -
 project=${fullprojectroot##*/}
 
-lxc-copy -n $name -N $project
+lxcu-copy.sh -n $name -N $project
 std_cmd_err_handler $?
 tmp="lxc.mount.entry = $fullprojectroot $contlocation/$project/rootfs/$project"
 tmp+=" none bind,create=dir 0 0"
