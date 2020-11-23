@@ -242,11 +242,14 @@ lxc-copy -n $fromname -N $toname
 std_cmd_err_handler $?
 
 if [[ -n $bridge ]]; then
-	cp -v $contlocation/$toname/config \
+	cp -v $contlocation/$fromname/config-$bridge \
+		$contlocation/$toname
+	std_cmd_err_handler $?
+	sed -i -e "/lxc.rootfs.path = dir:/s/$fromname/$toname/" \
 		$contlocation/$toname/config-$bridge
 	std_cmd_err_handler $?
-	cat $etclocation/$bridge.conf \
-		| tee -a $contlocation/$toname/config-$bridge
+	sed -i -e "/lxc.uts.name = /s/$fromname/$toname/" \
+		$contlocation/$toname/config-$bridge
 	std_cmd_err_handler $?
 fi
 
