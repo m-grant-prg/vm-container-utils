@@ -241,6 +241,7 @@ proc_CL "$@"
 lxc-copy -n $fromname -N $toname
 std_cmd_err_handler $?
 
+# Any bridge to provide a config file for?
 if [[ -n $bridge ]]; then
 	cp -v $contlocation/$fromname/config-$bridge \
 		$contlocation/$toname
@@ -252,6 +253,19 @@ if [[ -n $bridge ]]; then
 		$contlocation/$toname/config-$bridge
 	std_cmd_err_handler $?
 fi
+
+# Correct host name on target container.
+lxcu-start.sh -n $toname
+std_cmd_err_handler $?
+
+lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
+std_cmd_err_handler $?
+
+lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
+std_cmd_err_handler $?
+
+lxc-stop -n $toname
+std_cmd_err_handler $?
 
 # And exit.
 script_exit 0
