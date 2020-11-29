@@ -1,21 +1,17 @@
 NAME
-lxcu-upgrade.sh -- Upgrade an lxc container of a certain type.
+lxcu-copy.sh -- Start a linux container.
 SYNOPSIS
-lxcu-upgrade.sh [OPTIONS]
+lxcu-copy.sh [OPTIONS]
 DESCRIPTION
-lxcu-upgrade.sh will upgrade a container of a certain type for a specified
-distribution and release. If a type other than basic is specified, 'basic' is
-upgraded first. For an explanation of types please refer to lxcu-createsh(1).
+This script copies an existing linux container to a new one. The only extra task
+performed compared to lxc-copy is that the script also copies any extra lxcu
+config files, (such as for bridges).
 OPTIONS
--d, --dist 'distribution-name'
-
 -h, --help Display this help information
 
--n, --name 'container name'
+-n, --from-name 'container name'
 
--r, --rel 'release-name'
-
--t, --type 'type-name' e.g. basic or dev.....
+-N, --to-name 'container name'
 
 -V, --version Print script version information
 EXIT STATUS
@@ -41,6 +37,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-copy.sh(1) lxcu-create.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1)
+lxcu-create.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1) lxcu-upgrade.sh(1)
 lxcu.conf(5)
 

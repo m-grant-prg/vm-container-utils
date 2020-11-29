@@ -1,27 +1,27 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lxcu-upgrade.sh is automatically generated,			#
+#	lxcu-copy.sh is automatically generated,			#
 #		please do not modify!					#
 #									#
 #########################################################################
 
 #########################################################################
 #									#
-# Script ID: lxcu-upgrade.sh						#
+# Script ID: lxcu-copy.sh						#
 # Author: Copyright (C) 2020  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
 #									#
 # Purpose:								#
-# A script to upgrade linux containers.					#
+# A script to copy an existing container to a new container. The only	#
+# extra thing this does compared to an lxc-copy is that it will create	#
+# any extra lxcu bridge config files.					#
 #                                                            	  	#
-# Syntax:      lxcu-upgrade.sh [ -d or --dist 'distribution-name'	#
-#			|| -h or --help					#
-#			|| -n or --name 'container name'		#
-#			|| -r or --rel 'release-name'			#
-#			|| -t or --type 'type-name'			#
+# Syntax:      lxcu-copy.sh [ -h or --help				#
+#			|| -n or --from-name 'container name' copy from	#
+#			|| -N or --to-name 'container name' copy to	#
 #			|| -V or --version ]				#
 #									#
 # Exit codes used:-							#
@@ -58,10 +58,7 @@
 #									#
 # Date		Author	Version	Description				#
 #									#
-# 27/09/2020	MG	1.0.1	Created.				#
-# 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
-# 15/10/2020	MG	1.0.3	Add install.list processing as the list	#
-#				may be changed at any time.		#
+# 21/11/2020	MG	1.0.1	Created.				#
 #									#
 #########################################################################
 
@@ -74,7 +71,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.1				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -91,11 +88,9 @@ usage()
 {
 cat << EOF
 Usage is $0 [options]
-	-d or --dist 'distribution-name'
 	-h or --help Display this help information
-	-n or --name 'container name'
-	-r or --rel 'release-name'
-	-t or --type 'type-name' e.g. basic or dev.....
+	-n or --from-name 'container name'
+	-N or --to-name 'container name'
 	-V or --version Print script version information
 EOF
 }
@@ -161,11 +156,11 @@ proc_config_file()
 	exec 3<"$etclocation/lxcu.conf"
 	while read -u3 -ra input; do
 		case ${input[0]} in
-		dist)
-			dist=${input[1]}
+		bridge)
+			bridge=${input[1]}
 			;;
-		rel)
-			rel=${input[1]}
+		contlocation)
+			contlocation=$(echo ${input[1]} | envsubst)
 			;;
 		esac
 	done
@@ -183,7 +178,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o d:hn:r:t:V --long dist:,help,name:,rel:,type:,version"
+	tmp="getopt -o hn:N:V --long dist:,help,from-name:,to-name:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -192,25 +187,17 @@ proc_CL()
 
 	while true; do
 		case "$1" in
-		-d|--dist)
-			dist=$2
-			shift 2
-			;;
 		-h|--help)
 			usage
 			shift
 			script_exit 0
 			;;
-		-n|--name)
-			name=$2
+		-n|--from-name)
+			fromname=$2
 			shift 2
 			;;
-		-r|--rel)
-			rel=$2
-			shift 2
-			;;
-		-t|--type)
-			type=$2
+		-N|--to-name)
+			toname=$2
 			shift 2
 			;;
 		-V|--version)
@@ -234,63 +221,11 @@ proc_CL()
 		script_exit 64
 	fi
 
-	# At least container name and type must be specified.
-	if [[ -z $name  || -z $type ]]; then
-		output "At least name and type must be specified." 1
+	# Both from name and to name must be specified.
+	if [[ -z $fromname  || -z $toname ]]; then
+		msg="Both from name and to name must be specified."
+		output "$msg" 1
 		script_exit 64
-	fi
-}
-
-# Upgrade the specified type.
-# Parameters - $1 is the type to upgrade.
-# No return value.
-upgrade_deb_type()
-{
-	lxcu-start.sh -n $name
-	std_cmd_err_handler $?
-
-	if [[ -e $etclocation/$dist/$1/install.list ]]; then
-		cat $etclocation/$dist/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
-	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
-	if [[ -e $etclocation/$dist/$1/cache.list ]]; then
-		cat $etclocation/$dist/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
-		std_cmd_err_handler $?
-	fi
-	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
-		std_cmd_err_handler $?
-	fi
-
-	lxc-stop -n $name
-	std_cmd_err_handler $?
-}
-
-# Upgrade an APT package distribution.
-# No parameters.
-# No return value.
-upgrade_deb()
-{
-	lxcu-start.sh -n $name
-	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get update
-	std_cmd_err_handler $?
-	lxc-attach -n $name sudo agmaint.sh -- -- -y
-	std_cmd_err_handler $?
-	lxc-stop -n $name
-	std_cmd_err_handler $?
-
-	upgrade_deb_type basic
-	if [[ $type != "basic" ]]; then
-		upgrade_deb_type $type
 	fi
 }
 
@@ -303,19 +238,34 @@ proc_config_file
 
 proc_CL "$@"
 
-case $dist in
-debian)
-	upgrade_deb
-	;;
-ubuntu)
-	upgrade_deb
-	;;
-*)
-	output "Unknown distribution." 1
-	script_exit 64
-	break
-	;;
-esac
+lxc-copy -n $fromname -N $toname
+std_cmd_err_handler $?
+
+# Any bridge to provide a config file for?
+if [[ -n $bridge ]]; then
+	cp -v $contlocation/$fromname/config-$bridge \
+		$contlocation/$toname
+	std_cmd_err_handler $?
+	sed -i -e "/lxc.rootfs.path = dir:/s/$fromname/$toname/" \
+		$contlocation/$toname/config-$bridge
+	std_cmd_err_handler $?
+	sed -i -e "/lxc.uts.name = /s/$fromname/$toname/" \
+		$contlocation/$toname/config-$bridge
+	std_cmd_err_handler $?
+fi
+
+# Correct host name on target container.
+lxcu-start.sh -n $toname
+std_cmd_err_handler $?
+
+lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
+std_cmd_err_handler $?
+
+lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
+std_cmd_err_handler $?
+
+lxc-stop -n $toname
+std_cmd_err_handler $?
 
 # And exit.
 script_exit 0

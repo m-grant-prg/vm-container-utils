@@ -57,6 +57,8 @@
 #									#
 # 25/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Add wait for network initialisation.	#
+# 14/11/2020	MG	1.0.3	Wait for server-dependency service to	#
+#				complete.				#
 #									#
 #########################################################################
 
@@ -69,7 +71,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -228,7 +230,6 @@ proc_CL()
 }
 
 
-
 ########
 # Main #
 ########
@@ -268,6 +269,12 @@ until lxc-attach -n $name ping -- -c 2 www.google.com &>/dev/null ; do
 		output "Networking not functioning." 1
 		std_cmd_err_handler $err
 	fi
+	sleep 2
+done
+
+# Wait for the server dependency service to complete.
+until !(lxc-attach -n $name sudo systemctl is-active -- -q server-dependency)
+do
 	sleep 2
 done
 

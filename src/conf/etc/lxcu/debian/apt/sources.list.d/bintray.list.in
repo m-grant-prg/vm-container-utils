@@ -1,2 +1,2 @@
-deb http://hermes.mgent.home:3142/HTTPS///dl.bintray.com/mgrantprg/debian-utils @rel@ stable
+deb https://dl.bintray.com/mgrantprg/debian-utils @rel@ stable
 
