@@ -1,3 +1,21 @@
+2020-11-29 v1.0.3 Mark Grant <m.grant.prg@gmail.com>
+	*  lxcu: Fix target host name on copy
+	lxcu: Improve copy of exctra config files
+	lxcu: Use new lxcu-copy.sh
+	lxcu: Add container copy
+	lxcu: apt-get update after apt-key update
+	lxcu: Remove extra blank lines
+	lxcu: Remove extra blank line
+	lxcu: Refactor create for legibility
+	lxcu: Wait for server-dependency service to end
+	lxcu: Ensure apt update is run after repo changes
+	lxcu: Add certificates for external repos
+	lxcu: Initially use official repos at creation
+	lxcu: Add man-db to basic install lists
+	lxcu: Add install.list processing during upgrade
+	lxcu: Add sparse to dev install list
+	lxcu: Add gdb and valgrind to dev cache
+
 2020-10-07 v1.0.2 Mark Grant <m.grant.prg@gmail.com>
 	*  at: lxcu: Add Ubuntu to lxc test build setup
 	conf: lxcu: Update ubuntu release subst variable

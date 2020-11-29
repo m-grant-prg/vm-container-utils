@@ -1,3 +1,16 @@
+Release 1.0.3 2020-11-29
+lxcu: Fix target host name on copy
+lxcu: Add container copy
+lxcu: apt-get update after apt-key update
+lxcu: Wait for server-dependency service to end
+lxcu: Ensure apt update is run after repo changes
+lxcu: Add certificates for external repos
+lxcu: Initially use official repos at creation
+lxcu: Add man-db to basic install lists
+lxcu: Add install.list processing during upgrade
+lxcu: Add sparse to dev install list
+lxcu: Add gdb and valgrind to dev cache
+
 Release 1.0.2 2020-10-07
 lxcu: First production commit
 
