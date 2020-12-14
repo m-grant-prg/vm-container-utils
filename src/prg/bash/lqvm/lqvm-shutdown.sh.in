@@ -19,8 +19,8 @@
 # running the Guest Agent.						#
 #                                                            	  	#
 # Syntax:      lqvm-shutdown.sh [ -h or --help				#
+#			|| -n or --name					#
 #			|| -u or --connect-uri 'connection-URI'		#
-#			|| -v or --vm-name				#
 #			|| -V or --version ]				#
 #									#
 # Exit codes used:-							#
@@ -58,6 +58,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 21/08/2020	MG	1.0.1	Created.				#
+# 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
 #									#
 #########################################################################
 
@@ -67,7 +68,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -85,8 +86,8 @@ usage()
 cat << EOF
 Usage is $0 [options]
 	-h or --help Display this help information
+	-n or --name The name of the VM to operate on
 	-u or --connect-uri Use the named connection URI
-	-v or --vm-name The name of the VM to operate on
 	-V or --version Print script version information
 EOF
 }
@@ -170,7 +171,7 @@ proc_CL()
 	local GETOPTTEMP
 	local tmp
 
-	tmp="getopt -o hu:v:V --long help,connect-uri:,vm-name:,version"
+	tmp="getopt -o hn:u:V --long help,name:,connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -184,12 +185,12 @@ proc_CL()
 			shift
 			script_exit 0
 			;;
-		-u|--connect-uri)
-			connect_uri=$2
+		-n|--name)
+			name=$2
 			shift 2
 			;;
-		-v|--vm-name)
-			vm_name=$2
+		-u|--connect-uri)
+			connect_uri=$2
 			shift 2
 			;;
 		-V|--version)
@@ -213,8 +214,8 @@ proc_CL()
 		script_exit 64
 	fi
 
-	if [[ -z $vm_name ]]; then
-		output "Option v must be set." 1
+	if [[ -z $name ]]; then
+		output "Option n must be set." 1
 		script_exit 64
 	fi
 }
@@ -222,15 +223,15 @@ proc_CL()
 # Validate the VM name.
 # Parameters - none
 # Return value - none
-validate_vm_name()
+validate_name()
 {
-	local -i vm_name_matches
+	local -i name_matches
 
-	vm_name_matches=$(virsh -c $connect_uri list --all \
-		| grep "\<$vm_name\>" | wc -l)
+	name_matches=$(virsh -c $connect_uri list --all \
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
-	if (( !$vm_name_matches )); then
-	output "No such VM $vm_name" 1
+	if (( !$name_matches )); then
+	output "No such VM $name" 1
 	script_exit 77
 	fi
 }
@@ -243,7 +244,7 @@ is_vm_running()
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$vm_name\>" | wc -l)
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
 		vm_running=true
@@ -261,17 +262,17 @@ proc_config_file
 
 proc_CL "$@"
 
-validate_vm_name
+validate_name
 
 is_vm_running
 
 if ! $vm_running; then
-	output "VM $vm_name is not running." 1
+	output "VM $name is not running." 1
 	script_exit 77
 fi
 
-output "Shutdown VM $vm_name" 0
-virsh -c $connect_uri shutdown --mode=agent "$vm_name"
+output "Shutdown VM $name" 0
+virsh -c $connect_uri shutdown --mode=agent "$name"
 std_cmd_err_handler $?
 
 # And exit.
