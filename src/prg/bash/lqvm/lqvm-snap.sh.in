@@ -26,11 +26,11 @@
 #			|| -e or --external				#
 #			|| -h or --help					#
 #			|| -i or --internal				#
+#			|| -n or --name					#
 #			|| -r or --revert				#
 #			|| -s or --create-auto-seq			#
 #			|| -t or --delete-to-current			#
 #			|| -u or --connect-uri 'connection-URI'		#
-#			|| -v or --vm-name				#
 #			|| -V or --version ]				#
 #									#
 # Exit codes used:-							#
@@ -68,6 +68,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 16/08/2020	MG	1.0.1	Created.				#
+# 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
 #									#
 #########################################################################
 
@@ -77,7 +78,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -111,13 +112,13 @@ Usage is $0 [options]
 	-e or --external Use external snapshots
 	-h or --help Display this help information
 	-i or --internal Use internal snapshots
+	-n or --name The name of the VM to operate on
 	-r or --revert Revert to the state before this snapshot was taken
 	-s or --create-auto-seq Create an automatically named sequential
 				snapshot
 	-t or --delete-to-current Delete all snapshots taken before the current
 				snapshot
 	-u or --connect-uri Use the named connection URI
-	-v or --vm-name The name of the VM to operate on
 	-V or --version Print script version information
 EOF
 }
@@ -205,9 +206,9 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o ac:d:D:ehirstu:v:V --long delete-all,create:,delete:"
-	tmp+=",description:,external,help,internal,revert,create-auto-seq"
-	tmp+=",delete-to-current,connect-uri:,vm-name:,version"
+	tmp="getopt -o ac:d:D:ehin:rstu:V --long delete-all,create:,delete:"
+	tmp+=",description:,external,help,internal,name:,revert,create-auto-seq"
+	tmp+=",delete-to-current,connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -282,6 +283,10 @@ proc_CL()
 			intextset=true
 			shift
 			;;
+		-n|--name)
+			name=$2
+			shift 2
+			;;
 		-r|--revert)
 			if $delete_all || $create || $delete \
 				|| $create_auto_seq \
@@ -320,10 +325,6 @@ proc_CL()
 			;;
 		-u|--connect-uri)
 			connect_uri=$2
-			shift 2
-			;;
-		-v|--vm-name)
-			vm_name=$2
 			shift 2
 			;;
 		-V|--version)
@@ -365,8 +366,8 @@ proc_CL()
 		output "Either e or i must be set." 1
 		script_exit 64
 	fi
-	if [[ -z $vm_name ]]; then
-		output "Option v must be set." 1
+	if [[ -z $name ]]; then
+		output "Option n must be set." 1
 		script_exit 64
 	fi
 }
@@ -374,15 +375,15 @@ proc_CL()
 # Validate the VM name.
 # Parameters - none
 # Return value - none
-validate_vm_name()
+validate_name()
 {
-	local -i vm_name_matches
+	local -i name_matches
 
-	vm_name_matches=$(virsh -c $connect_uri list --all \
-		| grep "\<$vm_name\>" | wc -l)
+	name_matches=$(virsh -c $connect_uri list --all \
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
-	if (( !$vm_name_matches )); then
-	output "No such VM $vm_name" 1
+	if (( !$name_matches )); then
+	output "No such VM $name" 1
 	script_exit 64
 	fi
 }
@@ -395,7 +396,7 @@ is_vm_running()
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$vm_name\>" | wc -l)
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
 		vm_running=true
@@ -412,11 +413,11 @@ create_snapshot()
 	local cmd
 
 	if $vm_running; then
-		output "VM $vm_name is running, please shutdown first." 1
+		output "VM $name is running, please shutdown first." 1
 		script_exit 77
 	fi
-	output "Creating snapshot $snapshot_name for VM $vm_name" 0
-	cmd="virsh -c $connect_uri snapshot-create-as $vm_name"
+	output "Creating snapshot $snapshot_name for VM $name" 0
+	cmd="virsh -c $connect_uri snapshot-create-as $name"
 	cmd+=" $snapshot_name \"$snapshot_description\""
 	if $external; then
 		cmd+=" --disk-only"
@@ -438,12 +439,12 @@ create_auto_snapshot()
 	local snapshots
 
 	if $vm_running; then
-		output "VM $vm_name is running, please shutdown first." 1
+		output "VM $name is running, please shutdown first." 1
 		script_exit 77
 	fi
 
 	snapshot_name="Auto-$(date +%y%m%d)-$seq"
-	snapshots=$(virsh --connect qemu:///system snapshot-list "$vm_name" \
+	snapshots=$(virsh --connect qemu:///system snapshot-list "$name" \
 		| tail --lines=+3)
 	std_cmd_err_handler $?
 
@@ -480,7 +481,7 @@ type_snapshot()
 {
 	local tmp
 
-	tmp=$(virsh -c $connect_uri snapshot-dumpxml $vm_name $1 \
+	tmp=$(virsh -c $connect_uri snapshot-dumpxml $name $1 \
 		| xmlstarlet select -t -v \
 		"/domainsnapshot/disks/disk[@name='$disk_name']/@snapshot" -n)
 	std_cmd_err_handler $?
@@ -501,7 +502,7 @@ delete_internal_snapshot()
 	# We know that the vm is not running, that the snapshot exists and the
 	# snapshot is internal.
 
-	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name
+	virsh -c $connect_uri snapshot-delete $name $snapshot_name
 		std_cmd_err_handler $?
 }
 
@@ -563,14 +564,14 @@ delete_external_snapshot()
 	# We know that the vm is not running, that the snapshot exists and the
 	# snapshot is external.
 
-	tmp_snapshot=$(virsh -c $connect_uri snapshot-list $vm_name \
+	tmp_snapshot=$(virsh -c $connect_uri snapshot-list $name \
 		--current --tree)
 	std_cmd_err_handler $?
 
 	# Determine if there is a child of $snapshot_name to take care of.
 	while [[ $tmp_snapshot != "-" ]]; do
 		tmp_snapshot_parent=$(virsh -c $connect_uri snapshot-info \
-			$vm_name $tmp_snapshot \
+			$name $tmp_snapshot \
 			| awk '$0 ~ /^Parent/ { print $2 }')
 		std_cmd_err_handler $?
 
@@ -589,7 +590,7 @@ delete_external_snapshot()
 	done
 
 	# Get snapshot-to-delete source filename (A)
-	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $name \
 		$snapshot_name | xmlstarlet select -t -v \
 		"/domainsnapshot/disks/disk[@name='$disk_name']/source/@file" \
 		-n)
@@ -597,14 +598,14 @@ delete_external_snapshot()
 
 	# Get parent driver type (B)
 	snapshot_parent_driver_type=$(virsh -c $connect_uri snapshot-dumpxml \
-		$vm_name $snapshot_name \
+		$name $snapshot_name \
 		| xmlstarlet select -t -v \
 		"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
 		-n)
 	std_cmd_err_handler $?
 
 	# Get parent backing store (C)
-	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $name \
 		$snapshot_name \
 		| xmlstarlet select -t -v \
 		"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
@@ -614,7 +615,7 @@ delete_external_snapshot()
 	# Get snapshot child source filename (D)
 	if [[ -n "$snapshot_child" ]]; then
 		snapshot_child_file=$(virsh -c $connect_uri snapshot-dumpxml \
-			$vm_name $snapshot_child \
+			$name $snapshot_child \
 			| xmlstarlet select -t -v \
 			"/domainsnapshot/disks/disk[@name='$disk_name']/source/@file" \
 			-n)
@@ -643,7 +644,7 @@ delete_external_snapshot()
 	#	replace backing store with C
 	tmpdumpxmlfile=/tmp/$$.$(basename $0).xml
 	if [[ -n "$snapshot_child" ]]; then
-		virsh -c $connect_uri snapshot-dumpxml $vm_name \
+		virsh -c $connect_uri snapshot-dumpxml $name \
 			$snapshot_child > $tmpdumpxmlfile
 		std_cmd_err_handler $?
 		xmlstarlet edit -L -u \
@@ -653,12 +654,12 @@ delete_external_snapshot()
 			"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" \
 			-v $snapshot_parent_file $tmpdumpxmlfile
 		std_cmd_err_handler $?
-		virsh -c $connect_uri snapshot-create $vm_name $tmpdumpxmlfile \
+		virsh -c $connect_uri snapshot-create $name $tmpdumpxmlfile \
 			--redefine 1>/dev/null
 		std_cmd_err_handler $?
 	else
 		virsh -c $connect_uri dumpxml --inactive --security-info \
-			$vm_name > $tmpdumpxmlfile
+			$name > $tmpdumpxmlfile
 		std_cmd_err_handler $?
 		xmlstarlet edit -L -u \
 			"/domain/devices/disk[@type='file' and @device='disk']/driver/@type" \
@@ -675,7 +676,7 @@ delete_external_snapshot()
 	rm $tmpdumpxmlfile
 
 	# Now finally remove the snapshot in virsh.
-	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name --metadata
+	virsh -c $connect_uri snapshot-delete $name $snapshot_name --metadata
 	std_cmd_err_handler $?
 }
 
@@ -685,15 +686,15 @@ delete_external_snapshot()
 delete_snapshot()
 {
 	if $vm_running; then
-		output "VM $vm_name is running, please shutdown first." 1
+		output "VM $name is running, please shutdown first." 1
 		script_exit 77
 	fi
 
 	# Snapshot must exist.
-	virsh -c $connect_uri snapshot-info $vm_name $snapshot_name 1>/dev/null
+	virsh -c $connect_uri snapshot-info $name $snapshot_name 1>/dev/null
 	std_cmd_err_handler $?
 
-	output "Deleting snapshot $snapshot_name for VM $vm_name" 0
+	output "Deleting snapshot $snapshot_name for VM $name" 0
 
 	type_snapshot $snapshot_name
 	if $internal; then
@@ -712,13 +713,13 @@ delete_multiple_snapshots()
 	local snap_list
 
 	if $vm_running; then
-		output "VM $vm_name is running, please shutdown first." 1
+		output "VM $name is running, please shutdown first." 1
 		script_exit 77
 	fi
 
-	output "Deleting snapshots for VM $vm_name" 0
+	output "Deleting snapshots for VM $name" 0
 
-	virsh -c $connect_uri snapshot-list $vm_name --tree
+	virsh -c $connect_uri snapshot-list $name --tree
 	std_cmd_err_handler $?
 
 	# Get ordered list of snapshots from root (oldest pointing at base file)
@@ -728,18 +729,18 @@ delete_multiple_snapshots()
 	# data gets sequentially merged up the chain, ie it ends up being
 	# processed as often as there are snapshots to delete. This way,
 	# however, just processes it once into the main file.
-	snap_list=$(virsh -c $connect_uri snapshot-list $vm_name --roots --name)
+	snap_list=$(virsh -c $connect_uri snapshot-list $name --roots --name)
 	std_cmd_err_handler $?
 	if [[ -n $snap_list ]]; then
-		snap_list+=" "$(virsh -c $connect_uri snapshot-list $vm_name \
+		snap_list+=" "$(virsh -c $connect_uri snapshot-list $name \
 			--name --from \
-			$(virsh -c $connect_uri snapshot-list $vm_name --roots \
+			$(virsh -c $connect_uri snapshot-list $name --roots \
 			--name) --descendants)
 		std_cmd_err_handler $?
 	fi
 
 	for snapshot_name in $snap_list; do
-		snap_is_current=$(virsh -c $connect_uri snapshot-info $vm_name \
+		snap_is_current=$(virsh -c $connect_uri snapshot-info $name \
 			$snapshot_name | awk '$0 ~ /^Current/ { print $2 }')
 		std_cmd_err_handler $?
 		if [[ $snap_is_current == "yes" ]] && $delete_to_current; then
@@ -758,9 +759,9 @@ revert_internal_snapshot()
 	# We know that the vm is not running, that the snapshot exists and the
 	# snapshot is internal.
 
-	virsh -c $connect_uri snapshot-revert $vm_name $snapshot_name
+	virsh -c $connect_uri snapshot-revert $name $snapshot_name
 	std_cmd_err_handler $?
-	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name
+	virsh -c $connect_uri snapshot-delete $name $snapshot_name
 		std_cmd_err_handler $?
 }
 
@@ -805,7 +806,7 @@ revert_external_snapshot()
 	# snapshot is external.
 
 	# Get snapshot-to-revert source filename (A)
-	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	snapshot_file=$(virsh -c $connect_uri snapshot-dumpxml $name \
 	$snapshot_name \
 	| xmlstarlet select -t -v \
 	"/domainsnapshot/disks/disk[@name='vda']/source/@file" -n)
@@ -813,13 +814,13 @@ revert_external_snapshot()
 
 	# Get parent driver type (B)
 	snapshot_parent_driver_type=$(virsh -c $connect_uri snapshot-dumpxml \
-	$vm_name $snapshot_name \
+	$name $snapshot_name \
 	| xmlstarlet select -t -v \
 	"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/driver/@type" -n)
 	std_cmd_err_handler $?
 
 	# Get parent backing store (C)
-	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $vm_name \
+	snapshot_parent_file=$(virsh -c $connect_uri snapshot-dumpxml $name \
 	$snapshot_name \
 	| xmlstarlet select -t -v \
 	"/domainsnapshot/domain/devices/disk[@type='file' and @device='disk']/source/@file" -n)
@@ -832,7 +833,7 @@ revert_external_snapshot()
 	#	replace driver type; qcow2, raw etc with B
 	#	replace backing store with C
 	tmpdumpxmlfile=/tmp/$$.$(basename $0).xml
-	virsh -c $connect_uri dumpxml --inactive --security-info $vm_name \
+	virsh -c $connect_uri dumpxml --inactive --security-info $name \
 		> $tmpdumpxmlfile
 	std_cmd_err_handler $?
 	xmlstarlet edit -L -u \
@@ -849,7 +850,7 @@ revert_external_snapshot()
 	rm -f $tmpdumpxmlfile
 
 	# Now finally remove the snapshot in virsh.
-	virsh -c $connect_uri snapshot-delete $vm_name $snapshot_name --metadata
+	virsh -c $connect_uri snapshot-delete $name $snapshot_name --metadata
 	std_cmd_err_handler $?
 }
 
@@ -859,15 +860,15 @@ revert_external_snapshot()
 revert_snapshot()
 {
 	if $vm_running; then
-		output "VM $vm_name is running, please shutdown first." 1
+		output "VM $name is running, please shutdown first." 1
 		script_exit 77
 	fi
 
-	snapshot_name=$(virsh -c $connect_uri snapshot-list $vm_name --tree \
+	snapshot_name=$(virsh -c $connect_uri snapshot-list $name --tree \
 		--current)
 	std_cmd_err_handler $?
 
-	output "Reverting current snapshot $snapshot_name for VM $vm_name" 0
+	output "Reverting current snapshot $snapshot_name for VM $name" 0
 
 	type_snapshot $snapshot_name
 	if $internal; then
@@ -886,7 +887,7 @@ proc_config_file
 
 proc_CL "$@"
 
-validate_vm_name
+validate_name
 
 is_vm_running
 

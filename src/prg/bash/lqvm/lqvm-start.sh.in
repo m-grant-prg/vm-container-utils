@@ -64,6 +64,7 @@
 # 22/08/2020	MG	1.0.1	Created.				#
 # 14/12/2020	MG	1.0.2	Change -n --no-snapshot to -w --without	#
 #				Change -v --vm-name to -n --name.	#
+#				Change snap -v to snap -n.		#
 #									#
 #########################################################################
 
@@ -352,7 +353,7 @@ create_snapshot()
 		cmd+=" -D \"$snapshot_description\""
 	fi
 
-	cmd+=" -v $name"
+	cmd+=" -n $name"
 	eval "$cmd"
 	std_cmd_err_handler $?
 }
