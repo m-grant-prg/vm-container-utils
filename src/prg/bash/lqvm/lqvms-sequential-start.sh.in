@@ -57,6 +57,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 26/08/2020	MG	1.0.1	Created.				#
+# 14/12/2020	MG	1.0.2	lqvm-start.sh now takes -w AOT -n.	#
 #									#
 #########################################################################
 
@@ -66,7 +67,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -239,7 +240,7 @@ for machine in $machines; do
 		| wc -l) >= $max_conc_vms)); do
 		sleep 45
 	done
-	lqvm-start.sh -n -u $connect_uri -v $machine
+	lqvm-start.sh -w -u $connect_uri -v $machine
 	sleep 120
 done
 

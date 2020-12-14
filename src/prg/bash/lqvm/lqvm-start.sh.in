@@ -22,10 +22,10 @@
 #			|| -e or --external				#
 #			|| -h or --help					#
 #			|| -i or --internal				#
-#			|| -n or --no-snapshot				#
 #			|| -u or --connect-uri 'connection-URI'		#
 #			|| -v or --vm-name				#
-#			|| -V or --version ]				#
+#			|| -V or --version				#
+#			|| -w or --without ]				#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -62,6 +62,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 22/08/2020	MG	1.0.1	Created.				#
+# 14/12/2020	MG	1.0.2	Change -n --no-snapshot to -w --without	#
 #									#
 #########################################################################
 
@@ -71,7 +72,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -80,7 +81,7 @@ create=false
 external=false
 internal=false
 intextset=false
-no_snapshot=false
+without=false
 
 
 #############
@@ -99,10 +100,10 @@ Usage is $0 [options]
 	-e or --external Create an external snapshot
 	-h or --help Display this help information
 	-i or --internal Create an internal snapshot
-	-n or --no-snapshot Do not create a snapshot
 	-u or --connect-uri Use the named connection URI
 	-v or --vm-name The name of the VM to operate on
 	-V or --version Print script version information
+	-w or --without Do not create a snapshot
 EOF
 }
 
@@ -192,8 +193,8 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o c:D:ehinu:v:V --long create:,description:,external,help"
-	tmp+=",internal,no-snapshot,connect-uri:,vm-name:,version"
+	tmp="getopt -o c:D:ehiu:v:Vw --long create:,description:,external,help"
+	tmp+=",internal,connect-uri:,vm-name:,version,without"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -212,8 +213,8 @@ proc_CL()
 			shift 2
 			;;
 		-e|--external)
-			if $internal || $no_snapshot; then
-				msg="Options e, i and n are mutually exclusive."
+			if $internal || $without; then
+				msg="Options e, i and w are mutually exclusive."
 				output "$msg" 1
 				script_exit 64
 			fi
@@ -227,22 +228,13 @@ proc_CL()
 			script_exit 0
 			;;
 		-i|--internal)
-			if $external || $no_snapshot; then
-				msg="Options e, i and n are mutually exclusive."
+			if $external || $without; then
+				msg="Options e, i and w are mutually exclusive."
 				output "$msg" 1
 				script_exit 64
 			fi
 			internal=true
 			intextset=true
-			shift
-			;;
-		-n|--no_snapshot)
-			if $external || $internal; then
-				msg="Options e, i and n are mutually exclusive."
-				output "$msg" 1
-				script_exit 64
-			fi
-			no_snapshot=true
 			shift
 			;;
 		-u|--connect-uri)
@@ -258,6 +250,15 @@ proc_CL()
 			printf "%s Package version %s\n" $0 $packageversion
 			shift
 			script_exit 0
+			;;
+		-w|--without)
+			if $external || $internal; then
+				msg="Options e, i and w are mutually exclusive."
+				output "$msg" 1
+				script_exit 64
+			fi
+			without=true
+			shift
 			;;
 		--)	shift
 			break
@@ -275,14 +276,14 @@ proc_CL()
 	fi
 
 	# One option has to be selected.
-	if ! $external && ! $internal && ! $no_snapshot; then
-		msg="Either e, i or n must be set."
+	if ! $external && ! $internal && ! $without; then
+		msg="Either e, i or w must be set."
 		output "$msg" 1
 		script_exit 64
 	fi
-	if ( $create || [[ -n $snapshot_description ]]) && $no_snapshot; then
+	if ( $create || [[ -n $snapshot_description ]]) && $without; then
 		msg="Options c and D cannot be used in conjunction with"
-		msg+=" option n."
+		msg+=" option w."
 		output "$msg" 1
 		script_exit 64
 	fi
