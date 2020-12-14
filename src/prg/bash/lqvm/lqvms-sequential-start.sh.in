@@ -58,6 +58,7 @@
 #									#
 # 26/08/2020	MG	1.0.1	Created.				#
 # 14/12/2020	MG	1.0.2	lqvm-start.sh now takes -w AOT -n.	#
+#				Change start from -v to -n.		#
 #									#
 #########################################################################
 
@@ -240,7 +241,7 @@ for machine in $machines; do
 		| wc -l) >= $max_conc_vms)); do
 		sleep 45
 	done
-	lqvm-start.sh -w -u $connect_uri -v $machine
+	lqvm-start.sh -w -u $connect_uri -n $machine
 	sleep 120
 done
 

@@ -22,8 +22,8 @@
 #			|| -e or --external				#
 #			|| -h or --help					#
 #			|| -i or --internal				#
+#			|| -n or --name					#
 #			|| -u or --connect-uri 'connection-URI'		#
-#			|| -v or --vm-name				#
 #			|| -V or --version				#
 #			|| -w or --without ]				#
 #									#
@@ -63,6 +63,7 @@
 #									#
 # 22/08/2020	MG	1.0.1	Created.				#
 # 14/12/2020	MG	1.0.2	Change -n --no-snapshot to -w --without	#
+#				Change -v --vm-name to -n --name.	#
 #									#
 #########################################################################
 
@@ -100,8 +101,8 @@ Usage is $0 [options]
 	-e or --external Create an external snapshot
 	-h or --help Display this help information
 	-i or --internal Create an internal snapshot
+	-n or --name The name of the VM to operate on
 	-u or --connect-uri Use the named connection URI
-	-v or --vm-name The name of the VM to operate on
 	-V or --version Print script version information
 	-w or --without Do not create a snapshot
 EOF
@@ -193,8 +194,8 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o c:D:ehiu:v:Vw --long create:,description:,external,help"
-	tmp+=",internal,connect-uri:,vm-name:,version,without"
+	tmp="getopt -o c:D:ehin:u:Vw --long create:,description:,external,help"
+	tmp+=",internal,name:,connect-uri:,version,without"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -237,12 +238,12 @@ proc_CL()
 			intextset=true
 			shift
 			;;
-		-u|--connect-uri)
-			connect_uri=$2
+		-n|--name)
+			name=$2
 			shift 2
 			;;
-		-v|--vm-name)
-			vm_name=$2
+		-u|--connect-uri)
+			connect_uri=$2
 			shift 2
 			;;
 		-V|--version)
@@ -287,8 +288,8 @@ proc_CL()
 		output "$msg" 1
 		script_exit 64
 	fi
-	if [[ -z $vm_name ]]; then
-		output "Option v must be set." 1
+	if [[ -z $name ]]; then
+		output "Option n must be set." 1
 		script_exit 64
 	fi
 }
@@ -296,15 +297,15 @@ proc_CL()
 # Validate the VM name.
 # Parameters - none
 # Return value - none
-validate_vm_name()
+validate_name()
 {
-	local -i vm_name_matches
+	local -i name_matches
 
-	vm_name_matches=$(virsh -c $connect_uri list --all \
-		| grep "\<$vm_name\>" | wc -l)
+	name_matches=$(virsh -c $connect_uri list --all \
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
-	if (( !$vm_name_matches )); then
-	output "No such VM $vm_name" 1
+	if (( !$name_matches )); then
+	output "No such VM $name" 1
 	script_exit 64
 	fi
 }
@@ -317,7 +318,7 @@ is_vm_running()
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$vm_name\>" | wc -l)
+		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
 		vm_running=true
@@ -351,7 +352,7 @@ create_snapshot()
 		cmd+=" -D \"$snapshot_description\""
 	fi
 
-	cmd+=" -v $vm_name"
+	cmd+=" -v $name"
 	eval "$cmd"
 	std_cmd_err_handler $?
 }
@@ -362,7 +363,7 @@ create_snapshot()
 process_bridge()
 {
 	# Get the mac address of the bridge.
-	mac_addr=$(virsh -c $connect_uri domiflist $vm_name \
+	mac_addr=$(virsh -c $connect_uri domiflist $name \
 		| grep "bridge    \<$bridge\>" \
 		| awk '{ print $5 }')
 	std_cmd_err_handler $?
@@ -375,10 +376,10 @@ process_bridge()
 	# status.
 	if (($(ip link show | grep "$ethernet_prefix.*$bridge.*state UP" \
 		| wc -l))); then
-		virsh -c $connect_uri domif-setlink $vm_name $mac_addr up
+		virsh -c $connect_uri domif-setlink $name $mac_addr up
 		std_cmd_err_handler $?
 	else
-		virsh -c $connect_uri domif-setlink $vm_name $mac_addr down
+		virsh -c $connect_uri domif-setlink $name $mac_addr down
 		std_cmd_err_handler $?
 	fi
 }
@@ -392,7 +393,7 @@ proc_config_file
 
 proc_CL "$@"
 
-validate_vm_name
+validate_name
 
 is_vm_running
 if $vm_running; then
@@ -408,8 +409,8 @@ if $intextset; then
 	create_snapshot
 fi
 
-output "Starting VM $vm_name" 0
-virsh -c $connect_uri start "$vm_name"
+output "Starting VM $name" 0
+virsh -c $connect_uri start "$name"
 std_cmd_err_handler $?
 
 # And exit.
