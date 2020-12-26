@@ -1,3 +1,9 @@
+2020-12-26 v1.0.4 Mark Grant <m.grant.prg@gmail.com>
+	*  lqvm: shutdown change -v --vm-name to -n --name
+	lqvm: snap change -v --vm-name to -n --name
+	lqvm: start change -v --vm-name to -n --name
+	lqvm: Change start -n --no-snapshot to -w --without
+
 2020-11-29 v1.0.3 Mark Grant <m.grant.prg@gmail.com>
 	*  lxcu: Fix target host name on copy
 	lxcu: Improve copy of exctra config files
