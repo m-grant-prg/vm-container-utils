@@ -58,6 +58,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 21/08/2020	MG	1.0.1	Created.				#
+# 14/12/2020	MG	1.0.2	Change snap -v to snap -n.		#
 #									#
 #########################################################################
 
@@ -67,7 +68,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -278,7 +279,7 @@ std_cmd_err_handler $?
 for machine in $machines; do
 	name=$(echo "$machine" | awk '
 		{ print $2 }')
-	cmd="$cmd_template -v $name"
+	cmd="$cmd_template -n $name"
 	eval "$cmd"
 	std_cmd_err_handler $?
 done

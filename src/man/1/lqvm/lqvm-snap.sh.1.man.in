@@ -24,6 +24,8 @@ with the creation options.
 -i, --internal  Use internal snapshots. With external, can only / must be used
 with the creation options.
 
+-n, --name The name of the VM to operate on.
+
 -r, --revert  Revert to the state before this snapshot was taken. The current
 snapshot is deleted, (ie removed), without affecting the backing store, hence
 reverting back to it's pre-snapshot state.
@@ -40,8 +42,6 @@ the snapshots.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
-
--v, --vm-name The name of the VM to operate on.
 
 -V, --version  Print script version information.
 EXIT STATUS

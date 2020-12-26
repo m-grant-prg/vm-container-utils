@@ -19,14 +19,14 @@ snapshot. Can only be used with -c.
 
 -i, --internal  Use internal snapshots. Either -e or -i must be supplied.
 
--n, --no-snapshot  Start the VM without creating a snapshot.
+-n, --name The name of the VM to operate on. This is a mandatory option.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
 
--v, --vm-name The name of the VM to operate on. This is a mandatory option.
-
 -V, --version  Print script version information.
+
+-w, --without  Start the VM without creating a snapshot.
 EXIT STATUS
 0 - Success
 
