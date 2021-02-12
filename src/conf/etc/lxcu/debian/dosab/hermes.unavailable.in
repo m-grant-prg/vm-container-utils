@@ -3,7 +3,7 @@
 # Remove my APT repository on that server from my apt sources.
 rm -f /etc/apt/sources.list.d/hermes.list
 
-# Dis-allow apt caching on that server
-cp /etc/dosab/bintray.list.unavailable /etc/apt/sources.list.d/bintray.list
+# Official and third-party source lists.
+cp /etc/dosab/obs.list.unavailable /etc/apt/sources.list.d/obs.list
 cp /etc/dosab/sources.list.unavailable /etc/apt/sources.list
 

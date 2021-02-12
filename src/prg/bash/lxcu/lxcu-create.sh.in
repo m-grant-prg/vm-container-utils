@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-create.sh						#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -68,6 +68,7 @@
 #				Ensure apt update is run after changing	#
 #				repos.					#
 #				Do apt-get update after apt-key update.	#
+# 11/02/2021	MG	1.0.4	Use OBS instead of Bintray.		#
 #									#
 #########################################################################
 
@@ -80,10 +81,12 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+
+obs_rel=""	# OBS Release number (Debian)
 
 
 #############
@@ -155,6 +158,28 @@ trap_exit()
 # Setup trap
 trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 
+# Debian / Raspbian only. Convert the usual release string into an OBS release
+# number.
+# Parameters - None.
+# No return value.
+determine_obs_release()
+{
+	case $rel in
+	stretch)
+		obs_rel="9.0"
+		;;
+	buster)
+		obs_rel="10"
+		;;
+	bullseye)
+		obs_rel="11"
+		;;
+	bookworm)
+		obs_rel="12"
+		;;
+	esac
+}
+
 # Process the config file just for the parameters of interest.
 # Parameters - None
 # No return value.
@@ -173,6 +198,7 @@ proc_config_file()
 			;;
 		rel)
 			rel=${input[1]}
+			determine_obs_release
 			;;
 		arch)
 			arch=${input[1]}
@@ -234,6 +260,7 @@ proc_CL()
 			;;
 		-r|--rel)
 			rel=$2
+			determine_obs_release
 			shift 2
 			;;
 		-t|--type)
@@ -332,6 +359,9 @@ create_deb()
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
+		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+	std_cmd_err_handler $?
 
 	# Initially install apt https and sudo.
 	lxcu-start.sh -n $name
@@ -353,10 +383,16 @@ create_deb()
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
+		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt/sources.list.d \
 			-maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
+		$(find $contlocation/$name/rootfs/etc/apt/sources.list.d \
+			-maxdepth 1 -type f)
 
 	# Set up the dosab files.
 	lxcu-start.sh -n $name
@@ -373,6 +409,9 @@ create_deb()
 	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
+		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
+	std_cmd_err_handler $?
+	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 

@@ -1,7 +1,7 @@
 #########################################################################
 #									#
 # Script ID: src/conf/etc/lxcu/debian/apt/trusted.gpg.d/Makefile.am	#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -18,24 +18,25 @@
 # Date		Author	Version	Description				#
 #									#
 # 22/09/2020	MG	1.0.1	Initial release.			#
+# 11/02/2021	MG	1.0.2	Move from Bintray to OBS.		#
 #									#
 #########################################################################
 
 
 confdir = $(sysconfdir)/lxcu/debian/apt/trusted.gpg.d
 
-bintray-keyring.gpg hermes-keyring.gpg: Makefile
+obs-debian-keyring.gpg hermes-keyring.gpg: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	cp $${srcdir}$(@F).in $@.tmp
 	mv $@.tmp $@
-bintray-keyring.gpg: $(srcdir)/bintray-keyring.gpg.in
+obs-debian-keyring.gpg: $(srcdir)/obs-debian-keyring.gpg.in
 hermes-keyring.gpg: $(srcdir)/hermes-keyring.gpg.in
 
-conf_DATA = bintray-keyring.gpg hermes-keyring.gpg
+conf_DATA = obs-debian-keyring.gpg hermes-keyring.gpg
 
-EXTRA_DIST = $(srcdir)/bintray-keyring.gpg.in $(srcdir)/hermes-keyring.gpg.in
+EXTRA_DIST = $(srcdir)/obs-debian-keyring.gpg.in $(srcdir)/hermes-keyring.gpg.in
 
-CLEANFILES = *.tmp bintray-keyring.gpg hermes-keyring.gpg
+CLEANFILES = *.tmp obs-debian-keyring.gpg hermes-keyring.gpg
 

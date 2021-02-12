@@ -9,7 +9,7 @@
 # Add my APT repository on that server to my apt sources.
 cp /etc/dosab/hermes.list /etc/apt/sources.list.d
 
-# Allow apt caching on that server
-cp /etc/dosab/bintray.list.available /etc/apt/sources.list.d/bintray.list
+# Official and third-party source lists.
+cp /etc/dosab/obs.list.available /etc/apt/sources.list.d/obs.list
 cp /etc/dosab/sources.list.available /etc/apt/sources.list
 
