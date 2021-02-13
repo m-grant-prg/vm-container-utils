@@ -68,7 +68,9 @@
 #				Ensure apt update is run after changing	#
 #				repos.					#
 #				Do apt-get update after apt-key update.	#
-# 11/02/2021	MG	1.0.4	Use OBS instead of Bintray.		#
+# 13/02/2021	MG	1.0.4	Use OBS instead of Bintray.		#
+#				Prepend this package executable		#
+#				invocations with bindir.		#
 #									#
 #########################################################################
 
@@ -317,7 +319,7 @@ network_config()
 # No return value.
 create_deb_type()
 {
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 
 	if [[ -e $etclocation/$dist/$1/install.list ]]; then
@@ -364,7 +366,7 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Initially install apt https and sudo.
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	lxc-attach -n $name apt-get update
 	std_cmd_err_handler $?
@@ -395,7 +397,7 @@ create_deb()
 			-maxdepth 1 -type f)
 
 	# Set up the dosab files.
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?
@@ -416,7 +418,7 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?

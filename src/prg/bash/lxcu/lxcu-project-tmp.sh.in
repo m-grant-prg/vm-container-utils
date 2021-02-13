@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-project-tmp.sh					#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -63,6 +63,8 @@
 # 28/09/2020	MG	1.0.1	Created.				#
 # 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
 # 22/11/2020	MG	1.0.3	Use lxcu-copy.sh			#
+# 13/02/2021	MG	1.0.4	Prepend this package executable		#
+#				invocations with bindir.		#
 #									#
 #########################################################################
 
@@ -75,7 +77,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -261,14 +263,14 @@ fullprojectroot=$(pwd)
 cd -
 project=${fullprojectroot##*/}
 
-lxcu-copy.sh -n $name -N $project
+@bindir@/lxcu-copy.sh -n $name -N $project
 std_cmd_err_handler $?
 tmp="lxc.mount.entry = $fullprojectroot $contlocation/$project/rootfs/$project"
 tmp+=" none bind,create=dir 0 0"
 echo $tmp | tee -a $contlocation/$project/config
 std_cmd_err_handler $?
 
-lxcu-start.sh -n $project
+@bindir@/lxcu-start.sh -n $project
 std_cmd_err_handler $?
 
 if [[ -e $projectroot/lxcu/$dist/install.list ]]; then

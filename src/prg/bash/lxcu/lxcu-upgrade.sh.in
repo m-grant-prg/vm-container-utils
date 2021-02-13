@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-upgrade.sh						#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -62,6 +62,8 @@
 # 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
 # 15/10/2020	MG	1.0.3	Add install.list processing as the list	#
 #				may be changed at any time.		#
+# 13/02/2021	MG	1.0.4	Prepend this package executable		#
+#				invocations with bindir.		#
 #									#
 #########################################################################
 
@@ -74,7 +76,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -246,7 +248,7 @@ proc_CL()
 # No return value.
 upgrade_deb_type()
 {
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 
 	if [[ -e $etclocation/$dist/$1/install.list ]]; then
@@ -279,7 +281,7 @@ upgrade_deb_type()
 # No return value.
 upgrade_deb()
 {
-	lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?

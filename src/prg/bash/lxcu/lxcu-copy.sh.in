@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-copy.sh						#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -59,6 +59,8 @@
 # Date		Author	Version	Description				#
 #									#
 # 21/11/2020	MG	1.0.1	Created.				#
+# 13/02/2021	MG	1.0.2	Prepend this package executable		#
+#				invocations with bindir.		#
 #									#
 #########################################################################
 
@@ -71,7 +73,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -255,7 +257,7 @@ if [[ -n $bridge ]]; then
 fi
 
 # Correct host name on target container.
-lxcu-start.sh -n $toname
+@bindir@/lxcu-start.sh -n $toname
 std_cmd_err_handler $?
 
 lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
