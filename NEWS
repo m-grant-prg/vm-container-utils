@@ -1,3 +1,7 @@
+Release 1.0.5 2021-02-26
+No user visible changes.
+For technical change information please refer to the ChangeLog.
+
 Release 1.0.4 2020-12-26
 lqvm: shutdown change -v --vm-name to -n --name
 lqvm: snap change -v --vm-name to -n --name

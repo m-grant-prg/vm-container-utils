@@ -1,3 +1,10 @@
+2021-02-26 v1.0.5 Mark Grant <m.grant.prg@gmail.com>
+	*  lxcu: Add alpha component to hermes repository
+	lqvm: Prepend own exec invocations with bindir
+	lxcu: Prepend own exec invocations with bindir
+	lxcu: Add apt sources at create for updates and security
+	lxcu: Move from Bintray to OBS
+
 2020-12-26 v1.0.4 Mark Grant <m.grant.prg@gmail.com>
 	*  lqvm: shutdown change -v --vm-name to -n --name
 	lqvm: snap change -v --vm-name to -n --name
