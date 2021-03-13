@@ -71,6 +71,9 @@
 # 13/02/2021	MG	1.0.4	Use OBS instead of Bintray.		#
 #				Prepend this package executable		#
 #				invocations with bindir.		#
+# 14/03/2021	MG	1.0.5	Install hermes and OBS / PPA key	#
+#				scripts with apt-key-scripts.sh in	#
+#				debian / ubuntu setup.			#
 #									#
 #########################################################################
 
@@ -83,7 +86,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -432,6 +435,21 @@ create_deb()
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
+	lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
+	std_cmd_err_handler $?
+	case $dist in
+	debian)
+		lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+			/usr/share/agmaint/trusted.sh.d/add-obs-debian.sh
+		std_cmd_err_handler $?
+		;;
+	ubuntu)
+		lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
+		std_cmd_err_handler $?
+		;;
+	esac
 	lxc-stop -n $name
 	std_cmd_err_handler $?
 
