@@ -427,11 +427,15 @@ create_deb()
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get -- -y install gnupg
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get -- -y install apt agmaint
+	lxc-attach -n $name sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-key update
-	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get update
+	if [[ $rel == "xenial" ]]; then
+		lxc-attach -n $name sudo apt-key update
+		std_cmd_err_handler $?
+		lxc-attach -n $name sudo apt-get update
+		std_cmd_err_handler $?
+	fi
+	lxc-attach -n $name sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
