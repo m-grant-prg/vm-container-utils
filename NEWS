@@ -1,3 +1,10 @@
+Release 1.0.6 2021-03-26
+lxcu: apt-key update before getting wget
+lxcu: Install hermes and OBS / PPA repo key scripts
+lxcu: Add wget to basic install
+lxcu: Update OBS Debian keyring
+For technical change information please refer to the ChangeLog.
+
 Release 1.0.5 2021-02-26
 No user visible changes.
 For technical change information please refer to the ChangeLog.

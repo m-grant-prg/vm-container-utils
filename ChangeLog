@@ -1,3 +1,11 @@
+2021-03-26 v1.0.6 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: apt-key update before getting wget
+	lxcu: Install hermes and OBS / PPA repo key scripts
+	lxcu: Add wget to basic install
+	lxcu: Update OBS Debian keyring
+	travis: Stop using Travis
+	actions: Initial build action setup
+
 2021-02-26 v1.0.5 Mark Grant <m.grant.prg@gmail.com>
 	*  lxcu: Add alpha component to hermes repository
 	lqvm: Prepend own exec invocations with bindir
