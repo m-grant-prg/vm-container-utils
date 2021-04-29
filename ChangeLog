@@ -1,3 +1,7 @@
+2021-04-29 v1.0.7 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: Prefer curl over wget
+	lxcu: Add sleep quirk for old hardware
+
 2021-03-26 v1.0.6 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: apt-key update before getting wget
 	lxcu: Install hermes and OBS / PPA repo key scripts
