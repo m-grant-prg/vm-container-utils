@@ -74,6 +74,7 @@
 # 14/03/2021	MG	1.0.5	Install hermes and OBS / PPA key	#
 #				scripts with apt-key-scripts.sh in	#
 #				debian / ubuntu setup.			#
+# 26/07/2021	MG	1.0.6	Add locale generation.			#
 #									#
 #########################################################################
 
@@ -86,10 +87,11 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
-readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+readonly hostetclocation=@sysconfdir@		# Path to config directory
+readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
 
 obs_rel=""	# OBS Release number (Debian)
 
@@ -368,7 +370,13 @@ create_deb()
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
-	# Initially install apt https and sudo.
+	# Copy the locale config file.
+	sudo cp -v $hostetclocation/locale.gen $contlocation/$name/rootfs/etc
+	std_cmd_err_handler $?
+	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/locale.gen
+
+	# Initially install apt https transport, apt utils, certificates and
+	# sudo. Then generate locale.
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	lxc-attach -n $name apt-get update
@@ -376,6 +384,8 @@ create_deb()
 	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
 		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates sudo
+	std_cmd_err_handler $?
+	lxc-attach -n $name sudo locale-gen
 	std_cmd_err_handler $?
 	lxc-stop -n $name
 	std_cmd_err_handler $?
