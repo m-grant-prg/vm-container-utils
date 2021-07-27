@@ -70,7 +70,7 @@ AC_PREREQ([2.69])
 # can be used by ac output and / or the sed setup below to substitute bookmarks
 # in source files.
 #
-AC_INIT([Utility scripts for containers and VMs], 1.0.7+rc1,
+AC_INIT([Utility scripts for containers and VMs], 1.0.7+rc2,
 	[m.grant.prg@gmail.com], [vm-container-utils])
 
 AC_MSG_NOTICE(initialisation and setup)
