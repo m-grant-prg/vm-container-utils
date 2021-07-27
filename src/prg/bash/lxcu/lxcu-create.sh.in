@@ -420,6 +420,8 @@ create_deb()
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	lxc-attach -n $name sudo dosab.sh
+	std_cmd_err_handler $?
 
 	# Final fundamental installs.
 	lxc-attach -n $name sudo apt-get update
