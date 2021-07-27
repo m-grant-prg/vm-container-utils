@@ -67,6 +67,9 @@
 # 25/04/2021	MG	1.0.5	Add quirk for old hardware which	#
 #				exhibits latency shutting down the	#
 #				container.				#
+# 27/07/2021	MG	1.0.6	Reduce container start / stop to once,	#
+#				otherwise causes network connectivity	#
+#				problems.				#
 #									#
 #########################################################################
 
@@ -79,7 +82,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -251,9 +254,6 @@ proc_CL()
 # No return value.
 upgrade_deb_type()
 {
-	@bindir@/lxcu-start.sh -n $name
-	std_cmd_err_handler $?
-
 	if [[ -e $etclocation/$dist/$1/install.list ]]; then
 		cat $etclocation/$dist/$1/install.list \
 			| xargs lxc-attach -n $name sudo apt-get -- -y install
@@ -274,9 +274,6 @@ upgrade_deb_type()
 			| xargs lxc-attach -n $name sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
-
-	lxc-stop -n $name
-	std_cmd_err_handler $?
 }
 
 # Upgrade an APT package distribution.
@@ -290,16 +287,14 @@ upgrade_deb()
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
-	lxc-stop -n $name
-	std_cmd_err_handler $?
-
-	# QUIRK For old hardware which has latency stopping the container.
-	sleep 5
 
 	upgrade_deb_type basic
 	if [[ $type != "basic" ]]; then
 		upgrade_deb_type $type
 	fi
+
+	lxc-stop -n $name
+	std_cmd_err_handler $?
 }
 
 
