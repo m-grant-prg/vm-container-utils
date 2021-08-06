@@ -78,6 +78,8 @@
 # 27/07/2021	MG	1.0.7	Reduce container start /stop to once,	#
 #				otherwise causes networking		#
 #				connectivity problems.			#
+# 06/08/2021	MG	1.0.8	Use an alternative keyserver following	#
+#				the demise of sks-keyservers.net	#
 #									#
 #########################################################################
 
@@ -90,7 +92,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.7				# Script version
+readonly version=1.0.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -474,7 +476,8 @@ proc_config_file
 
 proc_CL "$@"
 
-lxc-create -t download -n $name
+# With the demise of sks-keyservers.net force an alternative keyserver.
+lxc-create -t download -n $name -- --keyserver hkps://keyserver.ubuntu.com
 std_cmd_err_handler $?
 
 network_config
