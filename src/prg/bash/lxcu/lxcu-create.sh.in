@@ -80,6 +80,8 @@
 #				connectivity problems.			#
 # 06/08/2021	MG	1.0.8	Use an alternative keyserver following	#
 #				the demise of sks-keyservers.net	#
+#				Retrieve OBS release number from new	#
+#				debian-releases.conf			#
 #									#
 #########################################################################
 
@@ -171,25 +173,30 @@ trap_exit()
 trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 
 # Debian / Raspbian only. Convert the usual release string into an OBS release
-# number.
+# number using debian-releases.conf.
 # Parameters - None.
 # No return value.
 determine_obs_release()
 {
-	case $rel in
-	stretch)
-		obs_rel="9.0"
-		;;
-	buster)
-		obs_rel="10"
-		;;
-	bullseye)
-		obs_rel="11"
-		;;
-	bookworm)
-		obs_rel="12"
-		;;
-	esac
+	local input=()
+	local oldIFS=$IFS
+
+	IFS="="
+
+	exec 4<"$etclocation/debian-releases.conf"
+	while read -u4 -ra input; do
+		if [[ "${input[0]}" == "$rel" ]]; then
+			obs_rel=${input[1]}
+			break
+		fi
+	done
+	exec 4<&-
+
+	IFS=$oldIFS
+
+	if [[ -z $obs_rel ]]; then
+		script_exit 78
+	fi
 }
 
 # Process the config file just for the parameters of interest.
