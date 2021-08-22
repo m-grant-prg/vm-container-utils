@@ -53,6 +53,7 @@
 #				man.					#
 # 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
 #				just dist.				#
+#				Add bullseye.				#
 #									#
 #########################################################################
 
@@ -366,6 +367,12 @@ AC_CONFIG_FILES([Makefile
 		src/man/5/lxcu/Makefile
 		src/prg/bash/lqvm/Makefile
 		src/conf/etc/lxcu/Makefile
+		src/conf/etc/lxcu/debian/bullseye/apt/Makefile
+		src/conf/etc/lxcu/debian/bullseye/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/bullseye/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/bullseye/basic/Makefile
+		src/conf/etc/lxcu/debian/bullseye/dev/Makefile
+		src/conf/etc/lxcu/debian/bullseye/dosab/Makefile
 		src/conf/etc/lxcu/debian/buster/apt/Makefile
 		src/conf/etc/lxcu/debian/buster/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/debian/buster/apt/trusted.gpg.d/Makefile

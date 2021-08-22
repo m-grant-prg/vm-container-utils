@@ -1,6 +1,6 @@
 # Default distro etc
 dist=debian
-rel=buster
+rel=bullseye
 arch=amd64
 # Container location
 contlocation=/home/$USER/.local/share/lxc

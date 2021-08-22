@@ -23,6 +23,7 @@
 #				man.					#
 # 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
 #				just dist.				#
+#				Add bullseye.				#
 #									#
 #########################################################################
 
@@ -38,6 +39,12 @@ SUBDIRS += src/man/1/lqvm src/man/5/lqvm
 SUBDIRS += src/man/1/lxcu src/man/5/lxcu
 SUBDIRS += src/prg/bash/lqvm
 SUBDIRS += src/conf/etc/lxcu
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt/sources.list.d
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt/trusted.gpg.d
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/basic
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/dev
+SUBDIRS += src/conf/etc/lxcu/debian/bullseye/dosab
 SUBDIRS += src/conf/etc/lxcu/debian/buster/apt
 SUBDIRS += src/conf/etc/lxcu/debian/buster/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/debian/buster/apt/trusted.gpg.d
