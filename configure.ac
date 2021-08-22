@@ -51,6 +51,8 @@
 # 19/08/2020	MG	1.0.1	Initial release.			#
 # 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf and	#
 #				man.					#
+# 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
+#				just dist.				#
 #									#
 #########################################################################
 
@@ -61,7 +63,7 @@
 #					#
 #########################################
 
-AC_REVISION([$Revision: 1.0.2 $])
+AC_REVISION([$Revision: 1.0.3 $])
 
 AC_PREREQ([2.69])
 
@@ -364,18 +366,36 @@ AC_CONFIG_FILES([Makefile
 		src/man/5/lxcu/Makefile
 		src/prg/bash/lqvm/Makefile
 		src/conf/etc/lxcu/Makefile
-		src/conf/etc/lxcu/debian/apt/Makefile
-		src/conf/etc/lxcu/debian/apt/sources.list.d/Makefile
-		src/conf/etc/lxcu/debian/apt/trusted.gpg.d/Makefile
-		src/conf/etc/lxcu/debian/basic/Makefile
-		src/conf/etc/lxcu/debian/dev/Makefile
-		src/conf/etc/lxcu/debian/dosab/Makefile
-		src/conf/etc/lxcu/ubuntu/apt/Makefile
-		src/conf/etc/lxcu/ubuntu/apt/sources.list.d/Makefile
-		src/conf/etc/lxcu/ubuntu/apt/trusted.gpg.d/Makefile
-		src/conf/etc/lxcu/ubuntu/basic/Makefile
-		src/conf/etc/lxcu/ubuntu/dev/Makefile
-		src/conf/etc/lxcu/ubuntu/dosab/Makefile
+		src/conf/etc/lxcu/debian/buster/apt/Makefile
+		src/conf/etc/lxcu/debian/buster/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/buster/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/buster/basic/Makefile
+		src/conf/etc/lxcu/debian/buster/dev/Makefile
+		src/conf/etc/lxcu/debian/buster/dosab/Makefile
+		src/conf/etc/lxcu/debian/stretch/apt/Makefile
+		src/conf/etc/lxcu/debian/stretch/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/stretch/basic/Makefile
+		src/conf/etc/lxcu/debian/stretch/dev/Makefile
+		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/apt/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/basic/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/dev/Makefile
+		src/conf/etc/lxcu/ubuntu/bionic/dosab/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/apt/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/basic/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/dev/Makefile
+		src/conf/etc/lxcu/ubuntu/focal/dosab/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/apt/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/basic/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/dev/Makefile
+		src/conf/etc/lxcu/ubuntu/xenial/dosab/Makefile
 		src/prg/bash/lxcu/Makefile])
 
 AC_OUTPUT

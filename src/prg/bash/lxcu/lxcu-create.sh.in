@@ -82,6 +82,9 @@
 #				the demise of sks-keyservers.net	#
 #				Retrieve OBS release number from new	#
 #				debian-releases.conf			#
+# 21/08/2021	MG	1.0.9	Nothing is cast in stone at the dist	#
+#				level, even apt, so put everything	#
+#				under dist/rel.				#
 #									#
 #########################################################################
 
@@ -94,7 +97,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.8				# Script version
+readonly version=1.0.9				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -336,19 +339,9 @@ network_config()
 # No return value.
 create_deb_type()
 {
-	if [[ -e $etclocation/$dist/$1/install.list ]]; then
-		cat $etclocation/$dist/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
 			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
-	if [[ -e $etclocation/$dist/$1/cache.list ]]; then
-		cat $etclocation/$dist/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
@@ -364,7 +357,7 @@ create_deb_type()
 create_deb()
 {
 	# Set up the initial apt files, (just sources.list).
-	sudo cp -v $(find $etclocation/$dist/apt -maxdepth 1 -type f) \
+	sudo cp -v $(find $etclocation/$dist/$rel/apt -maxdepth 1 -type f) \
 		$contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/apt
@@ -395,7 +388,8 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
-	sudo cp -rv $etclocation/$dist/apt/* $contlocation/$name/rootfs/etc/apt
+	sudo cp -rv $etclocation/$dist/$rel/apt/* \
+		$contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
@@ -418,7 +412,7 @@ create_deb()
 	std_cmd_err_handler $?
 	lxc-attach -n $name sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
-	sudo cp -v $etclocation/$dist/dosab/* \
+	sudo cp -v $etclocation/$dist/$rel/dosab/* \
 		$contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab

@@ -70,6 +70,8 @@
 # 27/07/2021	MG	1.0.6	Reduce container start / stop to once,	#
 #				otherwise causes network connectivity	#
 #				problems.				#
+# 22/08/2021	MG	1.0.7	All config files are now under dist/rel	#
+#				AOT just dist.				#
 #									#
 #########################################################################
 
@@ -82,7 +84,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.6				# Script version
+readonly version=1.0.7				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -254,19 +256,9 @@ proc_CL()
 # No return value.
 upgrade_deb_type()
 {
-	if [[ -e $etclocation/$dist/$1/install.list ]]; then
-		cat $etclocation/$dist/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
 			| xargs lxc-attach -n $name sudo apt-get -- -y install
-		std_cmd_err_handler $?
-	fi
-	if [[ -e $etclocation/$dist/$1/cache.list ]]; then
-		cat $etclocation/$dist/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
