@@ -1,3 +1,16 @@
+2021-08-23 v1.0.8 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: Add bullseye
+	lxcu: Drop config files down from dist to dist/rel
+	lxcu: Introduce Debian / OBS release config file
+	lxcu: sks-keyservers.net demise, use an alternative
+	lxcu: Run dosab.sh manually
+	lxcu: Reduce container start / stop to once
+	lxcu: Add locale generation during create
+	git: Upgrade .gitignore to v1.0.3
+	at: Upgrade bootstrap.sh to v1.4.9
+	git: Add gitattributes file
+	git: Add mailmap file
+
 2021-04-29 v1.0.7 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Prefer curl over wget
 	lxcu: Add sleep quirk for old hardware
