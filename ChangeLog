@@ -1,3 +1,6 @@
+2021-09-02 v1.0.9 Mark Grant <m.grant.prg@gmail.com>
+	* lqvm: Ensure that Bridge and Default have opposite values
+
 2021-08-23 v1.0.8 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Add bullseye
 	lxcu: Drop config files down from dist to dist/rel
