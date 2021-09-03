@@ -72,6 +72,7 @@
 #				problems.				#
 # 22/08/2021	MG	1.0.7	All config files are now under dist/rel	#
 #				AOT just dist.				#
+# 03/09/2021	MG	1.0.8	With lxc v4 lxc start and attach need	#
 #									#
 #########################################################################
 
@@ -84,10 +85,14 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.7				# Script version
+readonly version=1.0.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+
+# Ensure environment variables are set.
+export XDG_RUNTIME_DIR="/run/user/$UID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 
 
 #############
@@ -258,12 +263,16 @@ upgrade_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
 }
@@ -275,9 +284,11 @@ upgrade_deb()
 {
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get update
+	systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $name sudo apt-get update
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo agmaint.sh -- -- -y
+	systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
 
 	upgrade_deb_type basic

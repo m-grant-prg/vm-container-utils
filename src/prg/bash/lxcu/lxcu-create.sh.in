@@ -85,6 +85,9 @@
 # 21/08/2021	MG	1.0.9	Nothing is cast in stone at the dist	#
 #				level, even apt, so put everything	#
 #				under dist/rel.				#
+# 03/09/2021	MG	1.0.10	With lxc v4 lxc start and attach need	#
+#				slightly different privileges. The	#
+#				altered commands also work pre-v4.	#
 #									#
 #########################################################################
 
@@ -97,13 +100,17 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.9				# Script version
+readonly version=1.0.10				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
 
 obs_rel=""	# OBS Release number (Debian)
+
+# Ensure environment variables are set.
+export XDG_RUNTIME_DIR="/run/user/$UID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 
 
 #############
@@ -341,12 +348,16 @@ create_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -y install
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs lxc-attach -n $name sudo apt-get -- -yd install
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
 }
@@ -378,13 +389,16 @@ create_deb()
 	# sudo. Then generate locale.
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	lxc-attach -n $name apt-get update
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name apt-get update
 	std_cmd_err_handler $?
-	lxc-attach -n $name -vPATH=$PATH:/sbin:/usr/sbin \
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name -vPATH=$PATH:/sbin:/usr/sbin \
 		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates sudo
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo locale-gen
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo locale-gen
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
@@ -408,9 +422,11 @@ create_deb()
 			-maxdepth 1 -type f)
 
 	# Set up the dosab files.
-	lxc-attach -n $name sudo apt-get update
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get update
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get -- -y install server-dependency
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v $etclocation/$dist/$rel/dosab/* \
 		$contlocation/$name/rootfs/etc/dosab
@@ -423,37 +439,50 @@ create_deb()
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo dosab.sh
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
-	lxc-attach -n $name sudo apt-get update
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get update
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get -- -y install gnupg
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get -- -y install gnupg
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-get -- -y install apt
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	if [[ $rel == "xenial" ]]; then
-		lxc-attach -n $name sudo apt-key update
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name sudo apt-key update
 		std_cmd_err_handler $?
-		lxc-attach -n $name sudo apt-get update
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name sudo apt-get update
 		std_cmd_err_handler $?
 	fi
-	lxc-attach -n $name sudo apt-get -- -y install agmaint
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo agmaint.sh -- -- -y
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
-	lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo apt-key-scripts.sh -- --install \
 		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
 	std_cmd_err_handler $?
 	case $dist in
 	debian)
-		lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name \
+			sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-obs-debian.sh
 		std_cmd_err_handler $?
 		;;
 	ubuntu)
-		lxc-attach -n $name sudo apt-key-scripts.sh -- --install \
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name \
+			sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
 		std_cmd_err_handler $?
 		;;

@@ -65,6 +65,9 @@
 # 22/11/2020	MG	1.0.3	Use lxcu-copy.sh			#
 # 13/02/2021	MG	1.0.4	Prepend this package executable		#
 #				invocations with bindir.		#
+# 03/09/2021	MG	1.0.5	With lxc v4 lxc start and attach need	#
+#				slightly different privileges. The	#
+#				altered commands also work pre-v4.	#
 #									#
 #########################################################################
 
@@ -77,10 +80,14 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+
+# Ensure environment variables are set.
+export XDG_RUNTIME_DIR="/run/user/$UID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 
 
 #############
@@ -275,17 +282,21 @@ std_cmd_err_handler $?
 
 if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
 	cat $projectroot/lxcu/$dist/install.list \
-		| xargs lxc-attach -n $project sudo apt-get -- -y install
+		| xargs systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $project sudo apt-get -- -y install
 	std_cmd_err_handler $?
 fi
 if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
 	cat $projectroot/lxcu/$dist/$rel/install.list \
-		| xargs lxc-attach -n $project sudo apt-get -- -y install
+		| xargs systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $project sudo apt-get -- -y install
 	std_cmd_err_handler $?
 fi
 
-lxc-attach -n $project cp -- -vr $project build
-lxc-attach -n $project -vHOME=/build/atbuild
+systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $project \
+	cp -- -vr $project build
+systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $project \
+	-vHOME=/build/atbuild
 
 lxc-stop -n $project
 std_cmd_err_handler $?

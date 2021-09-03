@@ -61,6 +61,9 @@
 # 21/11/2020	MG	1.0.1	Created.				#
 # 13/02/2021	MG	1.0.2	Prepend this package executable		#
 #				invocations with bindir.		#
+# 03/09/2021	MG	1.0.3	With lxc v4 lxc start and attach need	#
+#				slightly different privileges. The	#
+#				altered commands also work pre-v4.	#
 #									#
 #########################################################################
 
@@ -73,10 +76,14 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
+
+# Ensure environment variables are set.
+export XDG_RUNTIME_DIR="/run/user/$UID"
+export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 
 
 #############
@@ -260,10 +267,12 @@ fi
 @bindir@/lxcu-start.sh -n $toname
 std_cmd_err_handler $?
 
-lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
+systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $toname \
+	sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
 std_cmd_err_handler $?
 
-lxc-attach -n $toname sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
+systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $toname \
+	sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
 std_cmd_err_handler $?
 
 lxc-stop -n $toname
