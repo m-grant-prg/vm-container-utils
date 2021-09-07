@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvm-snap.sh						#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0					#
@@ -69,6 +69,8 @@
 #									#
 # 16/08/2020	MG	1.0.1	Created.				#
 # 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
+# 07/09/2021	MG	1.0.3	Snapshot must now store parent backing	#
+#				store format.				#
 #									#
 #########################################################################
 
@@ -78,7 +80,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -626,10 +628,11 @@ delete_external_snapshot()
 	sudo qemu-img commit $snapshot_file
 	std_cmd_err_handler $?
 
-	# Rebase snap2del child (D) onto snap2del parent (C).
+	# Rebase snap2del child (D) onto snap2del parent (C) and store parent
+	# format (B).
 	if [[ -n "$snapshot_child" ]]; then
-		sudo qemu-img rebase -u -b $snapshot_parent_file \
-			$snapshot_child_file
+		sudo qemu-img rebase -u -F $snapshot_parent_driver_type \
+		-b $snapshot_parent_file $snapshot_child_file
 		std_cmd_err_handler $?
 	fi
 
