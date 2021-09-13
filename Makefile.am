@@ -24,6 +24,7 @@
 # 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
 #				just dist.				#
 #				Add bullseye.				#
+# 13/09/2021	MG	1.0.4	Add misc subdir to the distribution.	#
 #									#
 #########################################################################
 
@@ -93,5 +94,5 @@ srctarball:
 	cd -
 
 EXTRA_DIST = $(srcdir)/AUTHORS $(srcdir)/ChangeLog $(srcdir)/COPYING \
-		$(srcdir)/NEWS $(srcdir)/README
+		$(srcdir)/NEWS $(srcdir)/README $(srcdir)/misc
 
