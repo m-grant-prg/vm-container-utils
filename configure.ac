@@ -54,6 +54,7 @@
 # 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
 #				just dist.				#
 #				Add bullseye.				#
+# 17/09/2021	MG	1.0.4	Add Fedora.				#
 #									#
 #########################################################################
 
@@ -64,7 +65,7 @@
 #					#
 #########################################
 
-AC_REVISION([$Revision: 1.0.3 $])
+AC_REVISION([$Revision: 1.0.4 $])
 
 AC_PREREQ([2.69])
 
@@ -385,6 +386,12 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/stretch/basic/Makefile
 		src/conf/etc/lxcu/debian/stretch/dev/Makefile
 		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
+		src/conf/etc/lxcu/fedora/33/basic/Makefile
+		src/conf/etc/lxcu/fedora/33/dev/Makefile
+		src/conf/etc/lxcu/fedora/33/dosab/Makefile
+		src/conf/etc/lxcu/fedora/34/basic/Makefile
+		src/conf/etc/lxcu/fedora/34/dev/Makefile
+		src/conf/etc/lxcu/fedora/34/dosab/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d/Makefile

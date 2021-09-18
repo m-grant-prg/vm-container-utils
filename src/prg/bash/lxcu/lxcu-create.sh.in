@@ -88,6 +88,7 @@
 # 03/09/2021	MG	1.0.10	With lxc v4 lxc start and attach need	#
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
+# 18/09/2021	MG	1.1.0	Add support for Fedora.			#
 #									#
 #########################################################################
 
@@ -100,7 +101,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.10				# Script version
+readonly version=1.1.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -341,7 +342,7 @@ network_config()
 	std_cmd_err_handler $?
 }
 
-# Create the specified type.
+# Create the specified type of APT container.
 # Parameters - $1 is the type to create.
 # No return value.
 create_deb_type()
@@ -362,7 +363,7 @@ create_deb_type()
 	fi
 }
 
-# Create an APT package distribution.
+# Create an APT container.
 # No parameters.
 # No return value.
 create_deb()
@@ -497,6 +498,106 @@ create_deb()
 	std_cmd_err_handler $?
 }
 
+# Create the specified type of Fedora container.
+# Parameters - $1 is the type to create.
+# No return value.
+create_fedora_type()
+{
+	# Install the development tools group.
+	if [[ $1 == "dev" ]]; then
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name \
+			sudo dnf -- -y group install "Development Tools"
+		std_cmd_err_handler $?
+	fi
+
+	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
+		cat $etclocation/$dist/$rel/$1/install.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo dnf -- -y install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
+		cat $etclocation/$dist/$rel/$1/cache.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo dnf -- -y install --downloadonly
+		std_cmd_err_handler $?
+	fi
+}
+
+# Create a Fedora container.
+# No parameters.
+# No return value.
+create_fedora()
+{
+	@bindir@/lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+
+	# Set dnf to keep download only packagfes in the cache.
+	echo "keepcache=True" | \
+		sudo tee -a $contlocation/$name/rootfs/etc/dnf/dnf.conf
+	std_cmd_err_handler $?
+
+	# Set locale.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y update --refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-locale LANG=en_GB.UTF-8
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-keymap gb
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-x11-keymap gb
+	std_cmd_err_handler $?
+
+	# Initial installs.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y install 'dnf-command(config-manager)'
+	std_cmd_err_handler $?
+
+	# Add the opeSUSE Build Service repository.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf config-manager -- --add-repo \
+		https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_$rel/home:m-grant-prg.repo
+	std_cmd_err_handler $?
+
+	# Set up the dosab files.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y update --refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y install server-dependency
+	std_cmd_err_handler $?
+	sudo cp -v $etclocation/$dist/$rel/dosab/* \
+		$contlocation/$name/rootfs/etc/dosab
+	std_cmd_err_handler $?
+	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dosab.sh
+	std_cmd_err_handler $?
+
+	# Final tidy.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y update --refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y list --autoremove
+	std_cmd_err_handler $?
+
+	create_fedora_type basic
+	if [[ $type != "basic" ]]; then
+		create_fedora_type $type
+	fi
+
+	lxc-stop -n $name
+	std_cmd_err_handler $?
+}
+
 
 ########
 # Main #
@@ -515,6 +616,9 @@ network_config
 case $dist in
 debian)
 	create_deb
+	;;
+fedora)
+	create_fedora
 	;;
 ubuntu)
 	create_deb

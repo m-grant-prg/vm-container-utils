@@ -73,6 +73,7 @@
 # 22/08/2021	MG	1.0.7	All config files are now under dist/rel	#
 #				AOT just dist.				#
 # 03/09/2021	MG	1.0.8	With lxc v4 lxc start and attach need	#
+# 18/09/2021	MG	1.0.9	Add Fedora support.			#
 #									#
 #########################################################################
 
@@ -85,7 +86,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.8				# Script version
+readonly version=1.0.9				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -300,6 +301,51 @@ upgrade_deb()
 	std_cmd_err_handler $?
 }
 
+# Upgrade the specified type of Fedora container.
+# Parameters - $1 is the type to upgrade.
+# No return value.
+upgrade_fedora_type()
+{
+	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
+		cat $etclocation/$dist/$rel/$1/install.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo dnf -- -y install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
+		cat $etclocation/$dist/$rel/$1/cache.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo dnf -- -y install --downloadonly
+		std_cmd_err_handler $?
+	fi
+}
+
+# Upgrade a Fedora container.
+# No parameters.
+# No return value.
+upgrade_fedora()
+{
+	@bindir@/lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y update --refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dnf -- -y list --autoremove
+	std_cmd_err_handler $?
+
+	upgrade_fedora_type basic
+	if [[ $type != "basic" ]]; then
+		upgrade_fedora_type $type
+	fi
+
+	lxc-stop -n $name
+	std_cmd_err_handler $?
+}
+
 
 ########
 # Main #
@@ -312,6 +358,9 @@ proc_CL "$@"
 case $dist in
 debian)
 	upgrade_deb
+	;;
+fedora)
+	upgrade_fedora
 	;;
 ubuntu)
 	upgrade_deb

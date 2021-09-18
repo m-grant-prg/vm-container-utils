@@ -68,6 +68,7 @@
 # 03/09/2021	MG	1.0.5	With lxc v4 lxc start and attach need	#
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
+# 18/09/2021	MG	1.0.6	Add Fedora support.			#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -256,6 +257,44 @@ proc_CL()
 	fi
 }
 
+# Perform an APT install
+# No parameters.
+# No return value.
+apt_install()
+{
+	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+		cat $projectroot/lxcu/$dist/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo apt-get -- -y install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo apt-get -- -y install
+		std_cmd_err_handler $?
+	fi
+}
+
+# Perform a dnf install
+# No parameters.
+# No return value.
+dnf_install()
+{
+	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+		cat $projectroot/lxcu/$dist/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo dnf -- -y install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo dnf -- -y install
+		std_cmd_err_handler $?
+	fi
+}
+
 
 ########
 # Main #
@@ -280,18 +319,21 @@ std_cmd_err_handler $?
 @bindir@/lxcu-start.sh -n $project
 std_cmd_err_handler $?
 
-if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-	cat $projectroot/lxcu/$dist/install.list \
-		| xargs systemd-run --quiet --user --scope -p "Delegate=yes" \
-		lxc-attach -n $project sudo apt-get -- -y install
-	std_cmd_err_handler $?
-fi
-if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-	cat $projectroot/lxcu/$dist/$rel/install.list \
-		| xargs systemd-run --quiet --user --scope -p "Delegate=yes" \
-		lxc-attach -n $project sudo apt-get -- -y install
-	std_cmd_err_handler $?
-fi
+case $dist in
+debian)
+	apt_install
+	;;
+fedora)
+	dnf_install
+	;;
+ubuntu)
+	apt_install
+	;;
+*)
+	output "Invalid distribution" 1
+	script_exit 64
+	;;
+esac
 
 systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $project \
 	cp -- -vr $project build
