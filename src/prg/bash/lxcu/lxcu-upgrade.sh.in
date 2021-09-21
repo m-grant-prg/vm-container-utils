@@ -74,6 +74,7 @@
 #				AOT just dist.				#
 # 03/09/2021	MG	1.0.8	With lxc v4 lxc start and attach need	#
 # 18/09/2021	MG	1.0.9	Add Fedora support.			#
+# 21/09/2021	MG	1.0.10	Add openSUSE support.			#
 #									#
 #########################################################################
 
@@ -86,7 +87,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.9				# Script version
+readonly version=1.0.10				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -346,6 +347,51 @@ upgrade_fedora()
 	std_cmd_err_handler $?
 }
 
+# Upgrade the specified type of opensuse container.
+# Parameters - $1 is the type to upgrade.
+# No return value.
+upgrade_opensuse_type()
+{
+	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
+		cat $etclocation/$dist/$rel/$1/install.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo zypper -- -n install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
+		cat $etclocation/$dist/$rel/$1/cache.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo zypper -- -n install --download-only
+		std_cmd_err_handler $?
+	fi
+}
+
+# Upgrade an opensuse container.
+# No parameters.
+# No return value.
+upgrade_opensuse()
+{
+	@bindir@/lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- -n update
+	std_cmd_err_handler $?
+
+	upgrade_opensuse_type basic
+	if [[ $type != "basic" ]]; then
+		upgrade_opensuse_type $type
+	fi
+
+	lxc-stop -n $name
+	std_cmd_err_handler $?
+}
+
 
 ########
 # Main #
@@ -361,6 +407,9 @@ debian)
 	;;
 fedora)
 	upgrade_fedora
+	;;
+opensuse)
+	upgrade_opensuse
 	;;
 ubuntu)
 	upgrade_deb

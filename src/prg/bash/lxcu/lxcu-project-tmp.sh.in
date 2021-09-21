@@ -69,6 +69,7 @@
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
 # 18/09/2021	MG	1.0.6	Add Fedora support.			#
+# 21/09/2021	MG	1.0.7	Add openSUSE support.			#
 #									#
 #########################################################################
 
@@ -81,7 +82,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.6				# Script version
+readonly version=1.0.7				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -295,6 +296,25 @@ dnf_install()
 	fi
 }
 
+# Perform a zypper install
+# No parameters.
+# No return value.
+zypper_install()
+{
+	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+		cat $projectroot/lxcu/$dist/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo zypper -- -n install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
+			systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $project sudo zypper -- -n install
+		std_cmd_err_handler $?
+	fi
+}
+
 
 ########
 # Main #
@@ -325,6 +345,9 @@ debian)
 	;;
 fedora)
 	dnf_install
+	;;
+opensuse)
+	zypper_install
 	;;
 ubuntu)
 	apt_install

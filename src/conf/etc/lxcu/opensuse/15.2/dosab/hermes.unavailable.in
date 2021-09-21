@@ -1,0 +1,6 @@
+# If the server is unavalable perform all the following commands.
+
+# Remove my RPM repository on that server.
+rm -f /etc/zypp/repos.d/hermes-beta.repo
+rm -f /etc/zypp/repos.d/hermes-stable.repo
+

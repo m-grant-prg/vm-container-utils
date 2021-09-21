@@ -89,6 +89,7 @@
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
 # 18/09/2021	MG	1.1.0	Add support for Fedora.			#
+# 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
 #									#
 #########################################################################
 
@@ -101,7 +102,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.1.0				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -598,6 +599,105 @@ create_fedora()
 	std_cmd_err_handler $?
 }
 
+# Create the specified type of openSUSE container.
+# Parameters - $1 is the type to create.
+# No return value.
+create_opensuse_type()
+{
+	# Install the development tools.
+	if [[ $1 == "dev" ]]; then
+		systemd-run --quiet --user --scope -p "Delegate=yes" \
+			lxc-attach -n $name \
+			sudo zypper -- -n install -t pattern devel_basis
+		std_cmd_err_handler $?
+	fi
+
+	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
+		cat $etclocation/$dist/$rel/$1/install.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo zypper -- -n install
+		std_cmd_err_handler $?
+	fi
+	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
+		cat $etclocation/$dist/$rel/$1/cache.list \
+			| xargs systemd-run --quiet --user --scope \
+			-p "Delegate=yes" lxc-attach -n $name \
+			sudo zypper -- -n install --download-only
+		std_cmd_err_handler $?
+	fi
+}
+
+# Create an openSUSE container.
+# No parameters.
+# No return value.
+create_opensuse()
+{
+	@bindir@/lxcu-start.sh -n $name
+	std_cmd_err_handler $?
+
+	# Set locale.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- -n update
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo zypper -- -n install glibc-locale
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-locale LANG=en_GB.UTF-8
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-keymap gb
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo localectl set-x11-keymap gb
+	std_cmd_err_handler $?
+
+	# Add the opeSUSE Build Service repository.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name \
+		sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/openSUSE_Leap_$rel/home:m-grant-prg.repo
+	std_cmd_err_handler $?
+
+	# Set up the dosab files.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- -n update
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo zypper -- -n install server-dependency
+	std_cmd_err_handler $?
+	sudo cp -v $etclocation/$dist/$rel/dosab/* \
+		$contlocation/$name/rootfs/etc/dosab
+	std_cmd_err_handler $?
+	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo dosab.sh
+	std_cmd_err_handler $?
+
+	# Final tidy.
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- refresh
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
+		-n $name sudo  zypper -- -n update
+	std_cmd_err_handler $?
+
+	create_opensuse_type basic
+	if [[ $type != "basic" ]]; then
+		create_opensuse_type $type
+	fi
+
+	lxc-stop -n $name
+	std_cmd_err_handler $?
+}
+
 
 ########
 # Main #
@@ -619,6 +719,9 @@ debian)
 	;;
 fedora)
 	create_fedora
+	;;
+opensuse)
+	create_opensuse
 	;;
 ubuntu)
 	create_deb

@@ -26,6 +26,7 @@
 #				Add bullseye.				#
 # 13/09/2021	MG	1.0.4	Add misc subdir to the distribution.	#
 # 17/09/2021	MG	1.0.5	Add Fedora.				#
+# 20/09/2021	MG	1.0.6	Add openSUSE.				#
 #									#
 #########################################################################
 
@@ -65,6 +66,12 @@ SUBDIRS += src/conf/etc/lxcu/fedora/33/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/34/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/34/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/34/dosab
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/basic
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dev
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dosab
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/basic
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dev
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dosab
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d

@@ -55,6 +55,7 @@
 #				just dist.				#
 #				Add bullseye.				#
 # 17/09/2021	MG	1.0.4	Add Fedora.				#
+# 20/09/2021	MG	1.0.5	Add openSUSE.				#
 #									#
 #########################################################################
 
@@ -65,7 +66,7 @@
 #					#
 #########################################
 
-AC_REVISION([$Revision: 1.0.4 $])
+AC_REVISION([$Revision: 1.0.5 $])
 
 AC_PREREQ([2.69])
 
@@ -392,6 +393,12 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/fedora/34/basic/Makefile
 		src/conf/etc/lxcu/fedora/34/dev/Makefile
 		src/conf/etc/lxcu/fedora/34/dosab/Makefile
+		src/conf/etc/lxcu/opensuse/15.2/basic/Makefile
+		src/conf/etc/lxcu/opensuse/15.2/dev/Makefile
+		src/conf/etc/lxcu/opensuse/15.2/dosab/Makefile
+		src/conf/etc/lxcu/opensuse/15.3/basic/Makefile
+		src/conf/etc/lxcu/opensuse/15.3/dev/Makefile
+		src/conf/etc/lxcu/opensuse/15.3/dosab/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d/Makefile
