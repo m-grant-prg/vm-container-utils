@@ -10,4 +10,7 @@ bridge=
 ethernetprefix=enp
 # Default VNI
 vni=lxcbr0
+# Git
+gitemail=
+gitname=
 

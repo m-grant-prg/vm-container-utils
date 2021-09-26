@@ -90,6 +90,7 @@
 #				altered commands also work pre-v4.	#
 # 18/09/2021	MG	1.1.0	Add support for Fedora.			#
 # 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
+# 26/09/2021	MG	1.2.1	Setup some git defaults.		#
 #									#
 #########################################################################
 
@@ -102,7 +103,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.0				# Script version
+readonly version=1.2.1				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -246,6 +247,12 @@ proc_config_file()
 		vni)
 			vni=${input[1]}
 			;;
+		gitemail)
+			gitemail=${input[1]}
+			;;
+		gitname)
+			gitname=${input[1]}
+			;;
 		esac
 	done
 	exec 3<&-
@@ -343,6 +350,21 @@ network_config()
 	std_cmd_err_handler $?
 }
 
+# Setup some git defaults
+# No parameters.
+# No return value.
+setup_git()
+{
+	systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $name \
+		git -- config --system user.email "$gitemail"
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $name \
+		git -- config --system user.name "$gitname"
+	std_cmd_err_handler $?
+}
+
 # Create the specified type of APT container.
 # Parameters - $1 is the type to create.
 # No return value.
@@ -362,6 +384,11 @@ create_deb_type()
 			sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
+	# Setup git.
+	if [[ $1 == "dev" ]]; then
+		setup_git
+	fi
+
 }
 
 # Create an APT container.
@@ -526,6 +553,10 @@ create_fedora_type()
 			sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
+	# Setup git.
+	if [[ $1 == "dev" ]]; then
+		setup_git
+	fi
 }
 
 # Create a Fedora container.
@@ -625,6 +656,10 @@ create_opensuse_type()
 			-p "Delegate=yes" lxc-attach -n $name \
 			sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
+	fi
+	# Setup git.
+	if [[ $1 == "dev" ]]; then
+		setup_git
 	fi
 }
 
