@@ -56,6 +56,7 @@
 #				Add bullseye.				#
 # 17/09/2021	MG	1.0.4	Add Fedora.				#
 # 20/09/2021	MG	1.0.5	Add openSUSE.				#
+# 04/11/2021	MG	1.0.6	Fedora: Add 35 and remove 33.		#
 #									#
 #########################################################################
 
@@ -66,7 +67,7 @@
 #					#
 #########################################
 
-AC_REVISION([$Revision: 1.0.5 $])
+AC_REVISION([$Revision: 1.0.6 $])
 
 AC_PREREQ([2.69])
 
@@ -387,12 +388,12 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/stretch/basic/Makefile
 		src/conf/etc/lxcu/debian/stretch/dev/Makefile
 		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
-		src/conf/etc/lxcu/fedora/33/basic/Makefile
-		src/conf/etc/lxcu/fedora/33/dev/Makefile
-		src/conf/etc/lxcu/fedora/33/dosab/Makefile
 		src/conf/etc/lxcu/fedora/34/basic/Makefile
 		src/conf/etc/lxcu/fedora/34/dev/Makefile
 		src/conf/etc/lxcu/fedora/34/dosab/Makefile
+		src/conf/etc/lxcu/fedora/35/basic/Makefile
+		src/conf/etc/lxcu/fedora/35/dev/Makefile
+		src/conf/etc/lxcu/fedora/35/dosab/Makefile
 		src/conf/etc/lxcu/opensuse/15.2/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.2/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.2/dosab/Makefile

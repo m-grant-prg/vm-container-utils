@@ -27,6 +27,7 @@
 # 13/09/2021	MG	1.0.4	Add misc subdir to the distribution.	#
 # 17/09/2021	MG	1.0.5	Add Fedora.				#
 # 20/09/2021	MG	1.0.6	Add openSUSE.				#
+# 04/11/2021	MG	1.0.7	Fedora: Add 35 and remove 33.		#
 #									#
 #########################################################################
 
@@ -60,12 +61,12 @@ SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/basic
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dev
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dosab
-SUBDIRS += src/conf/etc/lxcu/fedora/33/basic
-SUBDIRS += src/conf/etc/lxcu/fedora/33/dev
-SUBDIRS += src/conf/etc/lxcu/fedora/33/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/34/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/34/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/34/dosab
+SUBDIRS += src/conf/etc/lxcu/fedora/35/basic
+SUBDIRS += src/conf/etc/lxcu/fedora/35/dev
+SUBDIRS += src/conf/etc/lxcu/fedora/35/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dosab

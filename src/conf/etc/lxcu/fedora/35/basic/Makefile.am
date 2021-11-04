@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/fedora/33/dev/Makefile.am		#
+# Script ID: src/conf/etc/lxcu/fedora/35/basic/Makefile.am		#
 # Author: Copyright (C) 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -17,25 +17,24 @@
 #									#
 # Date		Author	Version	Description				#
 #									#
-# 17/09/2021	MG	1.0.1	Initial release.			#
+# 04/11/2021	MG	1.0.1	Initial release.			#
 #									#
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/33/dev
+confdir = $(sysconfdir)/lxcu/fedora/33/basic
 
-cache.list install.list: Makefile
+install.list: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-cache.list: $(srcdir)/cache.list.in
 install.list: $(srcdir)/install.list.in
 
-conf_DATA = cache.list install.list
+conf_DATA = install.list
 
-EXTRA_DIST = $(srcdir)/cache.list.in $(srcdir)/install.list.in
+EXTRA_DIST = $(srcdir)/install.list.in
 
-CLEANFILES = *.tmp cache.list install.list
+CLEANFILES = *.tmp install.list
 
