@@ -1,3 +1,14 @@
+2021-11-06 v1.0.12 Mark Grant <m.grant.prg@gmail.com>
+	* git: Update mailmap to v1.0.1
+	git: Update gitignore to v1.0.6
+	git: Update gitattributes to v1.0.1
+	lxcu: Fedora - add 35 and remove 33
+	git: Update gitignore to v1.0.5
+	lxcu: Setup some git defaults on creation
+	lxcu: Fix Gtk Failed to load module atk-bridge
+	lxcu: Add openSUSE support
+	lxcu: Add Fedora support
+
 2021-09-13 v1.0.11 Mark Grant <m.grant.prg@gmail.com>
 	* at: Add subdir misc to the distribution
 	lqvm: Snapshot must store parent file format
