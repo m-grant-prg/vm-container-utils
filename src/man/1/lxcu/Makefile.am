@@ -1,10 +1,10 @@
 #########################################################################
 #									#
 # Script ID: src/man/1/lxcu/Makefile.am					#
-# Author: Copyright (C) 2020  Mark Grant				#
+# Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # AutoMake script file to generate LXCU manual pages from source.	#
@@ -19,6 +19,7 @@
 #									#
 # 30/09/2020	MG	1.0.1	Initial release.			#
 # 21/11/2020	MG	1.0.2	Add lxcu-copy.sh.			#
+# 28/11/2021	MG	1.0.3	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

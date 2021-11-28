@@ -12,7 +12,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to start a linux container.					#
@@ -62,6 +62,7 @@
 # 03/09/2021	MG	1.0.4	With lxc v4 lxc start and attach need	#
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
+# 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 #									#
 #########################################################################
 
@@ -74,7 +75,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory

@@ -4,7 +4,7 @@
 # Author: Copyright (C) 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # AutoMake script file to build the lxcu configuration files.		#
@@ -18,6 +18,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 04/11/2021	MG	1.0.1	Initial release.			#
+# 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

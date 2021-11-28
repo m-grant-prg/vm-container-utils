@@ -12,7 +12,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to create linux containers.					#
@@ -91,6 +91,7 @@
 # 18/09/2021	MG	1.1.0	Add support for Fedora.			#
 # 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
 # 26/09/2021	MG	1.2.1	Setup some git defaults.		#
+# 28/11/2021	MG	1.2.2	Tighten SPDX tag.			#
 #									#
 #########################################################################
 
@@ -103,7 +104,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.1				# Script version
+readonly version=1.2.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory

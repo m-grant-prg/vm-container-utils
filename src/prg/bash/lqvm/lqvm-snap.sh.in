@@ -12,7 +12,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to control snapshots for libvirt, Qemu and KVM virtual	#
@@ -71,6 +71,7 @@
 # 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
 # 07/09/2021	MG	1.0.3	Snapshot must now store parent backing	#
 #				store format.				#
+# 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory

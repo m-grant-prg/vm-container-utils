@@ -5,7 +5,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # AutoMake script file to build the lxcu configuration files.		#
@@ -25,6 +25,7 @@
 # 11/02/2021	MG	1.0.3	Move from Bintray to OBS.		#
 # 21/08/2021	MG	1.0.4	Drop down the tree to the release	#
 #				directory.				#
+# 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

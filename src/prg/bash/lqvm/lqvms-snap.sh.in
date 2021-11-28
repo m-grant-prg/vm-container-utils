@@ -12,7 +12,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to control deletion of snapshots on all VMs.			#
@@ -61,6 +61,7 @@
 # 14/12/2020	MG	1.0.2	Change snap -v to snap -n.		#
 # 13/02/2021	MG	1.0.3	Prepend this package executable		#
 #				invocations with bindir.		#
+# 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
 #									#
 #########################################################################
 
@@ -70,7 +71,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory

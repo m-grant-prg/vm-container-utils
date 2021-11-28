@@ -12,7 +12,7 @@
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
-# SPDX-License-Identifier: GPL-3.0					#
+# SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to copy an existing container, add the project dependencies	#
@@ -70,6 +70,7 @@
 #				altered commands also work pre-v4.	#
 # 18/09/2021	MG	1.0.6	Add Fedora support.			#
 # 21/09/2021	MG	1.0.7	Add openSUSE support.			#
+# 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
 #									#
 #########################################################################
 
@@ -82,7 +83,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.7				# Script version
+readonly version=1.0.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
