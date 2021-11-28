@@ -18,7 +18,7 @@
 # Date		Author	Version	Description				#
 #									#
 # 22/09/2020	MG	1.0.1	Initial release.			#
-# 06/08/2021	MG	1.0.2	Add denian-releases.conf		#
+# 06/08/2021	MG	1.0.2	Add debian-releases.conf		#
 #									#
 #########################################################################
 
