@@ -43,7 +43,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lqvm.conf(5) lqvm-shutdown(1) lqvm-snap.sh(1)
-.br
+lqvms-backups.sh(1) lqvm.conf(5) lqvm-shutdown(1) lqvm-snap.sh(1)
 lqvms-sequential-start.sh(1) lqvm-start.sh(1)
 
