@@ -12,8 +12,6 @@ OPTIONS
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
 
--v, --vm-name The name of the VM to operate on. This is a mandatory option.
-
 -V, --version  Print script version information.
 EXIT STATUS
 0 - Success
