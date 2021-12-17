@@ -76,6 +76,7 @@
 # 18/09/2021	MG	1.0.9	Add Fedora support.			#
 # 21/09/2021	MG	1.0.10	Add openSUSE support.			#
 # 28/11/2021	MG	1.0.11	Tighten SPDX tag.			#
+# 17/12/2021	MG	1.0.12	Add dist-upgrade just in case.		#
 #									#
 #########################################################################
 
@@ -88,7 +89,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.11				# Script version
+readonly version=1.0.12				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -289,6 +290,9 @@ upgrade_deb()
 	std_cmd_err_handler $?
 	systemd-run --quiet --user --scope -p "Delegate=yes" \
 		lxc-attach -n $name sudo apt-get update
+	std_cmd_err_handler $?
+	systemd-run --quiet --user --scope -p "Delegate=yes" \
+		lxc-attach -n $name sudo apt-get -- -y dist-upgrade
 	std_cmd_err_handler $?
 	systemd-run --quiet --user --scope -p "Delegate=yes" \
 		lxc-attach -n $name sudo agmaint.sh -- -- -y
