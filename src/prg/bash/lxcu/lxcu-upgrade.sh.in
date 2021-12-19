@@ -77,6 +77,8 @@
 # 21/09/2021	MG	1.0.10	Add openSUSE support.			#
 # 28/11/2021	MG	1.0.11	Tighten SPDX tag.			#
 # 17/12/2021	MG	1.0.12	Add dist-upgrade just in case.		#
+# 19/12/2021	MG	1.0.13	Correct dnf list --autoremove to	#
+#				actually remove with dnf autoremove.	#
 #									#
 #########################################################################
 
@@ -89,7 +91,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.12				# Script version
+readonly version=1.0.13				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -340,7 +342,7 @@ upgrade_fedora()
 		-n $name sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
 	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y list --autoremove
+		-n $name sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	upgrade_fedora_type basic
