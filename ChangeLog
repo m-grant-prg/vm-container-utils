@@ -1,3 +1,16 @@
+2021-12-21 v1.0.13 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: Correct dnf list --autoremove to dnf autoremove
+	lxcu: Add dist-upgrade in upgrade, just in case
+	man: lqvm: Remove copy and paste error for -v
+	lqvm: Add backups script
+	git: Update gitattributes to v1.0.3
+	at: Add AC_COPYRIGHT macro
+	all: Tighten SPDX tags
+	at: Upgrade bootstrap.sh to v1.4.10
+	git: Update mailmap to v1.0.2
+	git: Update gitignore to v1.0.7
+	at: Use git to enhance package version
+
 2021-11-06 v1.0.12 Mark Grant <m.grant.prg@gmail.com>
 	* git: Update mailmap to v1.0.1
 	git: Update gitignore to v1.0.6

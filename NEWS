@@ -1,3 +1,9 @@
+Release 1.0.13 2021-12-21
+lxcu: dnf autoremove AOT dnf list --autoremove
+lxcu: Add apt-get dist-upgrade to upgrade just in case.
+lqvm: Add backup script.
+For technical change information please refer to the ChangeLog.
+
 Release 1.0.12 2021-11-06
 Add Fedora 35 - new release.
 Remove Fedora 33 - EOL.
