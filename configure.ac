@@ -63,6 +63,8 @@
 #				Tighten SPDX tag.			#
 #				Add AC_COPYRIGHT macro.			#
 # 04/01/2022	MG	1.0.8	Tidy-up program checks.			#
+#				Add program check for xmlstarlet which	#
+#				is required at runtime.			#
 #									#
 #########################################################################
 
@@ -267,6 +269,11 @@ fi
 AC_CHECK_PROG(PRINTF, printf, yes, no)
 if test "x$PRINTF" = "xno" ; then
 	AC_MSG_WARN(printf not found - needed at run time)
+fi
+
+AC_CHECK_PROG(XMLSTARLET, xmlstarlet, yes, no)
+if test "x$XMLSTARLET" = "xno" ; then
+	AC_MSG_WARN(xmlstarlet not found - needed at run time)
 fi
 
 
