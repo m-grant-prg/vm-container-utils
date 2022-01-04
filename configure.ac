@@ -1,7 +1,7 @@
 #########################################################################
 #									#
 # Script ID: ./configure.ac						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -62,6 +62,7 @@
 #				further package version information.	#
 #				Tighten SPDX tag.			#
 #				Add AC_COPYRIGHT macro.			#
+# 04/01/2022	MG	1.0.8	Tidy-up program checks.			#
 #									#
 #########################################################################
 
@@ -72,11 +73,11 @@
 #					#
 #########################################
 
-AC_COPYRIGHT([Copyright (C) 2020, 2021  Mark Grant
+AC_COPYRIGHT([Copyright (C) 2020-2022  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.7 $])
+AC_REVISION([$Revision: 1.0.8 $])
 
 AC_PREREQ([2.69])
 
@@ -211,6 +212,11 @@ AC_MSG_NOTICE(checking for some standard AutoTools required programs)
 AC_PROG_INSTALL
 
 AC_MSG_NOTICE(checking for particular programs required by this build)
+AC_CHECK_PROG(CHMOD, chmod, yes, no)
+if test "x$CHMOD" = "xno" ; then
+	AC_MSG_ERROR(chmod not found)
+fi
+
 AC_CHECK_PROG(TXT2MAN, txt2man, yes, no)
 if test "x$TXT2MAN" = "xno" ; then
 	AC_MSG_ERROR(txt2man not found)
@@ -233,19 +239,9 @@ if test "x$TAR" = "xno" ; then
 fi
 
 AC_MSG_NOTICE(checking for particular programs required at run time)
-AC_CHECK_PROG(CHMOD, chmod, yes, no)
-if test "x$CHMOD" = "xno" ; then
-	AC_MSG_WARN(chmod not found - needed at run time)
-fi
-
 AC_CHECK_PROG(CHOWN, chown, yes, no)
 if test "x$CHOWN" = "xno" ; then
 	AC_MSG_WARN(chown not found - needed at run time)
-fi
-
-AC_CHECK_PROG(DF, df, yes, no)
-if test "x$DF" = "xno" ; then
-	AC_MSG_WARN(df not found - needed at run time)
 fi
 
 AC_CHECK_PROG(ECHO, echo, yes, no)
@@ -263,29 +259,9 @@ if test "x$GETOPT" = "xno" ; then
 	AC_MSG_WARN(getopt not found - needed at run time)
 fi
 
-AC_CHECK_PROG(LOGGER, logger, yes, no)
-if test "x$LOGGER" = "xno" ; then
-	AC_MSG_WARN(logger not found - needed at run time)
-fi
-
-AC_CHECK_PROG(LSOF, lsof, yes, no)
-if test "x$LSOF" = "xno" ; then
-	AC_MSG_WARN(lsof not found - needed at run time)
-fi
-
-AC_CHECK_PROG(MAILX, mailx, yes, no)
-if test "x$MAILX" = "xno" ; then
-	AC_MSG_WARN(mailx not found - needed at run time)
-fi
-
 AC_CHECK_PROG(MOUNT, mount, yes, no)
 if test "x$MOUNT" = "xno" ; then
 	AC_MSG_WARN(mount not found - needed at run time)
-fi
-
-AC_CHECK_PROG(PASSWD, passwd, yes, no)
-if test "x$PASSWD" = "xno" ; then
-	AC_MSG_WARN(passwd not found - needed at run time)
 fi
 
 AC_CHECK_PROG(PRINTF, printf, yes, no)
