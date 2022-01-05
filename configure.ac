@@ -62,9 +62,9 @@
 #				further package version information.	#
 #				Tighten SPDX tag.			#
 #				Add AC_COPYRIGHT macro.			#
-# 04/01/2022	MG	1.0.8	Tidy-up program checks.			#
-#				Add program check for xmlstarlet which	#
-#				is required at runtime.			#
+# 05/01/2022	MG	1.0.8	Tidy-up program checks.			#
+#				Add missing program checks for lxc, 	#
+#				xmlstarlet, etc.			#
 #									#
 #########################################################################
 
@@ -261,6 +261,36 @@ if test "x$GETOPT" = "xno" ; then
 	AC_MSG_WARN(getopt not found - needed at run time)
 fi
 
+AC_CHECK_PROG(IP, ip, yes, no)
+if test "x$IP" = "xno" ; then
+	AC_MSG_WARN(ip not found - needed at run time)
+fi
+
+AC_CHECK_PROG(LXC_ATTACH, lxc-attach, yes, no)
+if test "x$LXC_ATTACH" = "xno" ; then
+	AC_MSG_WARN(lxc-attach not found - needed at run time)
+fi
+
+AC_CHECK_PROG(LXC_COPY, lxc-copy, yes, no)
+if test "x$LXC_COPY" = "xno" ; then
+	AC_MSG_WARN(lxc-copy not found - needed at run time)
+fi
+
+AC_CHECK_PROG(LXC_CREATE, lxc-create, yes, no)
+if test "x$LXC_CREATE" = "xno" ; then
+	AC_MSG_WARN(lxc-create not found - needed at run time)
+fi
+
+AC_CHECK_PROG(LXC_START, lxc-start, yes, no)
+if test "x$LXC_START" = "xno" ; then
+	AC_MSG_WARN(lxc-start not found - needed at run time)
+fi
+
+AC_CHECK_PROG(LXC_STOP, lxc-stop, yes, no)
+if test "x$LXC_STOP" = "xno" ; then
+	AC_MSG_WARN(lxc-stop not found - needed at run time)
+fi
+
 AC_CHECK_PROG(MOUNT, mount, yes, no)
 if test "x$MOUNT" = "xno" ; then
 	AC_MSG_WARN(mount not found - needed at run time)
@@ -269,6 +299,16 @@ fi
 AC_CHECK_PROG(PRINTF, printf, yes, no)
 if test "x$PRINTF" = "xno" ; then
 	AC_MSG_WARN(printf not found - needed at run time)
+fi
+
+AC_CHECK_PROG(QEMU_IMG, qemu-img, yes, no)
+if test "x$QEMU_IMG" = "xno" ; then
+	AC_MSG_WARN(qemu-img not found - needed at run time)
+fi
+
+AC_CHECK_PROG(VIRSH, virsh, yes, no)
+if test "x$VIRSH" = "xno" ; then
+	AC_MSG_WARN(virsh not found - needed at run time)
 fi
 
 AC_CHECK_PROG(XMLSTARLET, xmlstarlet, yes, no)
