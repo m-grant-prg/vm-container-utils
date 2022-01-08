@@ -37,6 +37,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-create.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1) lxcu-upgrade.sh(1)
-lxcu.conf(5)
+lxcu-attach.sh(1) lxcu-create.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1)
+lxcu-upgrade.sh(1) lxcu.conf(5)
 
