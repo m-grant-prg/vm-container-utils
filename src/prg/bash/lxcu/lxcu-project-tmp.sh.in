@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-project-tmp.sh					#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -18,8 +18,8 @@
 # A script to copy an existing container, add the project dependencies	#
 # and start and attach to the new container. The container is destroyed	#
 # on exit.								#
-#                                                            	  	#
-# Syntax:      lxcu-project-tmp.sh [ -d or --dist 'distribution-name'	#
+#									#
+# Syntax:	lxcu-project-tmp.sh [ -d or --dist 'distribution-name'	#
 #			|| -h or --help					#
 #			|| -n or --name 'container name'		#
 #			|| -p or --project-root 'root directory'	#
@@ -71,6 +71,8 @@
 # 18/09/2021	MG	1.0.6	Add Fedora support.			#
 # 21/09/2021	MG	1.0.7	Add openSUSE support.			#
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
+# 08/01/2022	MG	1.0.9	Use lxcu-attach.sh AOT systemd-run	#
+#				lxc-attach				#
 #									#
 #########################################################################
 
@@ -83,7 +85,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.8				# Script version
+readonly version=1.0.9				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -252,7 +254,7 @@ proc_CL()
 	fi
 
 	# At least container name and project root directory must be specified.
-	if [[ -z $name  || -z $projectroot ]]; then
+	if [[ -z $name || -z $projectroot ]]; then
 		msg="At least name and project root must be specified."
 		output "$msg" 1
 		script_exit 64
@@ -265,15 +267,15 @@ proc_CL()
 apt_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo apt-get -- -y install
+		cat $projectroot/lxcu/$dist/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo apt-get -- -y install
+		cat $projectroot/lxcu/$dist/$rel/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 }
@@ -284,15 +286,15 @@ apt_install()
 dnf_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo dnf -- -y install
+		cat $projectroot/lxcu/$dist/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo dnf -- -y install
+		cat $projectroot/lxcu/$dist/$rel/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 }
@@ -303,15 +305,15 @@ dnf_install()
 zypper_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo zypper -- -n install
+		cat $projectroot/lxcu/$dist/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list | xargs \
-			systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $project sudo zypper -- -n install
+		cat $projectroot/lxcu/$dist/$rel/install.list \
+			| xargs @bindir@/lxcu-attach.sh -n $project \
+			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 }
@@ -359,10 +361,8 @@ ubuntu)
 	;;
 esac
 
-systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $project \
-	cp -- -vr $project build
-systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $project \
-	-vHOME=/build/atbuild
+@bindir@/lxcu-attach.sh -n $project -- cp -- -vr $project build
+@bindir@/lxcu-attach.sh "-n $project -vHOME=/build/atbuild"
 
 lxc-stop -n $project
 std_cmd_err_handler $?

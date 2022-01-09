@@ -9,15 +9,15 @@
 #########################################################################
 #									#
 # Script ID: lxcu-start.sh						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to start a linux container.					#
-#                                                            	  	#
-# Syntax:      lxcu-start.sh [ -h or --help				#
+#									#
+# Syntax:	lxcu-start.sh [ -h or --help				#
 #			|| -n or --name 'container name'		#
 #			|| -V or --version ]				#
 #									#
@@ -63,6 +63,8 @@
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
 # 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
+# 08/01/2022	MG	1.0.6	Use lxcu-attach.sh AOT systemd-run	#
+#				lxc-attach				#
 #									#
 #########################################################################
 
@@ -75,7 +77,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -231,7 +233,7 @@ proc_CL()
 	fi
 
 	# Container name must be specified.
-	if [[ -z $name  ]]; then
+	if [[ -z $name ]]; then
 		output "Container name must be specified." 1
 		script_exit 64
 	fi
@@ -270,8 +272,8 @@ declare -i max
 
 ((max=30))
 
-until (systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-	-n $name ping -- -c 2 www.google.com &>/dev/null); do
+until (@bindir@/lxcu-attach.sh -n $name \
+	-- ping -- -c 2 www.google.com &>/dev/null); do
 	err=$?
 	(( count++ ))
 	if (( $count == $max )); then
@@ -282,8 +284,8 @@ until (systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
 done
 
 # Wait for the server dependency service to complete.
-until !(systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-	-n $name sudo systemctl is-active -- -q server-dependency); do
+until !(@bindir@/lxcu-attach.sh -n $name \
+	-- sudo systemctl is-active -- -q server-dependency); do
 	sleep 2
 done
 

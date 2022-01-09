@@ -9,15 +9,15 @@
 #########################################################################
 #									#
 # Script ID: lxcu-create.sh						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
 #									#
 # Purpose:								#
 # A script to create linux containers.					#
-#                                                            	  	#
-# Syntax:      lxcu-create.sh [ -a or --arch 'arch-name'		#
+#									#
+# Syntax:	lxcu-create.sh [ -a or --arch 'arch-name'		#
 #			|| -d or --dist 'distribution-name'		#
 #			|| -h or --help					#
 #			|| -n or --name 'container name'		#
@@ -92,6 +92,8 @@
 # 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
 # 26/09/2021	MG	1.2.1	Setup some git defaults.		#
 # 28/11/2021	MG	1.2.2	Tighten SPDX tag.			#
+# 08/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
+#				lxc-attach				#
 #									#
 #########################################################################
 
@@ -104,7 +106,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.2				# Script version
+readonly version=1.2.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -328,7 +330,7 @@ proc_CL()
 	fi
 
 	# At least container name and type must be specified.
-	if [[ -z $name  || -z $type ]]; then
+	if [[ -z $name || -z $type ]]; then
 		output "At least name and type must be specified." 1
 		script_exit 64
 	fi
@@ -356,13 +358,11 @@ network_config()
 # No return value.
 setup_git()
 {
-	systemd-run --quiet --user --scope -p "Delegate=yes" \
-		lxc-attach -n $name \
-		git -- config --system user.email "$gitemail"
+	@bindir@/lxcu-attach.sh -n $name \
+		-- git -- config --system user.email "$gitemail"
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" \
-		lxc-attach -n $name \
-		git -- config --system user.name "$gitname"
+	@bindir@/lxcu-attach.sh -n $name \
+		-- git -- config --system user.name "$gitname"
 	std_cmd_err_handler $?
 }
 
@@ -373,16 +373,14 @@ create_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo apt-get -- -y install
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo apt-get -- -yd install
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
 	# Setup git.
@@ -401,7 +399,7 @@ create_deb()
 	sudo cp -v $(find $etclocation/$dist/$rel/apt -maxdepth 1 -type f) \
 		$contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
-	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/apt
+	sudo chown -v 100000:100000 $contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
@@ -413,29 +411,26 @@ create_deb()
 	# Copy the locale config file.
 	sudo cp -v $hostetclocation/locale.gen $contlocation/$name/rootfs/etc
 	std_cmd_err_handler $?
-	sudo chown -v 100000:100000  $contlocation/$name/rootfs/etc/locale.gen
+	sudo chown -v 100000:100000 $contlocation/$name/rootfs/etc/locale.gen
 
 	# Initially install apt https transport, apt utils, certificates and
 	# sudo. Then generate locale.
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name apt-get update
+	@bindir@/lxcu-attach.sh -n $name -- apt-get update
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name -vPATH=$PATH:/sbin:/usr/sbin \
-		apt-get -- -y install apt-transport-https apt-utils \
+	@bindir@/lxcu-attach.sh "-n $name -vPATH=$PATH:/sbin:/usr/sbin" \
+		-- apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates sudo
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo locale-gen
+	@bindir@/lxcu-attach.sh -n $name -- sudo locale-gen
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
 	sudo cp -rv $etclocation/$dist/$rel/apt/* \
 		$contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/apt
+	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/apt
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
@@ -452,16 +447,15 @@ create_deb()
 			-maxdepth 1 -type f)
 
 	# Set up the dosab files.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get update
+	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get -- -y install server-dependency
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v $etclocation/$dist/$rel/dosab/* \
 		$contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
@@ -469,50 +463,40 @@ create_deb()
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get update
+	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get -- -y install gnupg
+	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install gnupg
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get -- -y install apt
+	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	if [[ $rel == "xenial" ]]; then
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name sudo apt-key update
+		@bindir@/lxcu-attach.sh -n $name -- sudo apt-key update
 		std_cmd_err_handler $?
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name sudo apt-get update
+		@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
 		std_cmd_err_handler $?
 	fi
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-get -- -y install agmaint
+	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo agmaint.sh -- -- -y
+	@bindir@/lxcu-attach.sh -n $name -- sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo apt-key-scripts.sh -- --install \
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo apt-key-scripts.sh -- --install \
 		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
 	std_cmd_err_handler $?
 	case $dist in
 	debian)
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name \
-			sudo apt-key-scripts.sh -- --install \
+		@bindir@/lxcu-attach.sh -n $name \
+			-- sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-obs-debian.sh
 		std_cmd_err_handler $?
 		;;
 	ubuntu)
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name \
-			sudo apt-key-scripts.sh -- --install \
+		@bindir@/lxcu-attach.sh -n $name \
+			-- sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
 		std_cmd_err_handler $?
 		;;
@@ -534,24 +518,21 @@ create_fedora_type()
 {
 	# Install the development tools group.
 	if [[ $1 == "dev" ]]; then
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name \
-			sudo dnf -- -y group install "Development Tools"
+		@bindir@/lxcu-attach.sh -n $name \
+			-- sudo dnf -- -y group install "Development Tools"
 		std_cmd_err_handler $?
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo dnf -- -y install
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo dnf -- -y install --downloadonly
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
 	# Setup git.
@@ -574,52 +555,45 @@ create_fedora()
 	std_cmd_err_handler $?
 
 	# Set locale.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-locale LANG=en_GB.UTF-8
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-locale LANG=en_GB.UTF-8
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-keymap gb
+	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-keymap gb
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-x11-keymap gb
+	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-x11-keymap gb
 	std_cmd_err_handler $?
 
 	# Initial installs.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y install 'dnf-command(config-manager)'
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo dnf -- -y install 'dnf-command(config-manager)'
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf config-manager -- --add-repo \
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo dnf config-manager -- --add-repo \
 		https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_$rel/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y install server-dependency
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo dnf -- -y install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v $etclocation/$dist/$rel/dosab/* \
 		$contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dnf -- -y list --autoremove
+	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y list --autoremove
 	std_cmd_err_handler $?
 
 	create_fedora_type basic
@@ -638,24 +612,21 @@ create_opensuse_type()
 {
 	# Install the development tools.
 	if [[ $1 == "dev" ]]; then
-		systemd-run --quiet --user --scope -p "Delegate=yes" \
-			lxc-attach -n $name \
-			sudo zypper -- -n install -t pattern devel_basis
+		@bindir/lxcu-attach.sh -n $name \
+			-- sudo zypper -- -n install -t pattern devel_basis
 		std_cmd_err_handler $?
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		cat $etclocation/$dist/$rel/$1/install.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo zypper -- -n install
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		cat $etclocation/$dist/$rel/$1/cache.list \
-			| xargs systemd-run --quiet --user --scope \
-			-p "Delegate=yes" lxc-attach -n $name \
-			sudo zypper -- -n install --download-only
+			| xargs @bindir@/lxcu-attach.sh -n $name \
+			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
 	# Setup git.
@@ -673,56 +644,46 @@ create_opensuse()
 	std_cmd_err_handler $?
 
 	# Set locale.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- -n update
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo zypper -- -n install glibc-locale
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo zypper -- -n install glibc-locale
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-locale LANG=en_GB.UTF-8
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-locale LANG=en_GB.UTF-8
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-keymap gb
+	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-keymap gb
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo localectl set-x11-keymap gb
+	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-x11-keymap gb
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name \
-		sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/openSUSE_Leap_$rel/home:m-grant-prg.repo
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/openSUSE_Leap_$rel/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- -n update
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo zypper -- -n install server-dependency
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo zypper -- -n install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v $etclocation/$dist/$rel/dosab/* \
 		$contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000  $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- refresh
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach \
-		-n $name sudo  zypper -- -n update
+	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	create_opensuse_type basic

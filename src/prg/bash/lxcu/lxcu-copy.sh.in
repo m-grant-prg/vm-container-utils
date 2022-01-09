@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-copy.sh						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -18,8 +18,8 @@
 # A script to copy an existing container to a new container. The only	#
 # extra thing this does compared to an lxc-copy is that it will create	#
 # any extra lxcu bridge config files.					#
-#                                                            	  	#
-# Syntax:      lxcu-copy.sh [ -h or --help				#
+#									#
+# Syntax:	lxcu-copy.sh [ -h or --help				#
 #			|| -n or --from-name 'container name' copy from	#
 #			|| -N or --to-name 'container name' copy to	#
 #			|| -V or --version ]				#
@@ -65,6 +65,8 @@
 #				slightly different privileges. The	#
 #				altered commands also work pre-v4.	#
 # 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
+# 08/01/2022	MG	1.0.5	Use lxcu-attach.sh AOT systemd-run	#
+#				lxc-attach				#
 #									#
 #########################################################################
 
@@ -77,7 +79,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -232,7 +234,7 @@ proc_CL()
 	fi
 
 	# Both from name and to name must be specified.
-	if [[ -z $fromname  || -z $toname ]]; then
+	if [[ -z $fromname || -z $toname ]]; then
 		msg="Both from name and to name must be specified."
 		output "$msg" 1
 		script_exit 64
@@ -268,12 +270,12 @@ fi
 @bindir@/lxcu-start.sh -n $toname
 std_cmd_err_handler $?
 
-systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $toname \
-	sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
+@bindir@/lxcu-attach.sh -n $toname \
+	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
 std_cmd_err_handler $?
 
-systemd-run --quiet --user --scope -p "Delegate=yes" lxc-attach -n $toname \
-	sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
+@bindir@/lxcu-attach.sh -n $toname \
+	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
 std_cmd_err_handler $?
 
 lxc-stop -n $toname
