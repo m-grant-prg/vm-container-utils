@@ -92,8 +92,10 @@
 # 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
 # 26/09/2021	MG	1.2.1	Setup some git defaults.		#
 # 28/11/2021	MG	1.2.2	Tighten SPDX tag.			#
-# 08/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
+# 10/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
+#				Correct dnf list --autoremove to	#
+#				actually remove with dnf autoremove.	#
 #									#
 #########################################################################
 
@@ -593,7 +595,7 @@ create_fedora()
 	# Final tidy.
 	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y list --autoremove
+	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	create_fedora_type basic
