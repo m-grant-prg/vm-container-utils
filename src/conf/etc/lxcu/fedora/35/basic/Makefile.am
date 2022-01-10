@@ -1,7 +1,7 @@
 #########################################################################
 #									#
 # Script ID: src/conf/etc/lxcu/fedora/35/basic/Makefile.am		#
-# Author: Copyright (C) 2021  Mark Grant				#
+# Author: Copyright (C) 2021, 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -19,11 +19,12 @@
 #									#
 # 04/11/2021	MG	1.0.1	Initial release.			#
 # 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
+# 10/01/2022	MG	1.0.3	Correct 33 AOT 35.			#
 #									#
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/33/basic
+confdir = $(sysconfdir)/lxcu/fedora/35/basic
 
 install.list: Makefile
 	mkdir -p $(@D)
