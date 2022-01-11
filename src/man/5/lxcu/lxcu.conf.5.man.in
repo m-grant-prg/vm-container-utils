@@ -21,6 +21,16 @@ is usually eth or enp
 
 vni=	The default virtual network interface
 
+gitemail=	Set up a git email config parameter
+
+gitname=	Set up a git name config parameter
+
+localelang=	Locale setting for LANG
+
+localekeymap=	Keymap setting for v/c
+
+localex11keymap=	X11 keymap setting
+
 The file is stored in an etc directory. The exact location depends on the method
 of installation but for Autotools installations on Linux this is likely to
 be /usr/local/etc/lxcu/lxcu.conf.
@@ -29,7 +39,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020-2022 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

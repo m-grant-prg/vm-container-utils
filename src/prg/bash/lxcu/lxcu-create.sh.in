@@ -92,10 +92,12 @@
 # 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
 # 26/09/2021	MG	1.2.1	Setup some git defaults.		#
 # 28/11/2021	MG	1.2.2	Tighten SPDX tag.			#
-# 10/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
+# 11/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
 #				Correct dnf list --autoremove to	#
 #				actually remove with dnf autoremove.	#
+#				Standardise locale setup from config	#
+#				file using localectl.			#
 #									#
 #########################################################################
 
@@ -258,6 +260,15 @@ proc_config_file()
 		gitname)
 			gitname=${input[1]}
 			;;
+		localelang)
+			localelang=${input[1]}
+			;;
+		localekeymap)
+			localekeymap=${input[1]}
+			;;
+		localex11keymap)
+			localex11keymap=${input[1]}
+			;;
 		esac
 	done
 	exec 3<&-
@@ -410,13 +421,8 @@ create_deb()
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
-	# Copy the locale config file.
-	sudo cp -v $hostetclocation/locale.gen $contlocation/$name/rootfs/etc
-	std_cmd_err_handler $?
-	sudo chown -v 100000:100000 $contlocation/$name/rootfs/etc/locale.gen
-
 	# Initially install apt https transport, apt utils, certificates and
-	# sudo. Then generate locale.
+	# sudo.
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name -- apt-get update
@@ -425,7 +431,16 @@ create_deb()
 		-- apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates sudo
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo locale-gen
+
+	# Set the locale.
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-locale LANG=$localelang
+	std_cmd_err_handler $?
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-keymap $localekeymap
+	std_cmd_err_handler $?
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-x11-keymap $localex11keymap
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
@@ -560,11 +575,13 @@ create_fedora()
 	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-locale LANG=en_GB.UTF-8
+		-- sudo localectl set-locale LANG=$localelang
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-keymap gb
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-keymap $localekeymap
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-x11-keymap gb
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-x11-keymap $localex11keymap
 	std_cmd_err_handler $?
 
 	# Initial installs.
@@ -654,11 +671,13 @@ create_opensuse()
 		-- sudo zypper -- -n install glibc-locale
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-locale LANG=en_GB.UTF-8
+		-- sudo localectl set-locale LANG=$localelang
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-keymap gb
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-keymap $localekeymap
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo localectl set-x11-keymap gb
+	@bindir@/lxcu-attach.sh -n $name \
+		-- sudo localectl set-x11-keymap $localex11keymap
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
