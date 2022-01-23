@@ -2,7 +2,7 @@
 #									#
 # Script ID: src/conf/etc/lxcu/debian/bullseye/apt/trusted.gpg.d/ \	#
 #							Makefile.am	#
-# Author: Copyright (C) 2021  Mark Grant				#
+# Author: Copyright (C) 2021, 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -20,24 +20,26 @@
 #									#
 # 22/08/2021	MG	1.0.1	Initial release.			#
 # 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
+# 23/01/2022	MG	1.0.3	Remove OBS key as Create now gets it	#
+#				from source and the keyring package is	#
+#				installed.				#
 #									#
 #########################################################################
 
 
 confdir = $(sysconfdir)/lxcu/debian/bullseye/apt/trusted.gpg.d
 
-obs-debian-keyring.gpg hermes-keyring.gpg: Makefile
+hermes-keyring.gpg: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	cp $${srcdir}$(@F).in $@.tmp
 	mv $@.tmp $@
-obs-debian-keyring.gpg: $(srcdir)/obs-debian-keyring.gpg.in
 hermes-keyring.gpg: $(srcdir)/hermes-keyring.gpg.in
 
-conf_DATA = obs-debian-keyring.gpg hermes-keyring.gpg
+conf_DATA = hermes-keyring.gpg
 
-EXTRA_DIST = $(srcdir)/obs-debian-keyring.gpg.in $(srcdir)/hermes-keyring.gpg.in
+EXTRA_DIST = $(srcdir)/hermes-keyring.gpg.in
 
-CLEANFILES = *.tmp obs-debian-keyring.gpg hermes-keyring.gpg
+CLEANFILES = *.tmp hermes-keyring.gpg
 

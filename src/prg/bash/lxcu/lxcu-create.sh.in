@@ -98,6 +98,9 @@
 #				actually remove with dnf autoremove.	#
 #				Standardise locale setup from config	#
 #				file using localectl.			#
+# 23/01/2022	MG	1.2.4	Get OBS repo key from source AOT this	#
+#				package as the key would expire if not	#
+#				updated every 2 years.			#
 #									#
 #########################################################################
 
@@ -110,7 +113,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.3				# Script version
+readonly version=1.2.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -421,15 +424,15 @@ create_deb()
 		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
-	# Initially install apt https transport, apt utils, certificates and
-	# sudo.
+	# Initially install apt https transport, apt utils, certificates, curl,
+	# gnupg and sudo.
 	@bindir@/lxcu-start.sh -n $name
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name -- apt-get update
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh "-n $name -vPATH=$PATH:/sbin:/usr/sbin" \
 		-- apt-get -- -y install apt-transport-https apt-utils \
-		ca-certificates sudo
+		ca-certificates curl gnupg sudo
 	std_cmd_err_handler $?
 
 	# Set the locale.
@@ -441,6 +444,12 @@ create_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name \
 		-- sudo localectl set-x11-keymap $localex11keymap
+	std_cmd_err_handler $?
+
+	# Get the OBS repo key.
+	curl -fsSL https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
+		| gpg --dearmor \
+		| sudo tee $contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg > /dev/null
 	std_cmd_err_handler $?
 
 	# Set up the other initial apt files.
@@ -486,8 +495,6 @@ create_deb()
 	# Final fundamental installs.
 	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install gnupg
-	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	if [[ $rel == "xenial" ]]; then
@@ -504,20 +511,12 @@ create_deb()
 		-- sudo apt-key-scripts.sh -- --install \
 		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
 	std_cmd_err_handler $?
-	case $dist in
-	debian)
-		@bindir@/lxcu-attach.sh -n $name \
-			-- sudo apt-key-scripts.sh -- --install \
-			/usr/share/agmaint/trusted.sh.d/add-obs-debian.sh
-		std_cmd_err_handler $?
-		;;
-	ubuntu)
+	if [[ $dist == "ubuntu" ]]; then
 		@bindir@/lxcu-attach.sh -n $name \
 			-- sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
 		std_cmd_err_handler $?
-		;;
-	esac
+	fi
 
 	create_deb_type basic
 	if [[ $type != "basic" ]]; then
