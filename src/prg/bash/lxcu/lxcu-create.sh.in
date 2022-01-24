@@ -447,10 +447,12 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Get the OBS repo key.
-	curl -fsSL https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
-		| gpg --dearmor \
-		| sudo tee $contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg > /dev/null
-	std_cmd_err_handler $?
+	if [[ $dist == "debian" ]]; then
+		curl -fsSL https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
+			| gpg --dearmor \
+			| sudo tee $contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg > /dev/null
+		std_cmd_err_handler $?
+	fi
 
 	# Set up the other initial apt files.
 	sudo cp -rv $etclocation/$dist/$rel/apt/* \
