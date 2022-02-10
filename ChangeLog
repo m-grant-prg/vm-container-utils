@@ -1,3 +1,17 @@
+2022-02-10 v1.0.14 Mark Grant <m.grant.prg@gmail.com>
+	* at: Tidy-up program checks
+	at: Add check for xmlstarlet, required at runtime
+	at: Add remaining missing program checks
+	lxcu: Add lxcu-attach.sh
+	lxcu: Use lxcu-attach.sh AOT lxc-attach
+	lxcu: Correct 33 AOT 35
+	lxcu: Actually autoremove AOT list --autoremove
+	lxcu: Standardise on locale setup
+	lxcu: Future proof OBS repo key
+	lxcu: Use non-expiring hermes key
+	lxcu: Curl OBS key only for Debian
+	lxcu: Remove OBS keyring for Buster and Stretch
+
 2021-12-21 v1.0.13 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Correct dnf list --autoremove to dnf autoremove
 	lxcu: Add dist-upgrade in upgrade, just in case
