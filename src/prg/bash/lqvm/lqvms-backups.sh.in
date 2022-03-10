@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvms-backups.sh						#
-# Author: Copyright (C) 2021  Mark Grant				#
+# Author: Copyright (C) 2021, 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -59,6 +59,8 @@
 # Date		Author	Version	Description				#
 #									#
 # 15/12/2021	MG	1.0.1	Created.				#
+# 10/03/2022	MG	1.0.2	Limit ssh password retries to 0 as the	#
+#				error could be in user name.		#
 #									#
 #########################################################################
 
@@ -70,7 +72,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.1				# Script version
+readonly version=1.0.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -285,7 +287,8 @@ for vm in $vms; do
 		echo "Enter sudo password for $vm:"
 		read -s password
 		passwords[$count]="$password"
-		ssh -t "${usernames[$count]}""@$vm" \
+		ssh -o NumberOfPasswordPrompts=0 \
+			-t "${usernames[$count]}""@$vm" \
 			'echo '"${passwords[$count]}"' \
 			| sudo -S bash -c "ls > /dev/null"'
 		if (( $? )); then
