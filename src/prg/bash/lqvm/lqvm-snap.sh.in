@@ -386,8 +386,8 @@ validate_name()
 		| grep "\<$name\>" | wc -l)
 	std_cmd_err_handler $?
 	if (( !$name_matches )); then
-	output "No such VM $name" 1
-	script_exit 64
+		output "No such VM $name" 1
+		script_exit 64
 	fi
 }
 
