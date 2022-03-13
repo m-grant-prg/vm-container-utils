@@ -61,6 +61,8 @@
 # 15/12/2021	MG	1.0.1	Created.				#
 # 10/03/2022	MG	1.0.2	Limit ssh password retries to 0 as the	#
 #				error could be in user name.		#
+# 13/03/2022	MG	1.0.3	Refactor check for running VMs into	#
+#				function.				#
 #									#
 #########################################################################
 
@@ -72,7 +74,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -252,6 +254,44 @@ proc_CL()
 	vms="$@"
 }
 
+# Determine if the VM is running.
+# Parameters	1 - VM.
+#		2 - Variable to receive the result.
+# Return value - true or false in the variable specified above.
+is_vm_running()
+{
+	local __result=$2
+	local tmp_result
+	local -i vm_running_matches
+
+	vm_running_matches=$(virsh -c $connect_uri list \
+		| { grep "\<$1\>" || test $?=1; } | wc -l)
+	std_cmd_err_handler $?
+	if (( $vm_running_matches )); then
+		tmp_result="true"
+	else
+		tmp_result="false"
+	fi
+	eval $__result="'$tmp_result'"
+}
+
+# Ensure relevant VMs are not running.
+# Parameters - None.
+# No return value.
+ensure_vms_not_running()
+{
+	local status
+	local vm
+
+	for vm in $vms; do
+		is_vm_running $vm status
+		if $status; then
+			output "Please shutdown all relevant VMs." 1
+			script_exit 77
+		fi
+	done
+}
+
 
 ########
 # Main #
@@ -261,14 +301,7 @@ proc_config_file
 
 proc_CL "$@"
 
-# Ensure no running VMs.
-tmp=$(virsh -c $connect_uri list | wc -l)
-std_cmd_err_handler $?
-
-if (( $tmp > 3 )); then
-	output "Please shutdown all running VMs." 1
-	script_exit 77
-fi
+ensure_vms_not_running
 
 # start the VMs
 for vm in $vms; do
