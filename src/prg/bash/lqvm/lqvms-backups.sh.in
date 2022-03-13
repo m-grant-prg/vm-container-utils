@@ -64,6 +64,8 @@
 # 13/03/2022	MG	1.0.3	Refactor check for running VMs into	#
 #				function.				#
 #				Refactor start VMs into function.	#
+#				Refactor get username and password into	#
+#				function.				#
 #									#
 #########################################################################
 
@@ -80,14 +82,9 @@ readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
 
-declare -i count=0
 daily=false
-msg=""
-ok=false
-password=""
 declare -a passwords
 declare -i status=0
-username=""
 declare -a usernames
 declare -a vms
 weekly=false
@@ -306,6 +303,46 @@ start_vms()
 	done
 }
 
+# Iterate over VM names getting sudo username and password and validating them.
+# Parameters - None.
+# No return value.
+get_usernames_and_passwords()
+{
+	local -i count=0
+	local msg
+	local ok
+	local password
+	local username
+	local vm
+
+	for vm in $vms; do
+		ok=false
+		while ! $ok; do
+			echo "Enter sudo username for $vm:"
+			read username
+			usernames[$count]="$username"
+			echo "Enter sudo password for $vm:"
+			read -s password
+			passwords[$count]="$password"
+			ssh -o NumberOfPasswordPrompts=0 \
+				-t "${usernames[$count]}""@$vm" \
+				'echo '"${passwords[$count]}"' \
+				| sudo -S bash -c "ls > /dev/null"'
+			if (( $? )); then
+				msg="Login test failed for "
+				msg+="${usernames[$count]} on $vm."$'\n'
+				output "$msg" 1
+			else
+				msg="Login test passed for "
+				msg+="${usernames[$count]} on $vm."$'\n'
+				output "$msg" 0
+				(( count+=1 ))
+				ok=true
+			fi
+		done
+	done
+}
+
 
 ########
 # Main #
@@ -319,33 +356,7 @@ ensure_vms_not_running
 
 start_vms
 
-# Iterate over VM names getting sudo username and password and validating them.
-for vm in $vms; do
-	ok=false
-	while ! $ok; do
-		echo "Enter sudo username for $vm:"
-		read username
-		usernames[$count]="$username"
-		echo "Enter sudo password for $vm:"
-		read -s password
-		passwords[$count]="$password"
-		ssh -o NumberOfPasswordPrompts=0 \
-			-t "${usernames[$count]}""@$vm" \
-			'echo '"${passwords[$count]}"' \
-			| sudo -S bash -c "ls > /dev/null"'
-		if (( $? )); then
-			msg="Login test failed for ${usernames[$count]} "
-			msg+="on $vm."$'\n'
-			output "$msg" 1
-		else
-			msg="Login test passed for ${usernames[$count]} "
-			msg+="on $vm."$'\n'
-			output "$msg" 0
-			(( count+=1 ))
-			ok=true
-		fi
-	done
-done
+get_usernames_and_passwords
 
 # Iterate over VMs performing backup.
 count=0
