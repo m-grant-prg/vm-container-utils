@@ -66,6 +66,7 @@
 #				Refactor start VMs into function.	#
 #				Refactor get username and password into	#
 #				function.				#
+#				Refactor perform backups.		#
 #									#
 #########################################################################
 
@@ -343,6 +344,45 @@ get_usernames_and_passwords()
 	done
 }
 
+# Iterate over VMs performing backup.
+# Parameters - None.
+# No return value.
+perform_vms_backups()
+{
+	local -i count=0
+	local -i status
+	local status_string
+	local vm
+
+	for vm in $vms; do
+		if $weekly; then
+			ssh -t "${usernames[$count]}""@$vm" \
+				'echo '"${passwords[$count]}"' \
+				| sudo -S bash -c "at -f \
+				$(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at now"'
+			status=$?
+		else
+			ssh -t "${usernames[$count]}""@$vm" \
+				'echo '"${passwords[$count]}"' \
+				| sudo -S bash -c "at -f \
+				$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
+			status=$?
+		fi
+		if (( $status )); then
+			output "Backup failed for $vm."$'\n' 1
+		else
+			output "Backup started for $vm."$'\n' 0
+		fi
+		(( count+=1 ))
+		# Wait for vm to shutdown
+		is_vm_running $vm status_string
+		while $status_string; do
+			sleep 45
+			is_vm_running $vm status_string
+		done
+	done
+}
+
 
 ########
 # Main #
@@ -358,34 +398,7 @@ start_vms
 
 get_usernames_and_passwords
 
-# Iterate over VMs performing backup.
-count=0
-for vm in $vms; do
-	if $weekly; then
-		ssh -t "${usernames[$count]}""@$vm" \
-			'echo '"${passwords[$count]}"' \
-			| sudo -S bash -c "at -f \
-			$(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at now"'
-		status=$?
-	else
-		ssh -t "${usernames[$count]}""@$vm" \
-			'echo '"${passwords[$count]}"' \
-			| sudo -S bash -c "at -f \
-			$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
-		status=$?
-	fi
-	if (( $status )); then
-		output "Backup failed for $vm."$'\n' 1
-	else
-		output "Backup started for $vm."$'\n' 0
-	fi
-	(( count+=1 ))
-	# Wait for vm to shutdown
-	while (( $(virsh -c $connect_uri list \
-		| grep "\<$vm\>" | wc -l) != 0 )); do
-		sleep 45
-	done
-done
+perform_vms_backups
 
 # And exit.
 script_exit 0
