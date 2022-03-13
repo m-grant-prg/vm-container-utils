@@ -331,6 +331,10 @@ get_usernames_and_passwords()
 				| sudo -S bash -c "ls > /dev/null"'
 			if (( $? )); then
 				msg="Login test failed for "
+				# Words of the form $'string' are treated
+				# specially. The word expands to "string",
+				# with backslash-escaped characters replaced
+				# as specified by the ANSI C standard.
 				msg+="${usernames[$count]} on $vm."$'\n'
 				output "$msg" 1
 			else
