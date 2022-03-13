@@ -63,6 +63,7 @@
 #				error could be in user name.		#
 # 13/03/2022	MG	1.0.3	Refactor check for running VMs into	#
 #				function.				#
+#				Refactor start VMs into function.	#
 #									#
 #########################################################################
 
@@ -88,7 +89,6 @@ declare -a passwords
 declare -i status=0
 username=""
 declare -a usernames
-vm=""
 declare -a vms
 weekly=false
 
@@ -292,6 +292,20 @@ ensure_vms_not_running()
 	done
 }
 
+# Start VMs.
+# Parameters - None.
+# No return value.
+start_vms()
+{
+	local vm
+
+	for vm in $vms; do
+		@bindir@/lqvm-start.sh -w -u $connect_uri -n $vm
+		std_cmd_err_handler $?
+		sleep 90
+	done
+}
+
 
 ########
 # Main #
@@ -303,12 +317,7 @@ proc_CL "$@"
 
 ensure_vms_not_running
 
-# start the VMs
-for vm in $vms; do
-	@bindir@/lqvm-start.sh -w -u $connect_uri -n $vm
-	std_cmd_err_handler $?
-	sleep 90
-done
+start_vms
 
 # Iterate over VM names getting sudo username and password and validating them.
 for vm in $vms; do
