@@ -61,6 +61,9 @@
 # 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
 # 28/11/2021	MG	1.0.3	Tighten SPDX tag.			#
 # 17/03/2022	MG	1.0.4	Add error checking for config file.	#
+#				validate_name() should not error out of	#
+#				pipe if grep has exit code 1 which just	#
+#				means not found.			#
 #									#
 #########################################################################
 
@@ -232,7 +235,7 @@ validate_name()
 	local -i name_matches
 
 	name_matches=$(virsh -c $connect_uri list --all \
-		| grep "\<$name\>" | wc -l)
+		| { grep "\<$name\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( !$name_matches )); then
 		output "No such VM $name" 1
