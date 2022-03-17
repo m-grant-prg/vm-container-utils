@@ -60,6 +60,7 @@
 # 21/08/2020	MG	1.0.1	Created.				#
 # 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
 # 28/11/2021	MG	1.0.3	Tighten SPDX tag.			#
+# 17/03/2022	MG	1.0.4	Add error checking for config file.	#
 #									#
 #########################################################################
 
@@ -69,7 +70,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.3				# Script version
+readonly version=1.0.4				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -152,7 +153,9 @@ proc_config_file()
 	IFS="="
 
 	exec 3<"$etclocation/lqvm.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
+		std_cmd_err_handler $?
 		case ${input[0]} in
 		connecturi)
 			connect_uri=${input[1]}
