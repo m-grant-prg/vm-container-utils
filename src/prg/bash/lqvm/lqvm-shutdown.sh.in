@@ -64,6 +64,7 @@
 #				validate_name() should not error out of	#
 #				pipe if grep has exit code 1 which just	#
 #				means not found.			#
+#				Refactor check that VM is running.	#
 #									#
 #########################################################################
 
@@ -243,20 +244,38 @@ validate_name()
 	fi
 }
 
-# Determine if the VM is running and set the golbal variable accordingly.
-# Parameters - none.
-# Return value - none.
+# Determine if the VM is running.
+# Parameters	1 - VM.
+#		2 - Variable to receive the result.
+# Return value - true or false in the variable specified above.
 is_vm_running()
 {
+	local __result=$2
+	local tmp_result
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$name\>" | wc -l)
+		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
-		vm_running=true
+		tmp_result="true"
 	else
-		vm_running=false
+		tmp_result="false"
+	fi
+	eval $__result="'$tmp_result'"
+}
+
+# Ensure relevant VM is running.
+# Parameters - None.
+# No return value.
+ensure_vm_is_running()
+{
+	local status
+
+	is_vm_running $name status
+	if ! $status; then
+		output "VM is not running." 1
+		script_exit 77
 	fi
 }
 
@@ -271,12 +290,7 @@ proc_CL "$@"
 
 validate_name
 
-is_vm_running
-
-if ! $vm_running; then
-	output "VM $name is not running." 1
-	script_exit 77
-fi
+ensure_vm_is_running
 
 output "Shutdown VM $name" 0
 virsh -c $connect_uri shutdown --mode=agent "$name"
