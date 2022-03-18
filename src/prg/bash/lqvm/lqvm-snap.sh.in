@@ -76,6 +76,7 @@
 #				validate_name() should not error out of	#
 #				pipe if grep has exit code 1 which just	#
 #				means not found.			#
+#				Refactor check that VM is not running.	#
 #									#
 #########################################################################
 
@@ -397,20 +398,38 @@ validate_name()
 	fi
 }
 
-# Determine if the VM is running and set the golbal variable accordingly.
-# Parameters - none.
-# Return value - none.
+# Determine if the VM is running.
+# Parameters	1 - VM.
+#		2 - Variable to receive the result.
+# Return value - true or false in the variable specified above.
 is_vm_running()
 {
+	local __result=$2
+	local tmp_result
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$name\>" | wc -l)
+		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
-		vm_running=true
+		tmp_result="true"
 	else
-		vm_running=false
+		tmp_result="false"
+	fi
+	eval $__result="'$tmp_result'"
+}
+
+# Ensure relevant VM is not running.
+# Parameters - None.
+# No return value.
+ensure_vm_is_not_running()
+{
+	local status
+
+	is_vm_running $name status
+	if $status; then
+		output "VM $name is running, please shutdown first." 1
+		script_exit 77
 	fi
 }
 
@@ -421,10 +440,6 @@ create_snapshot()
 {
 	local cmd
 
-	if $vm_running; then
-		output "VM $name is running, please shutdown first." 1
-		script_exit 77
-	fi
 	output "Creating snapshot $snapshot_name for VM $name" 0
 	cmd="virsh -c $connect_uri snapshot-create-as $name"
 	cmd+=" $snapshot_name \"$snapshot_description\""
@@ -446,11 +461,6 @@ create_auto_snapshot()
 	local snapname_determined=false
 	local snapshot
 	local snapshots
-
-	if $vm_running; then
-		output "VM $name is running, please shutdown first." 1
-		script_exit 77
-	fi
 
 	snapshot_name="Auto-$(date +%y%m%d)-$seq"
 	snapshots=$(virsh --connect qemu:///system snapshot-list "$name" \
@@ -695,11 +705,6 @@ delete_external_snapshot()
 # Return value - none.
 delete_snapshot()
 {
-	if $vm_running; then
-		output "VM $name is running, please shutdown first." 1
-		script_exit 77
-	fi
-
 	# Snapshot must exist.
 	virsh -c $connect_uri snapshot-info $name $snapshot_name 1>/dev/null
 	std_cmd_err_handler $?
@@ -721,11 +726,6 @@ delete_multiple_snapshots()
 {
 	local snap_is_current
 	local snap_list
-
-	if $vm_running; then
-		output "VM $name is running, please shutdown first." 1
-		script_exit 77
-	fi
 
 	output "Deleting snapshots for VM $name" 0
 
@@ -869,11 +869,6 @@ revert_external_snapshot()
 # Return value - none.
 revert_snapshot()
 {
-	if $vm_running; then
-		output "VM $name is running, please shutdown first." 1
-		script_exit 77
-	fi
-
 	snapshot_name=$(virsh -c $connect_uri snapshot-list $name --tree \
 		--current)
 	std_cmd_err_handler $?
@@ -899,7 +894,7 @@ proc_CL "$@"
 
 validate_name
 
-is_vm_running
+ensure_vm_is_not_running
 
 if $create; then
 	create_snapshot
