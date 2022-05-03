@@ -1,7 +1,7 @@
 #########################################################################
 #									#
 # Script ID: ./Makefile.am						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020, 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -29,6 +29,7 @@
 # 20/09/2021	MG	1.0.6	Add openSUSE.				#
 # 04/11/2021	MG	1.0.7	Fedora: Add 35 and remove 33.		#
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
+# 03/05/2022	MG	1.0.9	Add jammy.				#
 #									#
 #########################################################################
 
@@ -86,6 +87,12 @@ SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/basic
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/dev
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/dosab
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/apt
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/apt/sources.list.d
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/apt/trusted.gpg.d
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/basic
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/dev
+SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/dosab
 SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt
 SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt/trusted.gpg.d

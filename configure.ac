@@ -65,6 +65,7 @@
 # 05/01/2022	MG	1.0.8	Tidy-up program checks.			#
 #				Add missing program checks for lxc, 	#
 #				xmlstarlet, etc.			#
+# 03/05/2022	MG	1.0.9	Add config for jammy.			#
 #									#
 #########################################################################
 
@@ -79,7 +80,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2022  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.8 $])
+AC_REVISION([$Revision: 1.0.9 $])
 
 AC_PREREQ([2.69])
 
@@ -459,6 +460,12 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/ubuntu/focal/basic/Makefile
 		src/conf/etc/lxcu/ubuntu/focal/dev/Makefile
 		src/conf/etc/lxcu/ubuntu/focal/dosab/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/apt/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/basic/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/dev/Makefile
+		src/conf/etc/lxcu/ubuntu/jammy/dosab/Makefile
 		src/conf/etc/lxcu/ubuntu/xenial/apt/Makefile
 		src/conf/etc/lxcu/ubuntu/xenial/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/ubuntu/xenial/apt/trusted.gpg.d/Makefile
