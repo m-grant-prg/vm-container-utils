@@ -72,6 +72,7 @@
 # 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 # 05/05/2022	MG	1.0.6	Add pipefail.				#
 #				Add error checking to config file read.	#
+#				Enhance is_vm_running().		#
 #									#
 #########################################################################
 
@@ -323,21 +324,25 @@ validate_name()
 	fi
 }
 
-# Determine if the VM is running and set the golbal variable accordingly.
-# Parameters - none.
-# Return value - none.
+# Determine if the VM is running.
+# Parameters	1 - VM.
+#		2 - Variable to receive the result.
+# Return value - true or false in the variable specified above.
 is_vm_running()
 {
+	local __result=$2
+	local tmp_result
 	local -i vm_running_matches
 
 	vm_running_matches=$(virsh -c $connect_uri list \
-		| grep "\<$name\>" | wc -l)
+		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
-		vm_running=true
+		tmp_result="true"
 	else
-		vm_running=false
+		tmp_result="false"
 	fi
+	eval $__result="'$tmp_result'"
 }
 
 # Create the snapshot.
@@ -429,7 +434,7 @@ proc_CL "$@"
 
 validate_name
 
-is_vm_running
+is_vm_running $name vm_running
 if $vm_running; then
 	output "VM is already running." 1
 	script_exit 77
