@@ -63,8 +63,13 @@
 #				invocations with bindir.		#
 # 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
 # 05/05/2022	MG	1.0.5	Add error checking to config file read.	#
+#				Add pipefail and associated error	#
+#				handling.				#
 #									#
 #########################################################################
+
+
+set -o pipefail
 
 
 ##################
@@ -245,9 +250,11 @@ fi
 for machine in $machines; do
 	while (($(virsh -c $connect_uri list | tail --lines=+4 \
 		| wc -l) >= $max_conc_vms)); do
+		std_cmd_err_handler $?
 		sleep 45
 	done
 	@bindir@/lqvm-start.sh -w -u $connect_uri -n $machine
+	std_cmd_err_handler $?
 	sleep 120
 done
 
