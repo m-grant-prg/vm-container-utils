@@ -77,8 +77,12 @@
 #				pipe if grep has exit code 1 which just	#
 #				means not found.			#
 #				Refactor check that VM is not running.	#
+# 05/05/2022	MG	1.0.6	Add pipefail.				#
 #									#
 #########################################################################
+
+
+set -o pipefail
 
 
 ##################
@@ -86,7 +90,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
