@@ -63,8 +63,12 @@
 #				invocations with bindir.		#
 # 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
 # 05/05/2022	MG	1.0.5	Add error checking to config file read.	#
+#				Add pipefail.				#
 #									#
 #########################################################################
+
+
+set -o pipefail
 
 
 ##################
@@ -72,7 +76,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
