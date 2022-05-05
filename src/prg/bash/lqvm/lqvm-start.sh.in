@@ -71,6 +71,7 @@
 #				opposite values (up / down).		#
 # 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 # 05/05/2022	MG	1.0.6	Add pipefail.				#
+#				Add error checking to config file read.	#
 #									#
 #########################################################################
 
@@ -177,7 +178,9 @@ proc_config_file()
 	IFS="="
 
 	exec 3<"$etclocation/lqvm.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
+		std_cmd_err_handler $?
 		case ${input[0]} in
 		connecturi)
 			connect_uri=${input[1]}
