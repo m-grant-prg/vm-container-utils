@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvm-start.sh						#
-# Author: Copyright (C) 2020, 2021  Mark Grant				#
+# Author: Copyright (C) 2020-2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -70,8 +70,12 @@
 # 02/09/2021	MG	1.0.4	Ensure that Bridge and default have	#
 #				opposite values (up / down).		#
 # 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
+# 05/05/2022	MG	1.0.6	Add pipefail.				#
 #									#
 #########################################################################
+
+
+set -o pipefail
 
 
 ##################
@@ -79,7 +83,7 @@
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -392,6 +396,7 @@ process_bridge()
 	# status.
 	if (($(ip link show | grep "$ethernet_prefix.*$bridge.*state UP" \
 		| wc -l))); then
+		std_cmd_err_handler $?
 		virsh -c $connect_uri domif-setlink $name $bridge_mac_addr up
 		std_cmd_err_handler $?
 		if [[ -n $default_mac_addr ]]; then
