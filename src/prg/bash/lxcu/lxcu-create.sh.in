@@ -629,7 +629,7 @@ create_opensuse_type()
 {
 	# Install the development tools.
 	if [[ $1 == "dev" ]]; then
-		@bindir/lxcu-attach.sh -n $name \
+		@bindir@/lxcu-attach.sh -n $name \
 			-- sudo zypper -- -n install -t pattern devel_basis
 		std_cmd_err_handler $?
 	fi
