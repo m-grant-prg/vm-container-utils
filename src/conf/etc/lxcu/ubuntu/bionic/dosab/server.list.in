@@ -1,4 +1,4 @@
 # List of servers to test for availability.
 # For Ubuntu container name resolution this must be a FQDN even for a local
-# server. Hense available / unavailable scripts must be named accordingly.
+# server. Hence available / unavailable scripts must be named accordingly.
 hermes.mgent.home
