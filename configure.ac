@@ -66,6 +66,7 @@
 #				Add missing program checks for lxc, 	#
 #				xmlstarlet, etc.			#
 # 03/05/2022	MG	1.0.9	Add config for jammy.			#
+# 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2022  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.9 $])
+AC_REVISION([$Revision: 1.0.10 $])
 
 AC_PREREQ([2.69])
 
@@ -442,9 +443,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/fedora/35/basic/Makefile
 		src/conf/etc/lxcu/fedora/35/dev/Makefile
 		src/conf/etc/lxcu/fedora/35/dosab/Makefile
-		src/conf/etc/lxcu/opensuse/15.2/basic/Makefile
-		src/conf/etc/lxcu/opensuse/15.2/dev/Makefile
-		src/conf/etc/lxcu/opensuse/15.2/dosab/Makefile
 		src/conf/etc/lxcu/opensuse/15.3/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.3/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.3/dosab/Makefile

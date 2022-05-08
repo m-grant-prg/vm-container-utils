@@ -30,6 +30,7 @@
 # 04/11/2021	MG	1.0.7	Fedora: Add 35 and remove 33.		#
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
 # 03/05/2022	MG	1.0.9	Add jammy.				#
+# 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
 #									#
 #########################################################################
 
@@ -69,9 +70,6 @@ SUBDIRS += src/conf/etc/lxcu/fedora/34/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/35/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dosab
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/basic
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dev
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.2/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dosab
