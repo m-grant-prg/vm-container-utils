@@ -1,7 +1,7 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/fedora/34/dosab/Makefile.am		#
-# Author: Copyright (C) 2021  Mark Grant				#
+# Script ID: src/conf/etc/lxcu/fedora/36/dosab/Makefile.am		#
+# Author: Copyright (C) 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -17,13 +17,12 @@
 #									#
 # Date		Author	Version	Description				#
 #									#
-# 17/09/2021	MG	1.0.1	Initial release.			#
-# 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
+# 23/05/2022	MG	1.0.1	Initial release.			#
 #									#
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/34/dosab
+confdir = $(sysconfdir)/lxcu/fedora/36/dosab
 
 hermes.mgent.home.available hermes.mgent.home.unavailable hermes-beta.repo \
 	hermes-stable.repo server.list: Makefile

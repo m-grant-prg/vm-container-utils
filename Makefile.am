@@ -31,6 +31,7 @@
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
 # 03/05/2022	MG	1.0.9	Add jammy.				#
 # 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
+# 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
 #									#
 #########################################################################
 
@@ -64,9 +65,9 @@ SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/basic
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dev
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dosab
-SUBDIRS += src/conf/etc/lxcu/fedora/34/basic
-SUBDIRS += src/conf/etc/lxcu/fedora/34/dev
-SUBDIRS += src/conf/etc/lxcu/fedora/34/dosab
+SUBDIRS += src/conf/etc/lxcu/fedora/36/basic
+SUBDIRS += src/conf/etc/lxcu/fedora/36/dev
+SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/35/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dosab

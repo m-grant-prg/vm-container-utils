@@ -67,6 +67,7 @@
 #				xmlstarlet, etc.			#
 # 03/05/2022	MG	1.0.9	Add config for jammy.			#
 # 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
+# 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
 #									#
 #########################################################################
 
@@ -81,7 +82,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2022  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.10 $])
+AC_REVISION([$Revision: 1.0.11 $])
 
 AC_PREREQ([2.69])
 
@@ -437,9 +438,9 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/stretch/basic/Makefile
 		src/conf/etc/lxcu/debian/stretch/dev/Makefile
 		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
-		src/conf/etc/lxcu/fedora/34/basic/Makefile
-		src/conf/etc/lxcu/fedora/34/dev/Makefile
-		src/conf/etc/lxcu/fedora/34/dosab/Makefile
+		src/conf/etc/lxcu/fedora/36/basic/Makefile
+		src/conf/etc/lxcu/fedora/36/dev/Makefile
+		src/conf/etc/lxcu/fedora/36/dosab/Makefile
 		src/conf/etc/lxcu/fedora/35/basic/Makefile
 		src/conf/etc/lxcu/fedora/35/dev/Makefile
 		src/conf/etc/lxcu/fedora/35/dosab/Makefile

@@ -1,7 +1,7 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/fedora/34/basic/Makefile.am		#
-# Author: Copyright (C) 2021  Mark Grant				#
+# Script ID: src/conf/etc/lxcu/fedora/36/dev/Makefile.am		#
+# Author: Copyright (C) 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -17,25 +17,25 @@
 #									#
 # Date		Author	Version	Description				#
 #									#
-# 17/09/2021	MG	1.0.1	Initial release.			#
-# 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
+# 23/05/2022	MG	1.0.1	Initial release.			#
 #									#
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/34/basic
+confdir = $(sysconfdir)/lxcu/fedora/36/dev
 
-install.list: Makefile
+cache.list install.list: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
+cache.list: $(srcdir)/cache.list.in
 install.list: $(srcdir)/install.list.in
 
-conf_DATA = install.list
+conf_DATA = cache.list install.list
 
-EXTRA_DIST = $(srcdir)/install.list.in
+EXTRA_DIST = $(srcdir)/cache.list.in $(srcdir)/install.list.in
 
-CLEANFILES = *.tmp install.list
+CLEANFILES = *.tmp cache.list install.list
 
