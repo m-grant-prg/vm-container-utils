@@ -1,3 +1,37 @@
+2022-05-24 v1.0.15 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: Fedora 36 remove dev cache of gnu-getopt
+	lxcu: Replace EOL Fedora 34 with 36
+	lxcu: Fix typo in Autotools replacement variable
+	lxcu: Remove EOL openSUSE Leap 15.2
+	lxcu: Use FQDN for hermes
+	lqvm: start - Enhance is_vm_running()
+	lqvm: start - Add error checking to config file read
+	lqvm: start - Add pipefail
+	lqvm: snaps - Add pipefail
+	lqvm: snaps - Add error checking to config file read
+	lqvm: snap - add pipefail
+	lqvm: shutdown - add pipefail
+	lqvm: Add pipefail and associated error handling
+	lqvm: Add error checking to config file read
+	lxcu: Remove localectl set-keymap
+	lxcu: Add config for jammy
+	lqvm: Refactor check if VM is running
+	lqvm: Fix validate_name pipe error handling
+	lqvm: Add error handling to config file read
+	lqvm: Refactor check that VM is running
+	lqvm: Fix validate_name pipe rror handling
+	lqvm: Add error checking for config file read
+	lqvm: Add error checking to config file read
+	lqvm: Validate VM names before processing
+	lqvm: Fix incorrect indentation
+	lqvm: Add comment explaining $'string'
+	lqvm: Refactor perform backups to function
+	lqvm: Refactor get usernames and passwords into function
+	lqvm: Refactor start VMs into function
+	lqvm: Refactor check for running VMs into function
+	lqvm: Fix incorrect indentation
+	lqvm: Limit ssh password retries to zero
+
 2022-02-10 v1.0.14 Mark Grant <m.grant.prg@gmail.com>
 	* at: Tidy-up program checks
 	at: Add check for xmlstarlet, required at runtime
