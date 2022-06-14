@@ -32,6 +32,7 @@
 # 03/05/2022	MG	1.0.9	Add jammy.				#
 # 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
 # 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
+# 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
 #									#
 #########################################################################
 
@@ -71,6 +72,9 @@ SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/35/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/35/dosab
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dosab
