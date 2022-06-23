@@ -22,7 +22,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/opensuse/15.3/basic
+confdir = $(sysconfdir)/lxcu/opensuse/15.4/basic
 
 install.list: Makefile
 	mkdir -p $(@D)

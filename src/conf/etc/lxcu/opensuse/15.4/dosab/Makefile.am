@@ -22,7 +22,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/opensuse/15.3/dosab
+confdir = $(sysconfdir)/lxcu/opensuse/15.4/dosab
 
 hermes.mgent.home.available hermes.mgent.home.unavailable hermes-beta.repo \
 	hermes-stable.repo server.list: Makefile

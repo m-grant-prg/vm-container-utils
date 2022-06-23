@@ -22,7 +22,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/opensuse/15.3/dev
+confdir = $(sysconfdir)/lxcu/opensuse/15.4/dev
 
 cache.list install.list: Makefile
 	mkdir -p $(@D)
