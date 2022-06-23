@@ -106,6 +106,7 @@
 #				that is needed. Also setting the	#
 #				console errors on jammy with keymap not	#
 #				found.					#
+# 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
 #									#
 #########################################################################
 
@@ -118,7 +119,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.5				# Script version
+readonly version=1.2.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -677,7 +678,7 @@ create_opensuse()
 
 	# Add the opeSUSE Build Service repository.
 	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/openSUSE_Leap_$rel/home:m-grant-prg.repo
+		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/$rel/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
