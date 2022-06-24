@@ -1,3 +1,9 @@
+2022-06-24 v1.0.16 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: OBS repo URL changed for openSUSE 15.4
+	lxcu: Fix cut and paste 15.3 to 15.4 omission
+	at: Upgrade bootstrap.sh to v1.5.1
+	lxcu: Add config for openSUSE Leap 15.4
+
 2022-05-24 v1.0.15 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Fedora 36 remove dev cache of gnu-getopt
 	lxcu: Replace EOL Fedora 34 with 36
