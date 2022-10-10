@@ -71,6 +71,7 @@
 # 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
 # 10/10/2022	MG	1.0.13	Separate AutoTools generated files from	#
 #				project root.				#
+#				Use AC MSG CHECKING where appropriate.	#
 #									#
 #########################################################################
 
@@ -164,12 +165,13 @@ AC_ARG_ENABLE([distcheckfake],
 	esac],[distcheckfake=false])
 AM_CONDITIONAL([DISTCHECKFAKE], [test x$distcheckfake = xtrue])
 
+AC_MSG_CHECKING([whether to use workarounds to facilitate distcheck])
 if test "x${distcheckfake}" = xtrue; then
-	AC_SUBST([logrotateloc], ["$sysconfdir/logrotate.d"])
-	AC_MSG_NOTICE([using substitute paths to facilitate distcheck])
+	AC_SUBST(logrotateloc, "$sysconfdir/logrotate.d")
+	AC_MSG_RESULT([yes])
 else
-	AC_SUBST([logrotateloc], ["/etc/logrotate.d"])
-	AC_MSG_NOTICE([using distcheck incompatible absolute based paths])
+	AC_SUBST(logrotateloc, "/etc/logrotate.d")
+	AC_MSG_RESULT([no])
 fi
 
 
