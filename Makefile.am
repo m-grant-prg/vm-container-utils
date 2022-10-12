@@ -33,6 +33,7 @@
 # 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
 # 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
 # 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
+# 12/10/2022	MG	1.0.13	Remove superfluous disctcheckfake.	#
 #									#
 #########################################################################
 
@@ -40,7 +41,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 
-AM_DISTCHECK_CONFIGURE_FLAGS = --enable-distcheckfake=yes
+AM_DISTCHECK_CONFIGURE_FLAGS =
 
 
 SUBDIRS = src/conf/etc/lqvm

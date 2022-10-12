@@ -10,17 +10,10 @@
 # AutoConf script file to configure vm-container-utils project.		#
 #									#
 # configure cmd line syntax:						#
-# ./configure	[--enable-distcheckfake=<yes|no> [default: no]]		#
+# ./configure								#
 #									#
 # Parameters generic description. For specifics to this configure.ac	#
 # please see inline comments at the point of definition:-		#
-# --enable-distcheckfake						#
-#	Enables the replacement of an absolute directory path specified	#
-#	in a variable, with a value based on AutoTools standard		#
-#	directories. This enables the Makefile.am to use the AT		#
-#	variable based value when running distcheck and the absolute	#
-#	path for all else. Hence distcheck can now succeed when it	#
-#	would normally fail.						#
 #									#
 # Layout: (Only relevant sections will exist).				#
 # ChangeLog : High level ChangeLog					#
@@ -69,9 +62,10 @@
 # 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
 # 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
 # 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
-# 10/10/2022	MG	1.0.13	Separate AutoTools generated files from	#
+# 12/10/2022	MG	1.0.13	Separate AutoTools generated files from	#
 #				project root.				#
 #				Use AC MSG CHECKING where appropriate.	#
+#				Remove superfluous distcheckkfake.	#
 #									#
 #########################################################################
 
@@ -137,42 +131,6 @@ AM_INIT_AUTOMAKE([-Wall -Werror subdir-objects tar-pax])
 # ACLOCAL_AMFLAGS = -I m4 -I m4extra
 #
 AC_CONFIG_MACRO_DIR([m4])
-
-
-#########################################
-#					#
-# SECTION  3: Command line arguments	#
-#					#
-#########################################
-
-AC_MSG_NOTICE(processing command line arguments)
-
-#
-# If a file location has to be fixed, e.g. /etc/foo.conf and never
-# /usr/local/etc/foo.conf, then make distcheck will fail. Setting this flag
-# allows make distcheck to locate the file in an AT standard directory-based
-# location.
-# eg /usr/local/etc/foo.conf.
-# and hence succeed.
-#
-AC_ARG_ENABLE([distcheckfake],
-	AS_HELP_STRING([--enable-distcheckfake], [enable running of distcheck]),
-	[case "${enableval}" in
-		yes) distcheckfake=true ;;
-		no)  distcheckfake=false ;;
-		*) AC_MSG_ERROR([bad value ${enableval} for \
-			--enable-distcheckfake]) ;;
-	esac],[distcheckfake=false])
-AM_CONDITIONAL([DISTCHECKFAKE], [test x$distcheckfake = xtrue])
-
-AC_MSG_CHECKING([whether to use workarounds to facilitate distcheck])
-if test "x${distcheckfake}" = xtrue; then
-	AC_SUBST(logrotateloc, "$sysconfdir/logrotate.d")
-	AC_MSG_RESULT([yes])
-else
-	AC_SUBST(logrotateloc, "/etc/logrotate.d")
-	AC_MSG_RESULT([no])
-fi
 
 
 #########################################
