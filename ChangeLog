@@ -1,3 +1,16 @@
+2022-11-21 v1.1.1 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Use new libmgec7 and libmgesysutils2
+
+2022-10-16 v1.1.0 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Use new libmgec7 and libmgesysutils2
+	actions: Run on Focal 20.04
+	at: Remove superfluous distcheckfake
+	at: Use AC_MSG_CHECKING where appropriate
+	at: Use AC_CONFIG_AUX_DIR
+	git: Update gitignore to v1.0.9
+	at: Upgrade bootstrap.sh to v1.5.4
+	editors: Add editorconfig v1.0.3
+
 2022-06-24 v1.0.16 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: OBS repo URL changed for openSUSE 15.4
 	lxcu: Fix cut and paste 15.3 to 15.4 omission
