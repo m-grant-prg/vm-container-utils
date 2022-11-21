@@ -4,7 +4,7 @@ libtool-bin pkg-config
 gdb valgrind
 dia doxygen graphviz
 txt2man txt2manwrap
-libmgec2-dev libmgec2
-libmgesysutils-dev libmgesysutils1
+libmgec7-dev libmgec7
+libmgesysutils2-dev libmgesysutils2
 libssh-gcrypt-dev libssh-gcrypt-4
 
