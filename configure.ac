@@ -68,6 +68,7 @@
 #				Remove superfluous distcheckkfake.	#
 # 23/11/2022	MG	1.0.14	Remove EOL 35.				#
 #				Remove EOL 15.3				#
+#				Add 37.					#
 #									#
 #########################################################################
 
@@ -406,6 +407,9 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/stretch/basic/Makefile
 		src/conf/etc/lxcu/debian/stretch/dev/Makefile
 		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
+		src/conf/etc/lxcu/fedora/37/basic/Makefile
+		src/conf/etc/lxcu/fedora/37/dev/Makefile
+		src/conf/etc/lxcu/fedora/37/dosab/Makefile
 		src/conf/etc/lxcu/fedora/36/basic/Makefile
 		src/conf/etc/lxcu/fedora/36/dev/Makefile
 		src/conf/etc/lxcu/fedora/36/dosab/Makefile

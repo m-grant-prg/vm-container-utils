@@ -36,6 +36,7 @@
 # 12/10/2022	MG	1.0.13	Remove superfluous disctcheckfake.	#
 # 23/11/2022	MG	1.0.14	Remove EOL 35.				#
 #				Remove EOL 15.3				#
+#				Add 37.					#
 #									#
 #########################################################################
 
@@ -69,6 +70,9 @@ SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/basic
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dev
 SUBDIRS += src/conf/etc/lxcu/debian/stretch/dosab
+SUBDIRS += src/conf/etc/lxcu/fedora/37/basic
+SUBDIRS += src/conf/etc/lxcu/fedora/37/dev
+SUBDIRS += src/conf/etc/lxcu/fedora/37/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/36/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/36/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
