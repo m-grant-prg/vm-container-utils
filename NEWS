@@ -1,3 +1,8 @@
+Release 1.1.2 2022-11-23
+lxcu: Remove EOL 35
+lxcu: Remove EOL 15.3
+lxcu: Add 37
+
 Release 1.1.1 2022-11-21
 No user visible changes.
 For technical change information please refer to the ChangeLog.

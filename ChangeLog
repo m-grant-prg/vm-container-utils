@@ -1,3 +1,8 @@
+2022-11-23 v1.1.2 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: Remove EOL 35
+	lxcu: Remove EOL 15.3
+	lxcu: Add 37
+
 2022-11-21 v1.1.1 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Use new libmgec7 and libmgesysutils2
 
