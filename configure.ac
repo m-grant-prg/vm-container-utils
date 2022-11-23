@@ -66,6 +66,7 @@
 #				project root.				#
 #				Use AC MSG CHECKING where appropriate.	#
 #				Remove superfluous distcheckkfake.	#
+# 23/11/2022	MG	1.0.14	Remove EOL 35.				#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2022  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.13 $])
+AC_REVISION([$Revision: 1.0.14 $])
 
 AC_PREREQ([2.69])
 
@@ -407,9 +408,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/fedora/36/basic/Makefile
 		src/conf/etc/lxcu/fedora/36/dev/Makefile
 		src/conf/etc/lxcu/fedora/36/dosab/Makefile
-		src/conf/etc/lxcu/fedora/35/basic/Makefile
-		src/conf/etc/lxcu/fedora/35/dev/Makefile
-		src/conf/etc/lxcu/fedora/35/dosab/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dosab/Makefile

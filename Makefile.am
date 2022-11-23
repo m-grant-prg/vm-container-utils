@@ -34,6 +34,7 @@
 # 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
 # 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
 # 12/10/2022	MG	1.0.13	Remove superfluous disctcheckfake.	#
+# 23/11/2022	MG	1.0.14	Remove EOL 35.				#
 #									#
 #########################################################################
 
@@ -70,9 +71,6 @@ SUBDIRS += src/conf/etc/lxcu/debian/stretch/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/36/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/36/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
-SUBDIRS += src/conf/etc/lxcu/fedora/35/basic
-SUBDIRS += src/conf/etc/lxcu/fedora/35/dev
-SUBDIRS += src/conf/etc/lxcu/fedora/35/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
