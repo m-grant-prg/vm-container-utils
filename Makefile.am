@@ -35,6 +35,7 @@
 # 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
 # 12/10/2022	MG	1.0.13	Remove superfluous disctcheckfake.	#
 # 23/11/2022	MG	1.0.14	Remove EOL 35.				#
+#				Remove EOL 15.3				#
 #									#
 #########################################################################
 
@@ -74,9 +75,6 @@ SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/basic
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dev
-SUBDIRS += src/conf/etc/lxcu/opensuse/15.3/dosab
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d

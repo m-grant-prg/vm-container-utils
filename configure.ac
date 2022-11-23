@@ -67,6 +67,7 @@
 #				Use AC MSG CHECKING where appropriate.	#
 #				Remove superfluous distcheckkfake.	#
 # 23/11/2022	MG	1.0.14	Remove EOL 35.				#
+#				Remove EOL 15.3				#
 #									#
 #########################################################################
 
@@ -411,9 +412,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/opensuse/15.4/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dosab/Makefile
-		src/conf/etc/lxcu/opensuse/15.3/basic/Makefile
-		src/conf/etc/lxcu/opensuse/15.3/dev/Makefile
-		src/conf/etc/lxcu/opensuse/15.3/dosab/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d/Makefile
