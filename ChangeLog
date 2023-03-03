@@ -1,3 +1,10 @@
+2023-03-03 v1.1.3 Mark Grant <m.grant.prg@gmail.com>
+	* conf: lxcu: Set jammy to use apt-cacher-ng if available
+	git: Update mailmap to v1.0.3
+	git: Update gitignore to v1.0.11
+	git: Update gitattributes to v1.0.4
+	editors: Update editorconfig to v1.0.4
+
 2022-11-23 v1.1.2 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Remove EOL 35
 	lxcu: Remove EOL 15.3
