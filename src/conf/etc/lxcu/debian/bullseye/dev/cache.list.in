@@ -1,9 +1,4 @@
-autoconf autoconf-archive automake autotools-dev
 default-jdk libgetopt-java
-libtool-bin pkg-config
-gdb valgrind
-dia doxygen graphviz
-txt2man txt2manwrap
 libmgec7-dev libmgec7
 libmgesysutils2-dev libmgesysutils2
 libssh-gcrypt-dev libssh-gcrypt-4

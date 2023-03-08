@@ -1,4 +1,10 @@
-git
-sparse
 at-spi2-atk-gtk2
+autoconf autoconf-archive automake
+libtool pkg-config
+gcc gdb valgrind
+sparse
+clang
+git
+dia doxygen graphviz graphviz-gd
+txt2man txt2manwrap
 

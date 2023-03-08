@@ -1,3 +1,9 @@
-git
+autoconf autoconf-archive automake
+libtool pkgconf
+gcc gdb valgrind
 sparse
+clang
+git
+dia doxygen graphviz graphviz-gd
+txt2man txt2manwrap
 
