@@ -1,0 +1,5 @@
+default-jdk libgetopt-java
+libmgec7-dev libmgec7
+libmgesysutils2-dev libmgesysutils2
+libssh-gcrypt-dev libssh-gcrypt-4
+

@@ -69,6 +69,7 @@
 # 23/11/2022	MG	1.0.14	Remove EOL 35.				#
 #				Remove EOL 15.3				#
 #				Add 37.					#
+# 30/03/2023	MG	1.0.15	Add Debian testing.			#
 #									#
 #########################################################################
 
@@ -83,7 +84,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2023  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.14 $])
+AC_REVISION([$Revision: 1.0.15 $])
 
 AC_PREREQ([2.69])
 
@@ -407,6 +408,12 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/stretch/basic/Makefile
 		src/conf/etc/lxcu/debian/stretch/dev/Makefile
 		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
+		src/conf/etc/lxcu/debian/testing/apt/Makefile
+		src/conf/etc/lxcu/debian/testing/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/testing/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/testing/basic/Makefile
+		src/conf/etc/lxcu/debian/testing/dev/Makefile
+		src/conf/etc/lxcu/debian/testing/dosab/Makefile
 		src/conf/etc/lxcu/fedora/37/basic/Makefile
 		src/conf/etc/lxcu/fedora/37/dev/Makefile
 		src/conf/etc/lxcu/fedora/37/dosab/Makefile
