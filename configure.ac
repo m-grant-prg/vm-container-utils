@@ -70,6 +70,7 @@
 #				Remove EOL 15.3				#
 #				Add 37.					#
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
+#				Remove stretch.				#
 #									#
 #########################################################################
 
@@ -402,12 +403,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/buster/basic/Makefile
 		src/conf/etc/lxcu/debian/buster/dev/Makefile
 		src/conf/etc/lxcu/debian/buster/dosab/Makefile
-		src/conf/etc/lxcu/debian/stretch/apt/Makefile
-		src/conf/etc/lxcu/debian/stretch/apt/sources.list.d/Makefile
-		src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d/Makefile
-		src/conf/etc/lxcu/debian/stretch/basic/Makefile
-		src/conf/etc/lxcu/debian/stretch/dev/Makefile
-		src/conf/etc/lxcu/debian/stretch/dosab/Makefile
 		src/conf/etc/lxcu/debian/testing/apt/Makefile
 		src/conf/etc/lxcu/debian/testing/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/debian/testing/apt/trusted.gpg.d/Makefile

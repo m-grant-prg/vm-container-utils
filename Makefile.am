@@ -1,7 +1,7 @@
 #########################################################################
 #									#
 # Script ID: ./Makefile.am						#
-# Author: Copyright (C) 2020, 2022, 2023  Mark Grant			#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -38,6 +38,7 @@
 #				Remove EOL 15.3				#
 #				Add 37.					#
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
+#				Remove stretch.				#
 #									#
 #########################################################################
 
@@ -65,12 +66,6 @@ SUBDIRS += src/conf/etc/lxcu/debian/buster/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/debian/buster/basic
 SUBDIRS += src/conf/etc/lxcu/debian/buster/dev
 SUBDIRS += src/conf/etc/lxcu/debian/buster/dosab
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt/sources.list.d
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/apt/trusted.gpg.d
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/basic
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/dev
-SUBDIRS += src/conf/etc/lxcu/debian/stretch/dosab
 SUBDIRS += src/conf/etc/lxcu/debian/testing/apt
 SUBDIRS += src/conf/etc/lxcu/debian/testing/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/debian/testing/apt/trusted.gpg.d

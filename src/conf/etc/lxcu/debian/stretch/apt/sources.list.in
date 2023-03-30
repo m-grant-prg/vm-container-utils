@@ -1,8 +1,0 @@
-# apt sources file.
-
-deb http://deb.debian.org/debian @rel@ main contrib non-free
-
-deb http://deb.debian.org/debian-security/ @rel@/updates main contrib non-free
-
-deb http://deb.debian.org/debian @rel@-updates main contrib non-free
-

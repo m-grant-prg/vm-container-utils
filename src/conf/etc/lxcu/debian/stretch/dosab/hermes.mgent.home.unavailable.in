@@ -1,9 +1,0 @@
-# If the server is unavalable perform all the following commands.
-
-# Remove my APT repository on that server from my apt sources.
-rm -f /etc/apt/sources.list.d/hermes.list
-
-# Official and third-party source lists.
-cp /etc/dosab/obs.list.unavailable /etc/apt/sources.list.d/obs.list
-cp /etc/dosab/sources.list.unavailable /etc/apt/sources.list
-
