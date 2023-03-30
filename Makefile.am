@@ -39,6 +39,7 @@
 #				Add 37.					#
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
 #				Remove stretch.				#
+#				Remove xenial.				#
 #									#
 #########################################################################
 
@@ -99,12 +100,6 @@ SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/basic
 SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/dev
 SUBDIRS += src/conf/etc/lxcu/ubuntu/jammy/dosab
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt/sources.list.d
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/apt/trusted.gpg.d
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/basic
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/dev
-SUBDIRS += src/conf/etc/lxcu/ubuntu/xenial/dosab
 SUBDIRS += src/prg/bash/lxcu
 
 

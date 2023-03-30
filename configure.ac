@@ -71,6 +71,7 @@
 #				Add 37.					#
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
 #				Remove stretch.				#
+#				Remove xenial.				#
 #									#
 #########################################################################
 
@@ -436,12 +437,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/ubuntu/jammy/basic/Makefile
 		src/conf/etc/lxcu/ubuntu/jammy/dev/Makefile
 		src/conf/etc/lxcu/ubuntu/jammy/dosab/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/apt/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/apt/sources.list.d/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/apt/trusted.gpg.d/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/basic/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/dev/Makefile
-		src/conf/etc/lxcu/ubuntu/xenial/dosab/Makefile
 		src/prg/bash/lxcu/Makefile])
 
 AC_OUTPUT
