@@ -1,5 +1,3 @@
 default-jdk libgetopt-java
-libmgec2-dev libmgec2
-libmgesysutils-dev libmgesysutils1
 libssh-gcrypt-dev libssh-gcrypt-4
 

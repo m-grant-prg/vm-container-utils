@@ -6,5 +6,5 @@ sparse
 clang
 git
 dia doxygen graphviz graphviz-gd
-txt2man txt2manwrap
+txt2man
 

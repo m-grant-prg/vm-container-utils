@@ -7,5 +7,5 @@ sparse
 clang clang-tools iwyu
 git
 dia doxygen graphviz
-txt2man txt2manwrap
+txt2man
 
