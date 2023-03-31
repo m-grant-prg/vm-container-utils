@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-create.sh						#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -107,6 +107,8 @@
 #				console errors on jammy with keymap not	#
 #				found.					#
 # 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
+# 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
+#				cache.list file processing.		#
 #									#
 #########################################################################
 
@@ -119,7 +121,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.2.6				# Script version
+readonly version=1.2.7				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory
@@ -391,13 +393,14 @@ setup_git()
 create_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
@@ -543,13 +546,14 @@ create_fedora_type()
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
@@ -636,13 +640,14 @@ create_opensuse_type()
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?

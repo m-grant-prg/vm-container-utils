@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-upgrade.sh						#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -81,6 +81,8 @@
 #				actually remove with dnf autoremove.	#
 # 08/01/2022	MG	1.0.14	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
+# 31/03/2023	MG	1.0.15	Ignore comment lines in install and	#
+#				cache.list file processing.		#
 #									#
 #########################################################################
 
@@ -93,7 +95,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.14				# Script version
+readonly version=1.0.15				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -270,13 +272,14 @@ proc_CL()
 upgrade_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
@@ -312,13 +315,14 @@ upgrade_deb()
 upgrade_fedora_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
@@ -353,13 +357,14 @@ upgrade_fedora()
 upgrade_opensuse_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
-		cat $etclocation/$dist/$rel/$1/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$etclocation/$dist/$rel/$1/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		cat $etclocation/$dist/$rel/$1/cache.list \
+		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
 			| xargs @bindir@/lxcu-attach.sh -n $name \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?

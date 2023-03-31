@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-project-tmp.sh					#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -73,6 +73,8 @@
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
 # 08/01/2022	MG	1.0.9	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
+# 31/03/2023	MG	1.0.10	Ignore comment lines in install and	#
+#				cache.list file processing.		#
 #									#
 #########################################################################
 
@@ -85,7 +87,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.9				# Script version
+readonly version=1.0.10				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -267,13 +269,14 @@ proc_CL()
 apt_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list \
+		grep -v '^[[:blank:]]*#' $projectroot/lxcu/$dist/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$projectroot/lxcu/$dist/$rel/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
@@ -286,13 +289,14 @@ apt_install()
 dnf_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list \
+		grep -v '^[[:blank:]]*#' $projectroot/lxcu/$dist/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$projectroot/lxcu/$dist/$rel/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
@@ -305,13 +309,14 @@ dnf_install()
 zypper_install()
 {
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
-		cat $projectroot/lxcu/$dist/install.list \
+		grep -v '^[[:blank:]]*#' $projectroot/lxcu/$dist/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
-		cat $projectroot/lxcu/$dist/$rel/install.list \
+		grep -v '^[[:blank:]]*#' \
+			$projectroot/lxcu/$dist/$rel/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
