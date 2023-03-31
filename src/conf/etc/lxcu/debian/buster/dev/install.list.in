@@ -11,8 +11,6 @@ autoconf autoconf-archive automake autotools-dev
 libtool-bin pkg-config
 gcc gdb valgrind
 sparse
-clang iwyu
+clang clang-tools iwyu
 git
-dia doxygen graphviz
-txt2man
 

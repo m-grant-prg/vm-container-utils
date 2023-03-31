@@ -2,5 +2,7 @@
 # enough to warrant download caching.
 
 default-jdk libgetopt-java
+dia doxygen graphviz
 libssh-gcrypt-dev libssh-gcrypt-4
+txt2man txt2manwrap
 
