@@ -1,3 +1,6 @@
+# This file should contain packages which are required by package builds often
+# enough to warrant download caching.
+
 default-jdk libgetopt-java
 libssh-gcrypt-dev libssh-gcrypt-4
 
