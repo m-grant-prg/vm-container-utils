@@ -73,8 +73,10 @@
 # 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
 # 08/01/2022	MG	1.0.9	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
-# 31/03/2023	MG	1.0.10	Ignore comment lines in install and	#
+# 01/04/2023	MG	1.0.10	Ignore comment lines in install and	#
 #				cache.list file processing.		#
+#				The lxc.mount must be to a relative	#
+#				path.					#
 #									#
 #########################################################################
 
@@ -339,7 +341,7 @@ project=${fullprojectroot##*/}
 
 @bindir@/lxcu-copy.sh -n $name -N $project
 std_cmd_err_handler $?
-tmp="lxc.mount.entry = $fullprojectroot $contlocation/$project/rootfs/$project"
+tmp="lxc.mount.entry = $fullprojectroot home/$USER/$project"
 tmp+=" none bind,create=dir 0 0"
 echo $tmp | tee -a $contlocation/$project/config
 std_cmd_err_handler $?
@@ -366,7 +368,7 @@ ubuntu)
 	;;
 esac
 
-@bindir@/lxcu-attach.sh -n $project -- cp -- -vr $project build
+@bindir@/lxcu-attach.sh -n $project -- cp -- -vr home/$USER/$project build
 @bindir@/lxcu-attach.sh "-n $project -vHOME=/build/atbuild"
 
 lxc-stop -n $project
