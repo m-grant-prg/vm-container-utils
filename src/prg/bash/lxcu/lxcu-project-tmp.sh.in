@@ -77,6 +77,8 @@
 #				cache.list file processing.		#
 #				The lxc.mount must be to a relative	#
 #				path.					#
+#				A package index refresh is required for	#
+#				APT. Others are automatic.		#
 #									#
 #########################################################################
 
@@ -270,6 +272,8 @@ proc_CL()
 # No return value.
 apt_install()
 {
+	@bindir@/lxcu-attach.sh -n $project -- sudo apt-get update
+	std_cmd_err_handler $?
 	if [[ -e $projectroot/lxcu/$dist/install.list ]]; then
 		grep -v '^[[:blank:]]*#' $projectroot/lxcu/$dist/install.list \
 			| xargs @bindir@/lxcu-attach.sh -n $project \
