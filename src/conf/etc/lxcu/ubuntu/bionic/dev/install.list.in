@@ -13,6 +13,4 @@ gcc gdb valgrind
 sparse
 clang iwyu
 git
-dia doxygen graphviz
-txt2man
 

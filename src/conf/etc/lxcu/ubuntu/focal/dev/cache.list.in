@@ -1,6 +1,10 @@
 # This file should contain packages which are required by package builds often
 # enough to warrant download caching.
+# It should not contain your own packages, to avoid circular dependencies
+# (chicken and egg).
 
 default-jdk libgetopt-java
+dia doxygen graphviz
 libssh-gcrypt-dev libssh-gcrypt-4
+txt2man
 
