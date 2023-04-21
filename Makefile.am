@@ -40,6 +40,8 @@
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
 #				Remove stretch.				#
 #				Remove xenial.				#
+# 21/04/2023	MG	1.0.16	Enable use of v1.1.1~rc1 type vesrion	#
+#				numbers for source tarballs.		#
 #									#
 #########################################################################
 
@@ -107,12 +109,13 @@ doc_DATA = AUTHORS ChangeLog COPYING NEWS README
 
 srctarball:
 	@cwd="$${PWD}" && \
-	targ="$${cwd}/@PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz" && \
+	varg="$$(echo @PACKAGE_VERSION@ | sed -e s/\-rc/\~rc/ )" && \
+	targ="$${cwd}/@PACKAGE_TARNAME@-$${varg}.tar.gz" && \
 	cd @srcdir@ && \
 	echo "making srctarball from @srcdir@" && \
 	echo "GA	$${targ}" && \
 	git archive --format=tar.gz \
-		--prefix=@PACKAGE_TARNAME@-@PACKAGE_VERSION@/ \
+		--prefix=@PACKAGE_TARNAME@-$${varg}/ \
 		--output=$${targ} \
 		HEAD && \
 	cd -
