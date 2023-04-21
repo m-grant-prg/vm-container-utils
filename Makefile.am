@@ -42,6 +42,7 @@
 #				Remove xenial.				#
 # 21/04/2023	MG	1.0.16	Enable use of v1.1.1~rc1 type vesrion	#
 #				numbers for source tarballs.		#
+#				Add 38.					#
 #									#
 #########################################################################
 
@@ -75,6 +76,9 @@ SUBDIRS += src/conf/etc/lxcu/debian/testing/apt/trusted.gpg.d
 SUBDIRS += src/conf/etc/lxcu/debian/testing/basic
 SUBDIRS += src/conf/etc/lxcu/debian/testing/dev
 SUBDIRS += src/conf/etc/lxcu/debian/testing/dosab
+SUBDIRS += src/conf/etc/lxcu/fedora/38/basic
+SUBDIRS += src/conf/etc/lxcu/fedora/38/dev
+SUBDIRS += src/conf/etc/lxcu/fedora/38/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/37/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dosab

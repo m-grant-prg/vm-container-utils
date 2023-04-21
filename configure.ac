@@ -72,6 +72,7 @@
 # 30/03/2023	MG	1.0.15	Add Debian testing.			#
 #				Remove stretch.				#
 #				Remove xenial.				#
+# 21/04/2023	MG	1.0.16	Add 38.					#
 #									#
 #########################################################################
 
@@ -86,7 +87,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2023  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.15 $])
+AC_REVISION([$Revision: 1.0.16 $])
 
 AC_PREREQ([2.69])
 
@@ -410,6 +411,9 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/debian/testing/basic/Makefile
 		src/conf/etc/lxcu/debian/testing/dev/Makefile
 		src/conf/etc/lxcu/debian/testing/dosab/Makefile
+		src/conf/etc/lxcu/fedora/38/basic/Makefile
+		src/conf/etc/lxcu/fedora/38/dev/Makefile
+		src/conf/etc/lxcu/fedora/38/dosab/Makefile
 		src/conf/etc/lxcu/fedora/37/basic/Makefile
 		src/conf/etc/lxcu/fedora/37/dev/Makefile
 		src/conf/etc/lxcu/fedora/37/dosab/Makefile
