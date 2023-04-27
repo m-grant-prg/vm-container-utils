@@ -73,6 +73,7 @@
 #				Remove stretch.				#
 #				Remove xenial.				#
 # 21/04/2023	MG	1.0.16	Add 38.					#
+# 28/04/2023	MG	1.0.17	Remove EOL 36.				#
 #									#
 #########################################################################
 
@@ -87,7 +88,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2023  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.16 $])
+AC_REVISION([$Revision: 1.0.17 $])
 
 AC_PREREQ([2.69])
 
@@ -417,9 +418,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/fedora/37/basic/Makefile
 		src/conf/etc/lxcu/fedora/37/dev/Makefile
 		src/conf/etc/lxcu/fedora/37/dosab/Makefile
-		src/conf/etc/lxcu/fedora/36/basic/Makefile
-		src/conf/etc/lxcu/fedora/36/dev/Makefile
-		src/conf/etc/lxcu/fedora/36/dosab/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dosab/Makefile

@@ -43,6 +43,7 @@
 # 21/04/2023	MG	1.0.16	Enable use of v1.1.1~rc1 type vesrion	#
 #				numbers for source tarballs.		#
 #				Add 38.					#
+# 28/04/2023	MG	1.0.17	Remove EOL 36.				#
 #									#
 #########################################################################
 
@@ -82,9 +83,6 @@ SUBDIRS += src/conf/etc/lxcu/fedora/38/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/37/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dosab
-SUBDIRS += src/conf/etc/lxcu/fedora/36/basic
-SUBDIRS += src/conf/etc/lxcu/fedora/36/dev
-SUBDIRS += src/conf/etc/lxcu/fedora/36/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
