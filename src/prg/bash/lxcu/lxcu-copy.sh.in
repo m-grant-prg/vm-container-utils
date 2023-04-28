@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lxcu-copy.sh						#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -67,6 +67,7 @@
 # 28/11/2021	MG	1.0.4	Tighten SPDX tag.			#
 # 08/01/2022	MG	1.0.5	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
+# 28/04/2023	MG	1.0.6	Remove unused variable outputprefix.	#
 #									#
 #########################################################################
 
@@ -77,9 +78,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory

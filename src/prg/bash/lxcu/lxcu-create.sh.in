@@ -109,6 +109,7 @@
 # 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
 # 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
 #				cache.list file processing.		#
+# 28/04/2023	MG	1.2.8	Remove unused variable outputprefix.	#
 #									#
 #########################################################################
 
@@ -119,9 +120,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
-readonly version=1.2.7				# Script version
+readonly version=1.2.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly hostetclocation=@sysconfdir@		# Path to config directory

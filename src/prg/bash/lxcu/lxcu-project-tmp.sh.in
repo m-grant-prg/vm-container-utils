@@ -79,6 +79,7 @@
 #				path.					#
 #				A package index refresh is required for	#
 #				APT. Others are automatic.		#
+# 28/04/2023	MG	1.0.11	Remove unused variable outputprefix.	#
 #									#
 #########################################################################
 
@@ -89,9 +90,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
-readonly version=1.0.10				# Script version
+readonly version=1.0.11				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
