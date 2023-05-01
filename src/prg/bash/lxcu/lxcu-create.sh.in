@@ -109,7 +109,7 @@
 # 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
 # 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
 #				cache.list file processing.		#
-# 28/04/2023	MG	1.2.8	Remove unused variable outputprefix.	#
+# 01/05/2023	MG	1.2.8	Remove unused variables.		#
 #									#
 #########################################################################
 
@@ -123,7 +123,6 @@ set -o pipefail
 readonly version=1.2.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
-readonly hostetclocation=@sysconfdir@		# Path to config directory
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
 
 obs_rel=""	# OBS Release number (Debian)
@@ -257,9 +256,6 @@ proc_config_file()
 			;;
 		bridge)
 			bridge=${input[1]}
-			;;
-		ethernetprefix)
-			ethernetprefix=${input[1]}
 			;;
 		vni)
 			vni=${input[1]}
