@@ -109,9 +109,10 @@
 # 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
 # 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
 #				cache.list file processing.		#
-# 04/05/2023	MG	1.2.8	Remove unused variables.		#
+# 05/05/2023	MG	1.2.8	Remove unused variables.		#
 #				Double quote variables to prevent word	#
-#				splitting and globbing.
+#				splitting and globbing.			#
+#				Remove cat and use cmd <		#
 #									#
 #########################################################################
 
@@ -363,11 +364,11 @@ network_config()
 		cp -v "$contlocation/$name/config" \
 			"$contlocation/$name/config-$bridge"
 		std_cmd_err_handler $?
-		cat "$etclocation/$bridge.conf" \
-			| tee -a "$contlocation/$name/config-$bridge"
+		tee -a "$contlocation/$name/config-$bridge" \
+			< "$etclocation/$bridge.conf"
 		std_cmd_err_handler $?
 	fi
-	cat "$etclocation/$vni.conf" | tee -a "$contlocation/$name/config"
+	tee -a "$contlocation/$name/config" < "$etclocation/$vni.conf"
 	std_cmd_err_handler $?
 }
 
