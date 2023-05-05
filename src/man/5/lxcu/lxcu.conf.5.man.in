@@ -9,8 +9,6 @@ dist=	default distribution
 
 rel=	default release
 
-arch=	default architecture
-
 contlocation=	The location of the container files
 
 bridge= 	The name of the bridge network interfcae if there is one,
@@ -39,7 +37,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020-2022 Mark Grant.
+Copyright (C) 2020-2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

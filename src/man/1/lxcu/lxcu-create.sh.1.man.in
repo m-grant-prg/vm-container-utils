@@ -4,12 +4,10 @@ SYNOPSIS
 lxcu-create.sh [OPTIONS]
 DESCRIPTION
 lxcu-create.sh will create a container of a certain type for a specified
-distribution, release and architecture. These types specify what extra packages
-to install or cache and are specified in the sysconfdir/lxcu directory. The only
-mandatory type is 'basic' so this must always be specified.
+distribution and release. These types specify what extra packages to install or
+cache and are specified in the sysconfdir/lxcu directory. The only mandatory
+type is 'basic' so this must always be specified.
 OPTIONS
--a, --arch 'arch-name' Architecture for the container
-
 -d, --dist 'distribution-name'
 
 -h, --help Display this help information
@@ -34,7 +32,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

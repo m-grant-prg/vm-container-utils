@@ -17,8 +17,7 @@
 # Purpose:								#
 # A script to create linux containers.					#
 #									#
-# Syntax:	lxcu-create.sh [ -a or --arch 'arch-name'		#
-#			|| -d or --dist 'distribution-name'		#
+# Syntax:	lxcu-create.sh [ -d or --dist 'distribution-name'	#
 #			|| -h or --help					#
 #			|| -n or --name 'container name'		#
 #			|| -r or --rel 'release-name'			#
@@ -113,6 +112,7 @@
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
 #				Remove cat and use cmd <		#
+#				Remove arch - unused and unneeded.	#
 #									#
 #########################################################################
 
@@ -146,7 +146,6 @@ usage()
 {
 cat << EOF
 Usage is $0 [options]
-	-a or --arch 'arch-name' Architecture for the container
 	-d or --dist 'distribution-name'
 	-h or --help Display this help information
 	-n or --name 'container name'
@@ -251,9 +250,6 @@ proc_config_file()
 			rel=${input[1]}
 			determine_obs_release
 			;;
-		arch)
-			arch=${input[1]}
-			;;
 		contlocation)
 			contlocation=$(echo "${input[1]}" | envsubst)
 			;;
@@ -291,7 +287,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o a:d:hn:r:t:V --long arch:,dist:,help,name:,rel:"
+	tmp="getopt -o d:hn:r:t:V --long dist:,help,name:,rel:"
 	tmp+=",type:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
@@ -301,10 +297,6 @@ proc_CL()
 
 	while true; do
 		case "$1" in
-		-a|----arch)
-			arch=$2
-			shift 2
-			;;
 		-d|--dist)
 			dist=$2
 			shift 2
