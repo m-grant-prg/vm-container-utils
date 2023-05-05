@@ -287,7 +287,7 @@ until (@bindir@/lxcu-attach.sh -n "$name" \
 done
 
 # Wait for the server dependency service to complete.
-until !(@bindir@/lxcu-attach.sh -n "$name" \
+until ! (@bindir@/lxcu-attach.sh -n "$name" \
 	-- sudo systemctl is-active -- -q server-dependency); do
 	sleep 2
 done
