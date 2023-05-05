@@ -79,9 +79,11 @@
 #				path.					#
 #				A package index refresh is required for	#
 #				APT. Others are automatic.		#
-# 04/05/2023	MG	1.0.11	Remove unused variable outputprefix.	#
+# 05/05/2023	MG	1.0.11	Remove unused variable outputprefix.	#
 #				Double quote variables to prevent word	#
-#				splitting and globbing.
+#				splitting and globbing.			#
+#				Remove shellcheck warning for cd	#
+#				failure, covered by std_cmd_err_handler	#
 #									#
 #########################################################################
 
@@ -342,10 +344,13 @@ proc_config_file
 
 proc_CL "$@"
 
+# shellcheck disable=SC2164 # cd failure covered by std_cmd_err_handler.
 cd "$projectroot"
 std_cmd_err_handler $?
 fullprojectroot=$(pwd)
+# shellcheck disable=SC2164 # cd failure covered by std_cmd_err_handler.
 cd -
+std_cmd_err_handler $?
 project=${fullprojectroot##*/}
 
 @bindir@/lxcu-copy.sh -n "$name" -N "$project"
