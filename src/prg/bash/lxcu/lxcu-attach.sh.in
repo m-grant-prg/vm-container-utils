@@ -58,9 +58,10 @@
 # Date		Author	Version	Description				#
 #									#
 # 08/01/2022	MG	1.0.1	Created.				#
-# 28/04/2023	MG	1.0.2	Remove unused variable output prefix.	#
+# 05/05/2023	MG	1.0.2	Remove unused variable output prefix.	#
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
+#				Silence shellcheck array warning.	#
 #									#
 #########################################################################
 
@@ -199,6 +200,8 @@ proc_CL()
 	# line. This must be inputised before being passed on in order to
 	# maintain original quoting. It can then be 'eval'ed.
 	if (( $# )); then
+		# This works as intended so silence shellcheck warning.
+		# shellcheck disable=SC2124
 		configcli_extra_args=${@@Q}
 	fi
 }
