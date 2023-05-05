@@ -416,14 +416,17 @@ create_deb_type()
 create_deb()
 {
 	# Set up the initial apt files, (just sources.list).
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo cp -v $(find "$etclocation/$dist/$rel/apt" -maxdepth 1 -type f) \
 		"$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
 	sudo chown -v 100000:100000 "$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
@@ -462,16 +465,20 @@ create_deb()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
@@ -487,10 +494,12 @@ create_deb()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@rel@|$rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
 			-type f)
 	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
 			-type f)
