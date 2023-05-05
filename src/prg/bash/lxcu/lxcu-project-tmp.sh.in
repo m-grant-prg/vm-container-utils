@@ -84,6 +84,8 @@
 #				splitting and globbing.			#
 #				Remove shellcheck warning for cd	#
 #				failure, covered by std_cmd_err_handler	#
+#				Silence shellcheck use subshell warning	#
+#				as a variable is being assigned.		#
 #									#
 #########################################################################
 
@@ -348,7 +350,9 @@ proc_CL "$@"
 cd "$projectroot"
 std_cmd_err_handler $?
 fullprojectroot=$(pwd)
-# shellcheck disable=SC2164 # cd failure covered by std_cmd_err_handler.
+# cd failure covered by std_cmd_err_handler.
+# Cannot use subshell as assigning variable.
+# shellcheck disable=SC2164,2103
 cd -
 std_cmd_err_handler $?
 project=${fullprojectroot##*/}
