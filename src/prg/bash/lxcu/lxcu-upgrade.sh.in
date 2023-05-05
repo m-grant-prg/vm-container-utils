@@ -83,7 +83,9 @@
 #				lxc-attach				#
 # 31/03/2023	MG	1.0.15	Ignore comment lines in install and	#
 #				cache.list file processing.		#
-# 28/04/2023	MG	1.0.16	Remove unused variable outputprefix.	#
+# 04/05/2023	MG	1.0.16	Remove unused variable outputprefix.	#
+#				Double quote variables to prevent word	#
+#				splitting and globbing.			#
 #									#
 #########################################################################
 
@@ -143,7 +145,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -152,7 +154,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -238,8 +240,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -272,14 +274,15 @@ upgrade_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
@@ -290,21 +293,21 @@ upgrade_deb_type()
 # No return value.
 upgrade_deb()
 {
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y dist-upgrade
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get -- -y dist-upgrade
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo agmaint.sh -- -- -y
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
 
 	upgrade_deb_type basic
 	if [[ $type != "basic" ]]; then
-		upgrade_deb_type $type
+		upgrade_deb_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 
@@ -315,14 +318,15 @@ upgrade_fedora_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
@@ -333,20 +337,20 @@ upgrade_fedora_type()
 # No return value.
 upgrade_fedora()
 {
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y autoremove
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	upgrade_fedora_type basic
 	if [[ $type != "basic" ]]; then
-		upgrade_fedora_type $type
+		upgrade_fedora_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 
@@ -357,14 +361,15 @@ upgrade_opensuse_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
@@ -375,20 +380,20 @@ upgrade_opensuse_type()
 # No return value.
 upgrade_opensuse()
 {
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	upgrade_opensuse_type basic
 	if [[ $type != "basic" ]]; then
-		upgrade_opensuse_type $type
+		upgrade_opensuse_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 

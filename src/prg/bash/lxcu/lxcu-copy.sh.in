@@ -68,6 +68,8 @@
 # 08/01/2022	MG	1.0.5	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
 # 28/04/2023	MG	1.0.6	Remove unused variable outputprefix.	#
+#				Double quote variables to prevent word	#
+#				splitting and globbing.			#
 #									#
 #########################################################################
 
@@ -125,7 +127,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -134,7 +136,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -171,7 +173,7 @@ proc_config_file()
 			bridge=${input[1]}
 			;;
 		contlocation)
-			contlocation=$(echo ${input[1]} | envsubst)
+			contlocation=$(echo "${input[1]}" | envsubst)
 			;;
 		esac
 	done
@@ -212,8 +214,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -249,35 +251,35 @@ proc_config_file
 
 proc_CL "$@"
 
-lxc-copy -n $fromname -N $toname
+lxc-copy -n "$fromname" -N "$toname"
 std_cmd_err_handler $?
 
 # Any bridge to provide a config file for?
 if [[ -n $bridge ]]; then
-	cp -v $contlocation/$fromname/config-$bridge \
-		$contlocation/$toname
+	cp -v "$contlocation/$fromname/config-$bridge" \
+		"$contlocation/$toname"
 	std_cmd_err_handler $?
 	sed -i -e "/lxc.rootfs.path = dir:/s/$fromname/$toname/" \
-		$contlocation/$toname/config-$bridge
+		"$contlocation/$toname/config-$bridge"
 	std_cmd_err_handler $?
 	sed -i -e "/lxc.uts.name = /s/$fromname/$toname/" \
-		$contlocation/$toname/config-$bridge
+		"$contlocation/$toname/config-$bridge"
 	std_cmd_err_handler $?
 fi
 
 # Correct host name on target container.
-@bindir@/lxcu-start.sh -n $toname
+@bindir@/lxcu-start.sh -n "$toname"
 std_cmd_err_handler $?
 
-@bindir@/lxcu-attach.sh -n $toname \
+@bindir@/lxcu-attach.sh -n "$toname" \
 	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
 std_cmd_err_handler $?
 
-@bindir@/lxcu-attach.sh -n $toname \
+@bindir@/lxcu-attach.sh -n "$toname" \
 	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
 std_cmd_err_handler $?
 
-lxc-stop -n $toname
+lxc-stop -n "$toname"
 std_cmd_err_handler $?
 
 # And exit.

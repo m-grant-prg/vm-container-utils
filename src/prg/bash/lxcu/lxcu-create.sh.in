@@ -109,7 +109,9 @@
 # 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
 # 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
 #				cache.list file processing.		#
-# 01/05/2023	MG	1.2.8	Remove unused variables.		#
+# 04/05/2023	MG	1.2.8	Remove unused variables.		#
+#				Double quote variables to prevent word	#
+#				splitting and globbing.
 #									#
 #########################################################################
 
@@ -172,7 +174,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -181,7 +183,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -252,7 +254,7 @@ proc_config_file()
 			arch=${input[1]}
 			;;
 		contlocation)
-			contlocation=$(echo ${input[1]} | envsubst)
+			contlocation=$(echo "${input[1]}" | envsubst)
 			;;
 		bridge)
 			bridge=${input[1]}
@@ -325,8 +327,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -358,14 +360,14 @@ proc_CL()
 network_config()
 {
 	if [[ -n $bridge ]]; then
-		cp -v $contlocation/$name/config \
-			$contlocation/$name/config-$bridge
+		cp -v "$contlocation/$name/config" \
+			"$contlocation/$name/config-$bridge"
 		std_cmd_err_handler $?
-		cat $etclocation/$bridge.conf \
-			| tee -a $contlocation/$name/config-$bridge
+		cat "$etclocation/$bridge.conf" \
+			| tee -a "$contlocation/$name/config-$bridge"
 		std_cmd_err_handler $?
 	fi
-	cat $etclocation/$vni.conf | tee -a $contlocation/$name/config
+	cat "$etclocation/$vni.conf" | tee -a "$contlocation/$name/config"
 	std_cmd_err_handler $?
 }
 
@@ -374,10 +376,10 @@ network_config()
 # No return value.
 setup_git()
 {
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- git -- config --system user.email "$gitemail"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- git -- config --system user.name "$gitname"
 	std_cmd_err_handler $?
 }
@@ -389,14 +391,15 @@ create_deb_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
@@ -413,23 +416,23 @@ create_deb_type()
 create_deb()
 {
 	# Set up the initial apt files, (just sources.list).
-	sudo cp -v $(find $etclocation/$dist/$rel/apt -maxdepth 1 -type f) \
-		$contlocation/$name/rootfs/etc/apt
+	sudo cp -v $(find "$etclocation/$dist/$rel/apt" -maxdepth 1 -type f) \
+		"$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
-	sudo chown -v 100000:100000 $contlocation/$name/rootfs/etc/apt
+	sudo chown -v 100000:100000 "$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 
 	# Initially install apt https transport, apt utils, certificates, curl,
 	# gnupg and sudo.
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- apt-get update
+	@bindir@/lxcu-attach.sh -n "$name" -- apt-get update
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh "-n $name -vPATH=$PATH:/sbin:/usr/sbin" \
 		-- apt-get -- -y install apt-transport-https apt-utils \
@@ -437,83 +440,85 @@ create_deb()
 	std_cmd_err_handler $?
 
 	# Set the locale.
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-locale LANG=$localelang
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
 	# x11 keymap also used for the virtual console.
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-x11-keymap $localex11keymap
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-x11-keymap "$localex11keymap"
 	std_cmd_err_handler $?
 
 	# Get the OBS repo key.
 	if [[ $dist == "debian" ]]; then
-		curl -fsSL https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
+		curl -fsSL "https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key" \
 			| gpg --dearmor \
-			| sudo tee $contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg > /dev/null
+			| sudo tee "$contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg" > /dev/null
 		std_cmd_err_handler $?
 	fi
 
 	# Set up the other initial apt files.
-	sudo cp -rv $etclocation/$dist/$rel/apt/* \
-		$contlocation/$name/rootfs/etc/apt
+	sudo cp -rv "$etclocation/$dist/$rel"/apt/* \
+		"$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/apt
+	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/apt"
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt/sources.list.d \
+		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find $contlocation/$name/rootfs/etc/apt/sources.list.d \
+		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
-	sudo cp -v $etclocation/$dist/$rel/dosab/* \
-		$contlocation/$name/rootfs/etc/dosab
+	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
+		"$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
+			-type f)
 	std_cmd_err_handler $?
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find $contlocation/$name/rootfs/etc/dosab -maxdepth 1 -type f)
+		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
+			-type f)
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install apt
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	if [[ $rel == "xenial" ]]; then
-		@bindir@/lxcu-attach.sh -n $name -- sudo apt-key update
+		@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-key update
 		std_cmd_err_handler $?
-		@bindir@/lxcu-attach.sh -n $name -- sudo apt-get update
+		@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get update
 		std_cmd_err_handler $?
 	fi
-	@bindir@/lxcu-attach.sh -n $name -- sudo apt-get -- -y install agmaint
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo agmaint.sh -- -- -y
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo agmaint.sh -- -- -y
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo apt-key-scripts.sh -- --install \
 		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
 	std_cmd_err_handler $?
 	if [[ $dist == "ubuntu" ]]; then
-		@bindir@/lxcu-attach.sh -n $name \
+		@bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo apt-key-scripts.sh -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
 		std_cmd_err_handler $?
@@ -521,10 +526,10 @@ create_deb()
 
 	create_deb_type basic
 	if [[ $type != "basic" ]]; then
-		create_deb_type $type
+		create_deb_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 
@@ -535,21 +540,22 @@ create_fedora_type()
 {
 	# Install the development tools group.
 	if [[ $1 == "dev" ]]; then
-		@bindir@/lxcu-attach.sh -n $name \
+		@bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo dnf -- -y group install "Development Tools"
 		std_cmd_err_handler $?
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
@@ -564,61 +570,61 @@ create_fedora_type()
 # No return value.
 create_fedora()
 {
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
 
 	# Set dnf to keep download only packagfes in the cache.
 	echo "keepcache=True" | \
-		sudo tee -a $contlocation/$name/rootfs/etc/dnf/dnf.conf
+		sudo tee -a "$contlocation/$name/rootfs/etc/dnf/dnf.conf"
 	std_cmd_err_handler $?
 
 	# Set locale.
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-locale LANG=$localelang
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-x11-keymap $localex11keymap
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-x11-keymap "$localex11keymap"
 	std_cmd_err_handler $?
 
 	# Initial installs.
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo dnf -- -y install 'dnf-command(config-manager)'
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo dnf config-manager -- --add-repo \
-		https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_$rel/home:m-grant-prg.repo
+		https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo dnf -- -y install server-dependency
 	std_cmd_err_handler $?
-	sudo cp -v $etclocation/$dist/$rel/dosab/* \
-		$contlocation/$name/rootfs/etc/dosab
+	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
+		"$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dnf -- -y autoremove
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	create_fedora_type basic
 	if [[ $type != "basic" ]]; then
-		create_fedora_type $type
+		create_fedora_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 
@@ -629,21 +635,22 @@ create_opensuse_type()
 {
 	# Install the development tools.
 	if [[ $1 == "dev" ]]; then
-		@bindir@/lxcu-attach.sh -n $name \
+		@bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo zypper -- -n install -t pattern devel_basis
 		std_cmd_err_handler $?
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			$etclocation/$dist/$rel/$1/install.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+			"$etclocation/$dist/$rel/$1/install.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
-		grep -v '^[[:blank:]]*#' $etclocation/$dist/$rel/$1/cache.list \
-			| xargs @bindir@/lxcu-attach.sh -n $name \
+		grep -v '^[[:blank:]]*#' \
+			"$etclocation/$dist/$rel/$1/cache.list" \
+			| xargs @bindir@/lxcu-attach.sh -n "$name" \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
@@ -658,57 +665,57 @@ create_opensuse_type()
 # No return value.
 create_opensuse()
 {
-	@bindir@/lxcu-start.sh -n $name
+	@bindir@/lxcu-start.sh -n "$name"
 	std_cmd_err_handler $?
 
 	# Set locale.
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo zypper -- -n install glibc-locale
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-locale LANG=$localelang
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo localectl set-x11-keymap $localex11keymap
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo localectl set-x11-keymap "$localex11keymap"
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	@bindir@/lxcu-attach.sh -n $name \
-		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/$rel/home:m-grant-prg.repo
+	@bindir@/lxcu-attach.sh -n "$name" \
+		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/"$rel"/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name \
+	@bindir@/lxcu-attach.sh -n "$name" \
 		-- sudo zypper -- -n install server-dependency
 	std_cmd_err_handler $?
-	sudo cp -v $etclocation/$dist/$rel/dosab/* \
-		$contlocation/$name/rootfs/etc/dosab
+	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
+		"$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000 $contlocation/$name/rootfs/etc/dosab
+	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo dosab.sh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo dosab.sh
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- refresh
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n $name -- sudo zypper -- -n update
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	create_opensuse_type basic
 	if [[ $type != "basic" ]]; then
-		create_opensuse_type $type
+		create_opensuse_type "$type"
 	fi
 
-	lxc-stop -n $name
+	lxc-stop -n "$name"
 	std_cmd_err_handler $?
 }
 
@@ -722,7 +729,7 @@ proc_config_file
 proc_CL "$@"
 
 # With the demise of sks-keyservers.net force an alternative keyserver.
-lxc-create -t download -n $name -- --keyserver hkps://keyserver.ubuntu.com
+lxc-create -t download -n "$name" -- --keyserver hkps://keyserver.ubuntu.com
 std_cmd_err_handler $?
 
 network_config

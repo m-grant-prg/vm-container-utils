@@ -59,6 +59,8 @@
 #									#
 # 08/01/2022	MG	1.0.1	Created.				#
 # 28/04/2023	MG	1.0.2	Remove unused variable output prefix.	#
+#				Double quote variables to prevent word	#
+#				splitting and globbing.			#
 #									#
 #########################################################################
 
@@ -116,7 +118,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -125,7 +127,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -173,8 +175,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
