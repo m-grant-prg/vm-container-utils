@@ -69,6 +69,7 @@
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
 #				Fix ethernet_bridge typo.		#
+#				Remove unused variable vni.		#
 #									#
 #########################################################################
 
@@ -175,9 +176,6 @@ proc_config_file()
 			;;
 		ethernetprefix)
 			ethernet_prefix=${input[1]}
-			;;
-		vni)
-			vni=${input[1]}
 			;;
 		esac
 	done
