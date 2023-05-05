@@ -71,6 +71,8 @@
 #				Fix ethernet_bridge typo.		#
 #				Remove unused variable vni.		#
 #				Use grep -c AOT grep | wc -l		#
+#				Remove unnecessary $ from variable	#
+#				names in arithmetic expressions.	#
 #									#
 #########################################################################
 
@@ -277,7 +279,7 @@ until (@bindir@/lxcu-attach.sh -n "$name" \
 	-- ping -- -c 2 www.google.com &>/dev/null); do
 	err=$?
 	(( count++ ))
-	if (( $count == $max )); then
+	if (( count == max )); then
 		output "Networking not functioning." 1
 		std_cmd_err_handler $err
 	fi
