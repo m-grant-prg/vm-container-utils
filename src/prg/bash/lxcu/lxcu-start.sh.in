@@ -65,9 +65,10 @@
 # 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 # 08/01/2022	MG	1.0.6	Use lxcu-attach.sh AOT systemd-run	#
 #				lxc-attach				#
-# 04/05/2023	MG	1.0.7	Remove unused variable outputprefix.	#
+# 05/05/2023	MG	1.0.7	Remove unused variable outputprefix.	#
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
+#				Fix ethernet_bridge typo.		#
 #									#
 #########################################################################
 
@@ -173,7 +174,7 @@ proc_config_file()
 			bridge=${input[1]}
 			;;
 		ethernetprefix)
-			ethernetprefix=${input[1]}
+			ethernet_prefix=${input[1]}
 			;;
 		vni)
 			vni=${input[1]}
