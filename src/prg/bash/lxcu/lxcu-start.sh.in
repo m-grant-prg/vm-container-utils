@@ -70,6 +70,7 @@
 #				splitting and globbing.			#
 #				Fix ethernet_bridge typo.		#
 #				Remove unused variable vni.		#
+#				Use grep -c AOT grep | wc -l		#
 #									#
 #########################################################################
 
@@ -253,8 +254,8 @@ cmd="systemd-run --quiet --user --scope -p \"Delegate=yes\" lxc-start -n $name"
 if [[ -n $bridge ]]; then
 	# Enable / disable bridge VNI depending on hard-wired ethernet port
 	# status.
-	if (($(ip link show | grep "$ethernet_prefix.*$bridge.*state UP" \
-		| wc -l))); then
+	if (($(ip link show | grep -c "$ethernet_prefix.*$bridge.*state UP")))
+	then
 		cmd+=" -f $contlocation/$name/config-$bridge"
 	fi
 fi
