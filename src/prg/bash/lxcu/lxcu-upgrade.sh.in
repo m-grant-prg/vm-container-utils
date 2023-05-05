@@ -422,7 +422,6 @@ ubuntu)
 *)
 	output "Unknown distribution." 1
 	script_exit 64
-	break
 	;;
 esac
 
