@@ -1,0 +1,10 @@
+# apt sources file.
+
+deb http://hermes.mgent.home:3142/HTTPS///deb.debian.org/debian @rel@ main contrib non-free non-free-firmware
+
+deb http://hermes.mgent.home:3142/HTTPS///deb.debian.org/debian-security/ @rel@-security main contrib non-free non-free-firmware
+
+deb http://hermes.mgent.home:3142/HTTPS///deb.debian.org/debian @rel@-updates main contrib non-free non-free-firmware
+
+deb http://hermes.mgent.home:3142/HTTPS///deb.debian.org/debian @rel@-backports main contrib non-free non-free-firmware
+

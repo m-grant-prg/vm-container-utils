@@ -43,7 +43,8 @@
 # 21/04/2023	MG	1.0.16	Enable use of v1.1.1~rc1 type vesrion	#
 #				numbers for source tarballs.		#
 #				Add 38.					#
-# 28/04/2023	MG	1.0.17	Remove EOL 36.				#
+# 06/05/2023	MG	1.0.17	Remove EOL 36.				#
+#				Add bookworm.				#
 #									#
 #########################################################################
 
@@ -59,6 +60,12 @@ SUBDIRS += src/man/1/lqvm src/man/5/lqvm
 SUBDIRS += src/man/1/lxcu src/man/5/lxcu
 SUBDIRS += src/prg/bash/lqvm
 SUBDIRS += src/conf/etc/lxcu
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/apt
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/apt/sources.list.d
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/apt/trusted.gpg.d
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/basic
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/dev
+SUBDIRS += src/conf/etc/lxcu/debian/bookworm/dosab
 SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt
 SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/debian/bullseye/apt/trusted.gpg.d

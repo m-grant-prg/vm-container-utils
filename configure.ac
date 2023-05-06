@@ -73,7 +73,8 @@
 #				Remove stretch.				#
 #				Remove xenial.				#
 # 21/04/2023	MG	1.0.16	Add 38.					#
-# 28/04/2023	MG	1.0.17	Remove EOL 36.				#
+# 06/05/2023	MG	1.0.17	Remove EOL 36.				#
+#				Add bookworm.				#
 #									#
 #########################################################################
 
@@ -394,6 +395,12 @@ AC_CONFIG_FILES([Makefile
 		src/man/5/lxcu/Makefile
 		src/prg/bash/lqvm/Makefile
 		src/conf/etc/lxcu/Makefile
+		src/conf/etc/lxcu/debian/bookworm/apt/Makefile
+		src/conf/etc/lxcu/debian/bookworm/apt/sources.list.d/Makefile
+		src/conf/etc/lxcu/debian/bookworm/apt/trusted.gpg.d/Makefile
+		src/conf/etc/lxcu/debian/bookworm/basic/Makefile
+		src/conf/etc/lxcu/debian/bookworm/dev/Makefile
+		src/conf/etc/lxcu/debian/bookworm/dosab/Makefile
 		src/conf/etc/lxcu/debian/bullseye/apt/Makefile
 		src/conf/etc/lxcu/debian/bullseye/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/debian/bullseye/apt/trusted.gpg.d/Makefile
