@@ -45,6 +45,7 @@
 #				Add 38.					#
 # 06/05/2023	MG	1.0.17	Remove EOL 36.				#
 #				Add bookworm.				#
+#				Remove EOL bionic.			#
 #									#
 #########################################################################
 
@@ -93,12 +94,6 @@ SUBDIRS += src/conf/etc/lxcu/fedora/37/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/basic
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/dev
-SUBDIRS += src/conf/etc/lxcu/ubuntu/bionic/dosab
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/apt
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/apt/sources.list.d
 SUBDIRS += src/conf/etc/lxcu/ubuntu/focal/apt/trusted.gpg.d

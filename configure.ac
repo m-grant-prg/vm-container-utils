@@ -75,6 +75,7 @@
 # 21/04/2023	MG	1.0.16	Add 38.					#
 # 06/05/2023	MG	1.0.17	Remove EOL 36.				#
 #				Add bookworm.				#
+#				Remove EOL bionic.			#
 #									#
 #########################################################################
 
@@ -428,12 +429,6 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/opensuse/15.4/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dosab/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/apt/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/apt/sources.list.d/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/apt/trusted.gpg.d/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/basic/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/dev/Makefile
-		src/conf/etc/lxcu/ubuntu/bionic/dosab/Makefile
 		src/conf/etc/lxcu/ubuntu/focal/apt/Makefile
 		src/conf/etc/lxcu/ubuntu/focal/apt/sources.list.d/Makefile
 		src/conf/etc/lxcu/ubuntu/focal/apt/trusted.gpg.d/Makefile
