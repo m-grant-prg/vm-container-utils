@@ -85,7 +85,9 @@
 #				Remove shellcheck warning for cd	#
 #				failure, covered by std_cmd_err_handler	#
 #				Silence shellcheck use subshell warning	#
-#				as a variable is being assigned.		#
+#				as a variable is being assigned.	#
+# 09/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
+#				and destroying the temporary container.	#
 #									#
 #########################################################################
 
@@ -96,7 +98,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.0.11				# Script version
+readonly version=1.0.12				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -145,6 +147,14 @@ output()
 # No return value.
 script_exit()
 {
+	if [[ -n "$project" ]]; then
+		if (( $(lxc-ls -f --running | grep -c "$project") )); then
+			lxc-stop -n "$project"
+		fi
+		if (( $(lxc-ls -f | grep -c "$project") )); then
+			lxc-destroy -n "$project"
+		fi
+	fi
 	exit "$1"
 }
 
@@ -168,7 +178,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -253,7 +263,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -261,14 +271,14 @@ proc_CL()
 	# Script does not accept other arguments.
 	if (( $# > 0 )); then
 		output "Invalid argument." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# At least container name and project root directory must be specified.
 	if [[ -z $name || -z $projectroot ]]; then
 		msg="At least name and project root must be specified."
 		output "$msg" 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 }
 
@@ -382,19 +392,13 @@ ubuntu)
 	;;
 *)
 	output "Invalid distribution" 1
-	script_exit 64
+	std_cmd_err_handler 64
 	;;
 esac
 
 @bindir@/lxcu-attach.sh -n "$project" -- cp -- -vr "home/$USER/$project" build
 std_cmd_err_handler $?
 @bindir@/lxcu-attach.sh "-n $project -vHOME=/build/atbuild"
-std_cmd_err_handler $?
-
-lxc-stop -n "$project"
-std_cmd_err_handler $?
-
-lxc-destroy -n "$project"
 std_cmd_err_handler $?
 
 # And exit.
