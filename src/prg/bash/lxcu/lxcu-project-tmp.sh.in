@@ -86,8 +86,9 @@
 #				failure, covered by std_cmd_err_handler	#
 #				Silence shellcheck use subshell warning	#
 #				as a variable is being assigned.	#
-# 09/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
+# 10/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
 #				and destroying the temporary container.	#
+#				Improve config file read error handling.#
 #									#
 #########################################################################
 
@@ -190,11 +191,21 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 proc_config_file()
 {
 	local input=()
+	local msg
 	local oldIFS=$IFS
 
 	IFS="="
 
+	if [[ ! -e "$etclocation/lxcu.conf" || ! -f "$etclocation/lxcu.conf" \
+		|| ! -r "$etclocation/lxcu.conf" ]]; then
+		msg="$etclocation/lxcu.conf must exist, be a file and be"
+		msg+=" readable."
+		output "$msg" 1
+		std_cmd_err_handler 66
+	fi
+
 	exec 3<"$etclocation/lxcu.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
 		case ${input[0]} in
 		dist)
