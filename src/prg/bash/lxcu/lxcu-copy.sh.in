@@ -70,6 +70,7 @@
 # 28/04/2023	MG	1.0.6	Remove unused variable outputprefix.	#
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
+# 13/05/2023	MG	1.0.7	Improve config file read error handling.#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.0.6				# Script version
+readonly version=1.0.7				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -162,11 +163,21 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 proc_config_file()
 {
 	local input=()
+	local msg
 	local oldIFS=$IFS
 
 	IFS="="
 
+	if [[ ! -e "$etclocation/lxcu.conf" || ! -f "$etclocation/lxcu.conf" \
+		|| ! -r "$etclocation/lxcu.conf" ]]; then
+		msg="$etclocation/lxcu.conf must exist, be a file and be"
+		msg+=" readable."
+		output "$msg" 1
+		std_cmd_err_handler 66
+	fi
+
 	exec 3<"$etclocation/lxcu.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
 		case ${input[0]} in
 		bridge)
