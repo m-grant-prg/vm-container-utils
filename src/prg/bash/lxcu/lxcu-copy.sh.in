@@ -73,6 +73,7 @@
 # 13/05/2023	MG	1.0.7	Improve config file read error handling.#
 #				Centralise error exit in		#
 #				std_cmd_err_handler().			#
+#				Cleanup on error exit.			#
 #									#
 #########################################################################
 
@@ -139,6 +140,15 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
+		if [[ -n "$toname" ]]; then
+			if (( $(lxc-ls -f --running | grep -c "$toname") ))
+			then
+				lxc-stop -n "$toname"
+			fi
+			if (( $(lxc-ls -f | grep -c "$toname") )); then
+				lxc-destroy -n "$toname"
+			fi
+		fi
 		script_exit "$1"
 	fi
 }
