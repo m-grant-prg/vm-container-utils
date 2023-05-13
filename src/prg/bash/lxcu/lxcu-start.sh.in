@@ -73,6 +73,7 @@
 #				Use grep -c AOT grep | wc -l		#
 #				Remove unnecessary $ from variable	#
 #				names in arithmetic expressions.	#
+# 13/05/2023	MG	1.0.8	Improve config file error handling.	#
 #									#
 #########################################################################
 
@@ -83,7 +84,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.0.7				# Script version
+readonly version=1.0.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -164,11 +165,21 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 proc_config_file()
 {
 	local input=()
+	local msg
 	local oldIFS=$IFS
 
 	IFS="="
 
+	if [[ ! -e "$etclocation/lxcu.conf" || ! -f "$etclocation/lxcu.conf" \
+		|| ! -r "$etclocation/lxcu.conf" ]]; then
+		msg="$etclocation/lxcu.conf must exist, be a file and be"
+		msg+=" readable."
+		output "$msg" 1
+		std_cmd_err_handler 66
+	fi
+
 	exec 3<"$etclocation/lxcu.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
 		case ${input[0]} in
 		contlocation)
