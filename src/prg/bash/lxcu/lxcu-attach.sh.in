@@ -62,6 +62,8 @@
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
 #				Silence shellcheck array warning.	#
+# 13/05/2023	MG	1.0.3	Centralise error exit in		#
+#				std_cmd_err_handler().			#
 #									#
 #########################################################################
 
@@ -72,7 +74,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.0.2				# Script version
+readonly version=1.0.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 # Ensure environment variables are set.
@@ -142,7 +144,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -185,7 +187,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -193,7 +195,7 @@ proc_CL()
 	# Container name must be specified.
 	if [[ -z $name ]]; then
 		output "Container name must be specified." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# Remaining arguments are passed straight to the lxc-attach command
