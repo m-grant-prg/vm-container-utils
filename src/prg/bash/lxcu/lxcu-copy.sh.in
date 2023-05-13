@@ -71,6 +71,8 @@
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
 # 13/05/2023	MG	1.0.7	Improve config file read error handling.#
+#				Centralise error exit in		#
+#				std_cmd_err_handler().			#
 #									#
 #########################################################################
 
@@ -151,7 +153,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -234,7 +236,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -242,14 +244,14 @@ proc_CL()
 	# Script does not accept other arguments.
 	if (( $# > 0 )); then
 		output "Invalid argument." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# Both from name and to name must be specified.
 	if [[ -z $fromname || -z $toname ]]; then
 		msg="Both from name and to name must be specified."
 		output "$msg" 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 }
 
