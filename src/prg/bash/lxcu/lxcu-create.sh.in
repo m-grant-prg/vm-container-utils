@@ -113,6 +113,7 @@
 #				splitting and globbing.			#
 #				Remove cat and use cmd <		#
 #				Remove arch - unused and unneeded.	#
+# 13/05/2023	MG	1.2.9	Improve config file error handling.	#
 #									#
 #########################################################################
 
@@ -123,7 +124,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.8				# Script version
+readonly version=1.2.9				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
@@ -210,11 +211,22 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 determine_obs_release()
 {
 	local input=()
+	local msg
 	local oldIFS=$IFS
 
 	IFS="="
 
+	if [[ ! -e "$etclocation/debian-releases.conf" \
+		|| ! -f "$etclocation/debian-releases.conf" \
+		|| ! -r "$etclocation/debian-releases.conf" ]]; then
+		msg="$etclocation/debian-releases.conf must exist, be a file"
+		msg+=" and be readable."
+		output "$msg" 1
+		std_cmd_err_handler 66
+	fi
+
 	exec 4<"$etclocation/debian-releases.conf"
+	std_cmd_err_handler $?
 	while read -u4 -ra input; do
 		if [[ "${input[0]}" == "$rel" ]]; then
 			obs_rel=${input[1]}
@@ -236,11 +248,21 @@ determine_obs_release()
 proc_config_file()
 {
 	local input=()
+	local msg
 	local oldIFS=$IFS
 
 	IFS="="
 
+	if [[ ! -e "$etclocation/lxcu.conf" || ! -f "$etclocation/lxcu.conf" \
+		|| ! -r "$etclocation/lxcu.conf" ]]; then
+		msg="$etclocation/lxcu.conf must exist, be a file and be"
+		msg+=" readable."
+		output "$msg" 1
+		std_cmd_err_handler 66
+	fi
+
 	exec 3<"$etclocation/lxcu.conf"
+	std_cmd_err_handler $?
 	while read -u3 -ra input; do
 		case ${input[0]} in
 		dist)
