@@ -74,6 +74,7 @@
 #				Centralise error exit in		#
 #				std_cmd_err_handler().			#
 #				Cleanup on error exit.			#
+#				Validate inputs.			#
 #									#
 #########################################################################
 
@@ -233,6 +234,12 @@ proc_CL()
 			shift 2
 			;;
 		-N|--to-name)
+			# Target container must not exist.
+			if (( $(lxc-ls -f | grep -c "$2") )); then
+				msg="Target container $2 must not exist."
+				output "$msg" 1
+				std_cmd_err_handler 64
+			fi
 			toname=$2
 			shift 2
 			;;
@@ -261,6 +268,16 @@ proc_CL()
 	if [[ -z $fromname || -z $toname ]]; then
 		msg="Both from name and to name must be specified."
 		output "$msg" 1
+		std_cmd_err_handler 64
+	fi
+
+	# Source container must exist but must not be running.
+	if (( ! $(lxc-ls -f | grep -c "$fromname") )); then
+		output "Source container $fromname must exist." 1
+		std_cmd_err_handler 64
+	fi
+	if (( $(lxc-ls -f --running | grep -c "$fromname") )); then
+		output "Source container $fromname must not be running." 1
 		std_cmd_err_handler 64
 	fi
 }
