@@ -142,11 +142,11 @@ std_cmd_err_handler()
 {
 	if (( $1 )); then
 		if [[ -n "$toname" ]]; then
-			if (( $(lxc-ls -f --running | grep -c "$toname") ))
-			then
+			if (( $(lxc-ls -1 --running --filter="^$toname$" \
+				| wc -l) )); then
 				lxc-stop -n "$toname"
 			fi
-			if (( $(lxc-ls -f | grep -c "$toname") )); then
+			if (( $(lxc-ls -1 --filter="^$toname$" | wc -l) )); then
 				lxc-destroy -n "$toname"
 			fi
 		fi
@@ -235,7 +235,7 @@ proc_CL()
 			;;
 		-N|--to-name)
 			# Target container must not exist.
-			if (( $(lxc-ls -f | grep -c "$2") )); then
+			if (( $(lxc-ls -1 --filter="^$2$" | wc -l) )); then
 				msg="Target container $2 must not exist."
 				output "$msg" 1
 				std_cmd_err_handler 64
@@ -272,11 +272,11 @@ proc_CL()
 	fi
 
 	# Source container must exist but must not be running.
-	if (( ! $(lxc-ls -f | grep -c "$fromname") )); then
+	if (( ! $(lxc-ls -1 --filter="^$fromname$" | wc -l) )); then
 		output "Source container $fromname must exist." 1
 		std_cmd_err_handler 64
 	fi
-	if (( $(lxc-ls -f --running | grep -c "$fromname") )); then
+	if (( $(lxc-ls -1 --running --filter="^$fromname$" | wc -l) )); then
 		output "Source container $fromname must not be running." 1
 		std_cmd_err_handler 64
 	fi

@@ -254,11 +254,11 @@ proc_CL()
 		std_cmd_err_handler 64
 	fi
 	# Container must exist but must not be running.
-	if (( ! $(lxc-ls -f | grep -c "$name") )); then
+	if (( ! $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
 		output "Container $name must exist." 1
 		std_cmd_err_handler 64
 	fi
-	if (( $(lxc-ls -f --running | grep -c "$name") )); then
+	if (( $(lxc-ls -1 --running --filter="^$name$" | wc -l) )); then
 		output "Container $name must not be running." 1
 		std_cmd_err_handler 64
 	fi

@@ -150,10 +150,11 @@ output()
 script_exit()
 {
 	if [[ -n "$project" ]]; then
-		if (( $(lxc-ls -f --running | grep -c "$project") )); then
+		if (( $(lxc-ls -1 --running --filter="^$project$" | wc -l) ))
+		then
 			lxc-stop -n "$project"
 		fi
-		if (( $(lxc-ls -f | grep -c "$project") )); then
+		if (( $(lxc-ls -1 --filter="^$project$" | wc -l) )); then
 			lxc-destroy -n "$project"
 		fi
 	fi
@@ -381,7 +382,7 @@ project=${fullprojectroot##*/}
 
 # Target container must not exist. If it does it is not ours so prevent
 # destruction.
-if (( $(lxc-ls -f | grep -c "$project") )); then
+if (( $(lxc-ls -1 --filter="^$project$" | wc -l) )); then
 	output "Target container $project must not exist." 1
 	project=""
 	std_cmd_err_handler  79

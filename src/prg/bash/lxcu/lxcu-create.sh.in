@@ -188,11 +188,11 @@ std_cmd_err_handler()
 {
 	if (( $1 )); then
 		if [[ -n "$name" ]]; then
-			if (( $(lxc-ls -f --running | grep -c "$name") ))
-			then
+			if (( $(lxc-ls -1 --running --filter="^$name$" \
+				| wc -l) )); then
 				lxc-stop -n "$name"
 			fi
-			if (( $(lxc-ls -f | grep -c "$name") )); then
+			if (( $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
 				lxc-destroy -n "$name"
 			fi
 		fi
@@ -342,7 +342,7 @@ proc_CL()
 			;;
 		-n|--name)
 			# Target container must not exist.
-			if (( $(lxc-ls -f | grep -c "$2") )); then
+			if (( $(lxc-ls -1 --filter="^$2$" | wc -l) )); then
 				msg="Target container $2 must not exist."
 				output "$msg" 1
 				std_cmd_err_handler 64
