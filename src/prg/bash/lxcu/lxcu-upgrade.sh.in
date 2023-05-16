@@ -86,7 +86,8 @@
 # 04/05/2023	MG	1.0.16	Remove unused variable outputprefix.	#
 #				Double quote variables to prevent word	#
 #				splitting and globbing.			#
-# 13/05/2023	MG	1.0.17	Improve config file error handling.	#
+# 16/05/2023	MG	1.0.17	Improve config file error handling.	#
+#				Centralise error exit.			#
 #									#
 #########################################################################
 
@@ -169,7 +170,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -260,7 +261,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -268,13 +269,13 @@ proc_CL()
 	# Script does not accept other arguments.
 	if (( $# > 0 )); then
 		output "Invalid argument." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# At least container name and type must be specified.
 	if [[ -z $name || -z $type ]]; then
 		output "At least name and type must be specified." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 }
 
@@ -432,7 +433,7 @@ ubuntu)
 	;;
 *)
 	output "Unknown distribution." 1
-	script_exit 64
+	std_cmd_err_handler 64
 	;;
 esac
 
