@@ -73,7 +73,9 @@
 #				Use grep -c AOT grep | wc -l		#
 #				Remove unnecessary $ from variable	#
 #				names in arithmetic expressions.	#
-# 13/05/2023	MG	1.0.8	Improve config file error handling.	#
+# 16/05/2023	MG	1.0.8	Improve config file error handling.	#
+#				Container must exist but must not be	#
+#				running.				#
 #									#
 #########################################################################
 
@@ -153,7 +155,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -235,7 +237,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -243,13 +245,22 @@ proc_CL()
 	# Script does not accept other arguments.
 	if (( $# > 0 )); then
 		output "Invalid argument." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# Container name must be specified.
 	if [[ -z $name ]]; then
 		output "Container name must be specified." 1
-		script_exit 64
+		std_cmd_err_handler 64
+	fi
+	# Container must exist but must not be running.
+	if (( ! $(lxc-ls -f | grep -c "$name") )); then
+		output "Container $name must exist." 1
+		std_cmd_err_handler 64
+	fi
+	if (( $(lxc-ls -f --running | grep -c "$name") )); then
+		output "Container $name must not be running." 1
+		std_cmd_err_handler 64
 	fi
 }
 
