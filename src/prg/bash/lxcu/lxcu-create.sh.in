@@ -113,7 +113,8 @@
 #				splitting and globbing.			#
 #				Remove cat and use cmd <		#
 #				Remove arch - unused and unneeded.	#
-# 13/05/2023	MG	1.2.9	Improve config file error handling.	#
+# 16/05/2023	MG	1.2.9	Improve config file error handling.	#
+#				Centralise error exit.			#
 #									#
 #########################################################################
 
@@ -198,7 +199,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	std_cmd_err_handler $exit_code
 }
 
 # Setup trap
@@ -238,7 +239,7 @@ determine_obs_release()
 	IFS=$oldIFS
 
 	if [[ -z $obs_rel ]]; then
-		script_exit 78
+		std_cmd_err_handler 78
 	fi
 }
 
@@ -351,7 +352,7 @@ proc_CL()
 			break
 			;;
 		*)	output "Internal error." 1
-			script_exit 64
+			std_cmd_err_handler 64
 			;;
 		esac
 	done
@@ -359,13 +360,13 @@ proc_CL()
 	# Script does not accept other arguments.
 	if (( $# > 0 )); then
 		output "Invalid argument." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 
 	# At least container name and type must be specified.
 	if [[ -z $name || -z $type ]]; then
 		output "At least name and type must be specified." 1
-		script_exit 64
+		std_cmd_err_handler 64
 	fi
 }
 
@@ -773,7 +774,7 @@ ubuntu)
 	;;
 *)
 	output "Unknown distribution." 1
-	script_exit 64
+	std_cmd_err_handler 64
 	;;
 esac
 
