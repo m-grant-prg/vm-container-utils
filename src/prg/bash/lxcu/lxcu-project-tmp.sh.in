@@ -48,7 +48,7 @@
 #		EX_NOPERM	77	permission denied		#
 #		EX_CONFIG	78	configuration error		#
 #	User-defined (here) exit codes range 79 - 113:			#
-#		None							#
+#				79	Target already exists.		#
 #									#
 # Further Info:								#
 #									#
@@ -86,9 +86,10 @@
 #				failure, covered by std_cmd_err_handler	#
 #				Silence shellcheck use subshell warning	#
 #				as a variable is being assigned.	#
-# 10/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
+# 15/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
 #				and destroying the temporary container.	#
 #				Improve config file read error handling.#
+#				Check target does not already exist.	#
 #									#
 #########################################################################
 
@@ -377,6 +378,14 @@ fullprojectroot=$(pwd)
 cd -
 std_cmd_err_handler $?
 project=${fullprojectroot##*/}
+
+# Target container must not exist. If it does it is not ours so prevent
+# destruction.
+if (( $(lxc-ls -f | grep -c "$project") )); then
+	output "Target container $project must not exist." 1
+	project=""
+	std_cmd_err_handler  79
+fi
 
 @bindir@/lxcu-copy.sh -n "$name" -N "$project"
 std_cmd_err_handler $?
