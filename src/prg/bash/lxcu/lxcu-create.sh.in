@@ -115,6 +115,7 @@
 #				Remove arch - unused and unneeded.	#
 # 16/05/2023	MG	1.2.9	Improve config file error handling.	#
 #				Centralise error exit.			#
+#				Tidy up on error exit.			#
 #									#
 #########################################################################
 
@@ -185,6 +186,15 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
+		if [[ -n "$name" ]]; then
+			if (( $(lxc-ls -f --running | grep -c "$name") ))
+			then
+				lxc-stop -n "$name"
+			fi
+			if (( $(lxc-ls -f | grep -c "$name") )); then
+				lxc-destroy -n "$name"
+			fi
+		fi
 		script_exit "$1"
 	fi
 }
