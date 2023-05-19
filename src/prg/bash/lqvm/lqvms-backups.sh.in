@@ -71,6 +71,7 @@
 #				Add error checking to config file read.	#
 # 19/05/2023	MG	1.0.5	Add "" where necessary.			#
 #				Remove unused variable outputprefix.	#
+#				$ unnecessary in (( ))			#
 #									#
 #########################################################################
 
@@ -266,7 +267,7 @@ validate_vm_name()
 	name_matches=$(virsh -c "$connect_uri" list --all \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
-	if (( !$name_matches )); then
+	if (( ! name_matches )); then
 		output "No such VM $1" 1
 		return 77
 	else
@@ -305,7 +306,7 @@ is_vm_running()
 	vm_running_matches=$(virsh -c "$connect_uri" list \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
-	if (( $vm_running_matches )); then
+	if (( vm_running_matches )); then
 		tmp_result="true"
 	else
 		tmp_result="false"
@@ -413,7 +414,7 @@ perform_vms_backups()
 				$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
 			status=$?
 		fi
-		if (( $status )); then
+		if (( status )); then
 			output "Backup failed for $vm."$'\n' 1
 		else
 			output "Backup started for $vm."$'\n' 0
