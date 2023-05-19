@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvms-backups.sh						#
-# Author: Copyright (C) 2021, 2022  Mark Grant				#
+# Author: Copyright (C) 2021-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -69,6 +69,7 @@
 #				Refactor perform backups.		#
 # 17/03/2022	MG	1.0.4	Validate VM names before processing.	#
 #				Add error checking to config file read.	#
+# 19/05/2023	MG	1.0.5	Add "" where necessary.			#
 #									#
 #########################################################################
 
@@ -80,7 +81,7 @@ set -o pipefail
 ##################
 readonly outputprefix="$(basename $0):"
 
-readonly version=1.0.4				# Script version
+readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -131,7 +132,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -140,7 +141,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -222,8 +223,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -263,7 +264,7 @@ validate_vm_name()
 {
 	local -i name_matches
 
-	name_matches=$(virsh -c $connect_uri list --all \
+	name_matches=$(virsh -c "$connect_uri" list --all \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( !$name_matches )); then
@@ -282,7 +283,7 @@ validate_vm_names()
 	local ok=true
 
 	for vm in $vms; do
-		validate_vm_name $vm
+		validate_vm_name "$vm"
 		if (( $? )); then
 			ok=false
 		fi
@@ -302,7 +303,7 @@ is_vm_running()
 	local tmp_result
 	local -i vm_running_matches
 
-	vm_running_matches=$(virsh -c $connect_uri list \
+	vm_running_matches=$(virsh -c "$connect_uri" list \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
@@ -310,6 +311,7 @@ is_vm_running()
 	else
 		tmp_result="false"
 	fi
+	# shellcheck disable=SC2086 # $__result is OK without ""
 	eval $__result="'$tmp_result'"
 }
 
@@ -322,7 +324,7 @@ ensure_vms_not_running()
 	local vm
 
 	for vm in $vms; do
-		is_vm_running $vm status
+		is_vm_running "$vm" status
 		if $status; then
 			output "Please shutdown all relevant VMs." 1
 			script_exit 77
@@ -338,7 +340,7 @@ start_vms()
 	local vm
 
 	for vm in $vms; do
-		@bindir@/lqvm-start.sh -w -u $connect_uri -n $vm
+		@bindir@/lqvm-start.sh -w -u "$connect_uri" -n "$vm"
 		std_cmd_err_handler $?
 		sleep 90
 	done
@@ -419,10 +421,10 @@ perform_vms_backups()
 		fi
 		(( count+=1 ))
 		# Wait for vm to shutdown
-		is_vm_running $vm status_string
+		is_vm_running "$vm" status_string
 		while $status_string; do
 			sleep 45
-			is_vm_running $vm status_string
+			is_vm_running "$vm" status_string
 		done
 	done
 }
