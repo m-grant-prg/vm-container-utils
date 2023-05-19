@@ -70,6 +70,7 @@
 # 17/03/2022	MG	1.0.4	Validate VM names before processing.	#
 #				Add error checking to config file read.	#
 # 19/05/2023	MG	1.0.5	Add "" where necessary.			#
+#				Remove unused variable outputprefix.	#
 #									#
 #########################################################################
 
@@ -79,8 +80,6 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
 readonly version=1.0.5				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
