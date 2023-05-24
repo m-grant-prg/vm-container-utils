@@ -69,9 +69,10 @@
 #				Refactor perform backups.		#
 # 17/03/2022	MG	1.0.4	Validate VM names before processing.	#
 #				Add error checking to config file read.	#
-# 19/05/2023	MG	1.0.5	Add "" where necessary.			#
+# 24/05/2023	MG	1.0.5	Add "" where necessary.			#
 #				Remove unused variable outputprefix.	#
 #				$ unnecessary in (( ))			#
+#				vms should not be an array.		#
 #									#
 #########################################################################
 
@@ -90,7 +91,7 @@ daily=false
 declare -a passwords
 declare -i status=0
 declare -a usernames
-declare -a vms
+declare vms
 weekly=false
 
 
