@@ -255,7 +255,7 @@ proc_CL()
 	fi
 
 	# Remaining arguments are VM names
-	vms="$@"
+	vms=$*
 }
 
 # Validate the VM name.
