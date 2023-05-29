@@ -75,6 +75,7 @@
 #				vms should not be an array.		#
 #				Where possible test command exit in if	#
 #				statement, do not use $?.		#
+#				Use read -r so \ are literal.		#
 #									#
 #########################################################################
 
@@ -364,10 +365,10 @@ get_usernames_and_passwords()
 		ok=false
 		while ! $ok; do
 			echo "Enter sudo username for $vm:"
-			read username
+			read -r username
 			usernames[$count]="$username"
 			echo "Enter sudo password for $vm:"
-			read -s password
+			read -rs password
 			passwords[$count]="$password"
 			ssh -o NumberOfPasswordPrompts=0 \
 				-t "${usernames[$count]}""@$vm" \
