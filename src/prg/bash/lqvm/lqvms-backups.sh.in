@@ -372,8 +372,8 @@ get_usernames_and_passwords()
 			passwords[$count]="$password"
 			ssh -o NumberOfPasswordPrompts=0 \
 				-t "${usernames[$count]}""@$vm" \
-				'echo '"${passwords[$count]}"' \
-				| sudo -S bash -c "ls > /dev/null"'
+				'echo '"${passwords[$count]}" \
+				'| sudo -S bash -c "ls > /dev/null"'
 			# shellcheck disable=SC2181 # Above cmd too long for if.
 			if (( $? )); then
 				msg="Login test failed for "
@@ -407,15 +407,15 @@ perform_vms_backups()
 	for vm in $vms; do
 		if $weekly; then
 			ssh -t "${usernames[$count]}""@$vm" \
-				'echo '"${passwords[$count]}"' \
-				| sudo -S bash -c "at -f \
-				$(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at now"'
+				'echo '"${passwords[$count]}" \
+				'| sudo -S bash -c ' \
+				'"at -f $(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at now"'
 			status=$?
 		else
 			ssh -t "${usernames[$count]}""@$vm" \
-				'echo '"${passwords[$count]}"' \
-				| sudo -S bash -c "at -f \
-				$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
+				'echo '"${passwords[$count]}" \
+				'| sudo -S bash -c ' \
+				'"at -f $(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
 			status=$?
 		fi
 		if (( status )); then
