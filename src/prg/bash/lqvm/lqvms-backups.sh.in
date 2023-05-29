@@ -69,10 +69,12 @@
 #				Refactor perform backups.		#
 # 17/03/2022	MG	1.0.4	Validate VM names before processing.	#
 #				Add error checking to config file read.	#
-# 24/05/2023	MG	1.0.5	Add "" where necessary.			#
+# 29/05/2023	MG	1.0.5	Add "" where necessary.			#
 #				Remove unused variable outputprefix.	#
 #				$ unnecessary in (( ))			#
 #				vms should not be an array.		#
+#				Where possible test command exit in if	#
+#				statement, do not use $?.		#
 #									#
 #########################################################################
 
@@ -284,8 +286,7 @@ validate_vm_names()
 	local ok=true
 
 	for vm in $vms; do
-		validate_vm_name "$vm"
-		if (( $? )); then
+		if ! validate_vm_name "$vm"; then
 			ok=false
 		fi
 	done
@@ -372,6 +373,7 @@ get_usernames_and_passwords()
 				-t "${usernames[$count]}""@$vm" \
 				'echo '"${passwords[$count]}"' \
 				| sudo -S bash -c "ls > /dev/null"'
+			# shellcheck disable=SC2181 # Above cmd too long for if.
 			if (( $? )); then
 				msg="Login test failed for "
 				# Words of the form $'string' are treated
