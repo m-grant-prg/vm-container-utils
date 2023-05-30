@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvm-shutdown.sh						#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -66,6 +66,7 @@
 #				means not found.			#
 #				Refactor check that VM is running.	#
 # 05/05/2022	MG	1.0.5	Add pipefail.				#
+# 30/05/2023	MG	1.0.6	Remove unused variable outputprefix.	#
 #									#
 #########################################################################
 
@@ -76,9 +77,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
-readonly version=1.0.5				# Script version
+readonly version=1.0.6				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
