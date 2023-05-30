@@ -67,6 +67,8 @@
 #				Refactor check that VM is running.	#
 # 05/05/2022	MG	1.0.5	Add pipefail.				#
 # 30/05/2023	MG	1.0.6	Remove unused variable outputprefix.	#
+#				Use "" to prevent globbing and word	#
+#				splitting.				#
 #									#
 #########################################################################
 
@@ -120,7 +122,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -129,7 +131,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -205,8 +207,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -238,7 +240,7 @@ validate_name()
 {
 	local -i name_matches
 
-	name_matches=$(virsh -c $connect_uri list --all \
+	name_matches=$(virsh -c "$connect_uri" list --all \
 		| { grep "\<$name\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( !$name_matches )); then
@@ -257,7 +259,7 @@ is_vm_running()
 	local tmp_result
 	local -i vm_running_matches
 
-	vm_running_matches=$(virsh -c $connect_uri list \
+	vm_running_matches=$(virsh -c "$connect_uri" list \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
 	if (( $vm_running_matches )); then
@@ -265,6 +267,7 @@ is_vm_running()
 	else
 		tmp_result="false"
 	fi
+	# shellcheck disable=SC2086 # $__result is OK without ""
 	eval $__result="'$tmp_result'"
 }
 
@@ -275,7 +278,7 @@ ensure_vm_is_running()
 {
 	local status
 
-	is_vm_running $name status
+	is_vm_running "$name" status
 	if ! $status; then
 		output "VM is not running." 1
 		script_exit 77
@@ -296,7 +299,7 @@ validate_name
 ensure_vm_is_running
 
 output "Shutdown VM $name" 0
-virsh -c $connect_uri shutdown --mode=agent "$name"
+virsh -c "$connect_uri" shutdown --mode=agent "$name"
 std_cmd_err_handler $?
 
 # And exit.
