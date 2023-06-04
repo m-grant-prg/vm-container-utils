@@ -68,6 +68,8 @@
 # 04/06/2023	MG	1.0.6	Remove unused variable.			#
 #				Quote to prevent globbing and word	#
 #				splitting.				#
+#				$ unnecessary on arithmetic on		#
+#				variables.				#
 #									#
 #########################################################################
 
@@ -242,15 +244,15 @@ proc_CL "$@"
 tmp=$(virsh -c "$connect_uri" list | wc -l)
 std_cmd_err_handler $?
 
-if (( $tmp > 3 )); then
+if (( tmp > 3 )); then
 	output "Please shutdown all running VMs." 1
 	script_exit 77
 fi
 
 # Start the selected machines.
 for machine in $machines; do
-	while (($(virsh -c "$connect_uri" list | tail --lines=+4 \
-		| wc -l) >= $max_conc_vms)); do
+	while (( $(virsh -c "$connect_uri" list | tail --lines=+4 \
+		| wc -l) >= max_conc_vms )); do
 		std_cmd_err_handler $?
 		sleep 45
 	done
