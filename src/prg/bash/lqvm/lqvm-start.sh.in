@@ -76,6 +76,7 @@
 # 04/06/2023	MG	1.0.7	Remove unused variable.			#
 #				"" to prevent globbing and word		#
 #				splitting.				#
+#				Use grep -c AOT grep | wc -l		#
 #									#
 #########################################################################
 
@@ -316,8 +317,7 @@ validate_name()
 {
 	local -i name_matches
 
-	name_matches=$(virsh -c "$connect_uri" list --all \
-		| grep "\<$name\>" | wc -l)
+	name_matches=$(virsh -c "$connect_uri" list --all | grep -c "\<$name\>")
 	std_cmd_err_handler $?
 	if (( !$name_matches )); then
 	output "No such VM $name" 1
@@ -404,8 +404,8 @@ process_bridge()
 
 	# Enable / disable bridge VNI depending on hard-wired ethernet port
 	# status.
-	if (($(ip link show | grep "$ethernet_prefix.*$bridge.*state UP" \
-		| wc -l))); then
+	if (($(ip link show | grep -c "$ethernet_prefix.*$bridge.*state UP")))
+	then
 		std_cmd_err_handler $?
 		virsh -c "$connect_uri" domif-setlink "$name" \
 			"$bridge_mac_addr" up
