@@ -9,7 +9,7 @@
 #########################################################################
 #									#
 # Script ID: lqvm-start.sh						#
-# Author: Copyright (C) 2020-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -73,6 +73,7 @@
 # 05/05/2022	MG	1.0.6	Add pipefail.				#
 #				Add error checking to config file read.	#
 #				Enhance is_vm_running().		#
+# 04/06/2023	MG	1.0.7	Remove unused variable.			#
 #									#
 #########################################################################
 
@@ -83,9 +84,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly outputprefix="$(basename $0):"
-
-readonly version=1.0.6				# Script version
+readonly version=1.0.7				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
