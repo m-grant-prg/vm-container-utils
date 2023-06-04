@@ -66,6 +66,8 @@
 #				Add pipefail and associated error	#
 #				handling.				#
 # 04/06/2023	MG	1.0.6	Remove unused variable.			#
+#				Quote to prevent globbing and word	#
+#				splitting.				#
 #									#
 #########################################################################
 
@@ -118,7 +120,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -127,7 +129,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -206,8 +208,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -237,7 +239,7 @@ proc_config_file
 proc_CL "$@"
 
 # Ensure no running VMs.
-tmp=$(virsh -c $connect_uri list | wc -l)
+tmp=$(virsh -c "$connect_uri" list | wc -l)
 std_cmd_err_handler $?
 
 if (( $tmp > 3 )); then
@@ -247,12 +249,12 @@ fi
 
 # Start the selected machines.
 for machine in $machines; do
-	while (($(virsh -c $connect_uri list | tail --lines=+4 \
+	while (($(virsh -c "$connect_uri" list | tail --lines=+4 \
 		| wc -l) >= $max_conc_vms)); do
 		std_cmd_err_handler $?
 		sleep 45
 	done
-	@bindir@/lqvm-start.sh -w -u $connect_uri -n $machine
+	@bindir@/lqvm-start.sh -w -u "$connect_uri" -n "$machine"
 	std_cmd_err_handler $?
 	sleep 120
 done
