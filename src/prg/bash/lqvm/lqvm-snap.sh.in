@@ -84,6 +84,8 @@
 #				Allow word splitting where necessary.	#
 #				$ unnecessary in arithmetic on		#
 #				variables.				#
+#				Quote RHS of == to prevent glob		#
+#				matching.				#
 #									#
 #########################################################################
 
@@ -483,7 +485,7 @@ create_auto_snapshot()
 			snapname=$(echo "$snapshot" | awk '
 				BEGIN { FS=" " }
 				{print $1 }')
-			if [[ $snapname == $snapshot_name ]]; then
+			if [[ $snapname == "$snapshot_name" ]]; then
 				found=true
 				break
 			fi
@@ -610,7 +612,7 @@ delete_external_snapshot()
 			tmp_snapshot_child=$tmp_snapshot
 		fi
 
-		if [[ $tmp_snapshot_parent == $snapshot_name ]]; then
+		if [[ $tmp_snapshot_parent == "$snapshot_name" ]]; then
 			snapshot_child=$tmp_snapshot_child
 			break
 		fi
