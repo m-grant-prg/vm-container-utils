@@ -77,6 +77,7 @@
 #				"" to prevent globbing and word		#
 #				splitting.				#
 #				Use grep -c AOT grep | wc -l		#
+#				$ unnecessary on arithmetic variables.	#
 #									#
 #########################################################################
 
@@ -319,7 +320,7 @@ validate_name()
 
 	name_matches=$(virsh -c "$connect_uri" list --all | grep -c "\<$name\>")
 	std_cmd_err_handler $?
-	if (( !$name_matches )); then
+	if (( ! name_matches )); then
 	output "No such VM $name" 1
 	script_exit 64
 	fi
@@ -338,7 +339,7 @@ is_vm_running()
 	vm_running_matches=$(virsh -c "$connect_uri" list \
 		| { grep "\<$1\>" || test $?=1; } | wc -l)
 	std_cmd_err_handler $?
-	if (( $vm_running_matches )); then
+	if (( vm_running_matches )); then
 		tmp_result="true"
 	else
 		tmp_result="false"
