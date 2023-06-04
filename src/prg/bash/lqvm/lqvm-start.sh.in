@@ -440,6 +440,7 @@ proc_CL "$@"
 validate_name
 
 is_vm_running "$name" vm_running
+# shellcheck disable=SC2154 # vm_running is obscurely set in is_vm_running()
 if $vm_running; then
 	output "VM is already running." 1
 	script_exit 77
