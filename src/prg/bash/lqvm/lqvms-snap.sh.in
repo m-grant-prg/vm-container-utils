@@ -65,6 +65,8 @@
 # 05/05/2022	MG	1.0.5	Add error checking to config file read.	#
 #				Add pipefail.				#
 # 06/06/2023	MG	1.0.6	Remove unused variable.			#
+#				"" to prevent globbing and word		#
+#				splitting.				#
 #									#
 #########################################################################
 
@@ -123,7 +125,7 @@ output()
 # No return value.
 script_exit()
 {
-	exit $1
+	exit "$1"
 }
 
 # Standard function to test command error and exit if non-zero.
@@ -132,7 +134,7 @@ script_exit()
 std_cmd_err_handler()
 {
 	if (( $1 )); then
-		script_exit $1
+		script_exit "$1"
 	fi
 }
 
@@ -224,8 +226,8 @@ proc_CL()
 			shift 2
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" $0 $version
-			printf "%s Package version %s\n" $0 $packageversion
+			printf "%s Script version %s\n" "$0" $version
+			printf "%s Package version %s\n" "$0" $packageversion
 			shift
 			script_exit 0
 			;;
@@ -262,7 +264,7 @@ proc_config_file
 proc_CL "$@"
 
 # Ensure no running VMs.
-tmp=$(virsh -c $connect_uri list | wc -l)
+tmp=$(virsh -c "$connect_uri" list | wc -l)
 std_cmd_err_handler $?
 
 if (( $tmp > 3 )); then
@@ -283,7 +285,7 @@ fi
 cmd_template+=" -u $connect_uri"
 
 # Delete snapshots for each machine individually.
-machines=$(virsh -c $connect_uri list --inactive | tail --lines=+3)
+machines=$(virsh -c "$connect_uri" list --inactive | tail --lines=+3)
 std_cmd_err_handler $?
 for machine in $machines; do
 	name=$(echo "$machine" | awk '
