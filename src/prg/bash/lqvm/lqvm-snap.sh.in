@@ -78,7 +78,7 @@
 #				means not found.			#
 #				Refactor check that VM is not running.	#
 # 05/05/2022	MG	1.0.6	Add pipefail.				#
-# 04/06/2023	MG	1.0.7	Remove unused variable.			#
+# 06/06/2023	MG	1.0.7	Remove unused variable.			#
 #				Use "" to prevent globbing and word	#
 #				splitting.				#
 #				Allow word splitting where necessary.	#
@@ -660,7 +660,7 @@ delete_external_snapshot()
 	# format (B).
 	if [[ -n "$snapshot_child" ]]; then
 		sudo qemu-img rebase -u -F "$snapshot_parent_driver_type" \
-		-b "$snapshot_parent_file $snapshot_child_file"
+		-b "$snapshot_parent_file" "$snapshot_child_file"
 		std_cmd_err_handler $?
 	fi
 
