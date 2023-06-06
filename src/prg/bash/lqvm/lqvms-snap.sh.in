@@ -67,6 +67,7 @@
 # 06/06/2023	MG	1.0.6	Remove unused variable.			#
 #				"" to prevent globbing and word		#
 #				splitting.				#
+#				$ unnecessary on arithmetic variables.	#
 #									#
 #########################################################################
 
@@ -267,7 +268,7 @@ proc_CL "$@"
 tmp=$(virsh -c "$connect_uri" list | wc -l)
 std_cmd_err_handler $?
 
-if (( $tmp > 3 )); then
+if (( tmp > 3 )); then
 	output "Please shutdown all running VMs." 1
 	script_exit 77
 fi
