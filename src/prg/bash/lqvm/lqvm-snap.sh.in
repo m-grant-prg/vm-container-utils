@@ -86,6 +86,7 @@
 #				variables.				#
 #				Quote RHS of == to prevent glob		#
 #				matching.				#
+#				Replace hard-coded connection string.	#
 #									#
 #########################################################################
 
@@ -474,7 +475,7 @@ create_auto_snapshot()
 	local snapshots
 
 	snapshot_name="Auto-$(date +%y%m%d)-$seq"
-	snapshots=$(virsh --connect qemu:///system snapshot-list "$name" \
+	snapshots=$(virsh -c "$connect_uri" snapshot-list "$name" \
 		| tail --lines=+3)
 	std_cmd_err_handler $?
 
