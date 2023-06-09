@@ -76,6 +76,7 @@
 # 06/05/2023	MG	1.0.17	Remove EOL 36.				#
 #				Add bookworm.				#
 #				Remove EOL bionic.			#
+# 09/06/2023	MG	1.0.18	Add 15.5				#
 #									#
 #########################################################################
 
@@ -90,7 +91,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2023  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.0.17 $])
+AC_REVISION([$Revision: 1.0.18 $])
 
 AC_PREREQ([2.69])
 
@@ -426,6 +427,9 @@ AC_CONFIG_FILES([Makefile
 		src/conf/etc/lxcu/fedora/37/basic/Makefile
 		src/conf/etc/lxcu/fedora/37/dev/Makefile
 		src/conf/etc/lxcu/fedora/37/dosab/Makefile
+		src/conf/etc/lxcu/opensuse/15.5/basic/Makefile
+		src/conf/etc/lxcu/opensuse/15.5/dev/Makefile
+		src/conf/etc/lxcu/opensuse/15.5/dosab/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/basic/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dev/Makefile
 		src/conf/etc/lxcu/opensuse/15.4/dosab/Makefile

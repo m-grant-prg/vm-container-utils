@@ -1,0 +1,9 @@
+[hermes-stable]
+name=Hermes openSUSE Leap $releasever stable repo
+enabled=1
+autorefresh=1
+baseurl=http://hermes.mgent.home/rpmrepos/opensuse/leap/$releasever/stable
+type=rpm-md
+gpgcheck=1
+gpgkey=http://hermes.mgent.home/rpmrepos/opensuse/leap/$releasever/stable/repodata/repomd.xml.key
+keeppackages=0

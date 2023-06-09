@@ -46,6 +46,7 @@
 # 06/05/2023	MG	1.0.17	Remove EOL 36.				#
 #				Add bookworm.				#
 #				Remove EOL bionic.			#
+# 09/06/2023	MG	1.0.18	Add 15.5				#
 #									#
 #########################################################################
 
@@ -91,6 +92,9 @@ SUBDIRS += src/conf/etc/lxcu/fedora/38/dosab
 SUBDIRS += src/conf/etc/lxcu/fedora/37/basic
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dev
 SUBDIRS += src/conf/etc/lxcu/fedora/37/dosab
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.5/basic
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.5/dev
+SUBDIRS += src/conf/etc/lxcu/opensuse/15.5/dosab
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/basic
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dev
 SUBDIRS += src/conf/etc/lxcu/opensuse/15.4/dosab
