@@ -109,7 +109,7 @@ AC_PREREQ([2.69])
 # in source files.
 #
 # Set pkg_version for a default hard-coded version number.
-m4_define(pkg_version, 1.1.5-rc7)
+m4_define(pkg_version, 1.1.5-rc8)
 
 AC_INIT([Utility scripts for containers and VMs], m4_esyscmd([ \
 	git describe --always 1>/dev/null 2>/dev/null \
