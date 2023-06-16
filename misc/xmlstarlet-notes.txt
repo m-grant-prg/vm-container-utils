@@ -1,0 +1,6 @@
+16/06/2023
+The replacement of xmlstarlet with virt-xml was investigated as it would have been good to use a standard 'virt' interface. Unfortunately virt-xml does not interrogate all aspects of the xml and so grep or xmlstarlet must be used. (An example is determining whether a snapshot is internal or external, see lqvm-snap.sh.in).
+
+An external example showing grep being used can be seen at:-
+https://fabianlee.org/2021/01/10/kvm-creating-and-reverting-libvirt-external-snapshots/
+
