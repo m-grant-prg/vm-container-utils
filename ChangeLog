@@ -1,3 +1,26 @@
+2023-06-28 v1.1.5 Mark Grant <m.grant.prg@gmail.com>
+	* at: Add notes why xmlstarlet not replaced by virt-xml
+	lxcu: Add 15.5
+	lxcu: conf: Add trixie and forky codenames / versions
+	lqvms: Fix shellcheck warnings
+	lqvm: Fix shellcheck warnings
+	lxcu: Fix lxc-ls output
+	lxcu: upgrade: Centralise error exit
+	lxcu: start: Container must exist but not be running
+	lxcu: create: Target container must not exist
+	lxcu: Cleanup on error exit
+	lxcu: Centralise error exit
+	lxcu: Ensure project target does not exist
+	lxcu: copy: Validate inputs
+	lxcu: Improve config file error handling
+	lxcu: create: Improve config file error handling
+	lxcu: Remove EOL bionic
+	lxcu: Add bookworm
+	lxcu: Fix shellcheck warnings
+	lxcus: Fix shellcheck warnings
+	lxcu: Remove arch
+	lxcu: Remove EOL 36
+
 2023-04-22 v1.1.4 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: Add 38
 	at: Allow for v1.1.1~rc1 version numbering
