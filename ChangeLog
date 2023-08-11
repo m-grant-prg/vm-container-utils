@@ -1,3 +1,10 @@
+2023-08-11 v1.1.6 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Add non-free-firmware
+	actions: Remove unnecessary tar
+	actions: Remove txt2man, rely on txt2manwrap dependencies
+	actions: Run on focal
+	at: Use standard sequence for sections
+
 2023-06-28 v1.1.5 Mark Grant <m.grant.prg@gmail.com>
 	* at: Add notes why xmlstarlet not replaced by virt-xml
 	lxcu: Add 15.5
