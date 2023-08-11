@@ -115,6 +115,11 @@ SUBDIRS += src/prg/bash/lxcu
 
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README
 
+
+EXTRA_DIST = $(srcdir)/AUTHORS $(srcdir)/ChangeLog $(srcdir)/COPYING \
+		$(srcdir)/NEWS $(srcdir)/README $(srcdir)/misc
+
+
 srctarball:
 	@cwd="$${PWD}" && \
 	varg="$$(echo @PACKAGE_VERSION@ | sed -e s/\-rc/\~rc/ )" && \
@@ -127,7 +132,4 @@ srctarball:
 		--output=$${targ} \
 		HEAD && \
 	cd -
-
-EXTRA_DIST = $(srcdir)/AUTHORS $(srcdir)/ChangeLog $(srcdir)/COPYING \
-		$(srcdir)/NEWS $(srcdir)/README $(srcdir)/misc
 
