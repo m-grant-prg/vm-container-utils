@@ -27,6 +27,7 @@
 # 11/08/2023    MG      1.0.5   Run on focal.                           #
 #                               Remove txt2man, rely on txt2manwrap     #
 #                               dependencies.                           #
+#                               Remove unnecessary tar.                 #
 #									#
 #########################################################################
 
@@ -54,7 +55,7 @@ jobs:
       - name: Update the package list
         run: sudo apt-get update
       - name: Add the extra PPA packages
-        run: sudo apt-get install -y tar txt2manwrap
+        run: sudo apt-get install -y txt2manwrap
 
       - name: Autoreconf
         run: autoreconf -if .
