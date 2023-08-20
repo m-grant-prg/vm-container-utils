@@ -117,6 +117,9 @@
 #				Centralise error exit.			#
 #				Tidy up on error exit.			#
 #				Target container must not exist.	#
+# 20/08/2023	MG	1.2.10	lxc-download no longer takes a		#
+#				keyserver option. Fixed by lxc on	#
+#				upgrade to bookworm.			#
 #									#
 #########################################################################
 
@@ -127,7 +130,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.9				# Script version
+readonly version=1.2.10				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
@@ -770,8 +773,7 @@ proc_config_file
 
 proc_CL "$@"
 
-# With the demise of sks-keyservers.net force an alternative keyserver.
-lxc-create -t download -n "$name" -- --keyserver hkps://keyserver.ubuntu.com
+lxc-create -t download -n "$name"
 std_cmd_err_handler $?
 
 network_config
