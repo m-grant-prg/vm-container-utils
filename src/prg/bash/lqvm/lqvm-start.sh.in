@@ -80,6 +80,7 @@
 #				$ unnecessary on arithmetic variables.	#
 # 24/08/2023	MG	1.0.8	Introduce workaround for virsh v7.0.0	#
 #				domif-setlink bug.			#
+#				Fix shellcheck warnings.		#
 #									#
 #########################################################################
 
@@ -169,7 +170,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	script_exit $exit_code
+	script_exit "$exit_code"
 }
 
 # Setup trap
