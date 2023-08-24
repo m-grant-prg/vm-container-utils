@@ -78,6 +78,8 @@
 #				splitting.				#
 #				Use grep -c AOT grep | wc -l		#
 #				$ unnecessary on arithmetic variables.	#
+# 24/08/2023	MG	1.0.8	Introduce workaround for virsh v7.0.0	#
+#				domif-setlink bug.			#
 #									#
 #########################################################################
 
@@ -88,7 +90,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.0.7				# Script version
+readonly version=1.0.8				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -410,22 +412,68 @@ process_bridge()
 		std_cmd_err_handler $?
 		virsh -c "$connect_uri" domif-setlink "$name" \
 			"$bridge_mac_addr" up
-		std_cmd_err_handler $?
+		# virsh version 7.0.0 has a domif-setlink bug whereby it does
+		# not work. The conditionals in this function invoking
+		# domif_setlink_bug_workaround, and the function itself, are
+		# introduced as a workaround. The conditionals replace a
+		# std_cmd_err_handler $? statement.
+		# shellcheck disable=SC2181 # Easier to read than if ! mycmd
+		if (( $? )); then
+			domif_setlink_bug_workaround "$bridge_mac_addr" "up"
+		fi
 		if [[ -n $default_mac_addr ]]; then
 			virsh -c "$connect_uri" domif-setlink \
 				"$name" "$default_mac_addr" down
-			std_cmd_err_handler $?
+			# shellcheck disable=SC2181 # Easier to read than
+			# if ! mycmd
+			if (( $? )); then
+				domif_setlink_bug_workaround \
+					"$default_mac_addr" "down"
+			fi
 		fi
 	else
 		virsh -c "$connect_uri" domif-setlink "$name" \
 			"$bridge_mac_addr" down
-		std_cmd_err_handler $?
+		# shellcheck disable=SC2181 # Easier to read than if ! mycmd
+		if (( $? )); then
+			domif_setlink_bug_workaround "$bridge_mac_addr" "down"
+		fi
 		if [[ -n $default_mac_addr ]]; then
 			virsh -c "$connect_uri" domif-setlink "$name" \
 				"$default_mac_addr" up
-			std_cmd_err_handler $?
+			# shellcheck disable=SC2181 # Easier to read than
+			# if ! mycmd
+			if (( $? )); then
+				domif_setlink_bug_workaround \
+					"$default_mac_addr" "up"
+			fi
 		fi
 	fi
+}
+
+# virsh version 7.0.0 introduced a domif-setlink bug which allways results in an
+# error. This function, invoked on domif-setlink error, attempts to perform
+# the required change using xmlstarlet.
+# Parameters -	$1 is the mac address
+#		$2 is the link state ie up or down
+# Return value - none.
+domif_setlink_bug_workaround()
+{
+	local tmpdumpxmlfile
+
+	tmpdumpxmlfile=/tmp/$$.$(basename "$0").xml
+	output "Attempting virsh domif-setlink bug workaround" 0
+	virsh -c "$connect_uri" dumpxml --inactive "$name" > "$tmpdumpxmlfile"
+	std_cmd_err_handler $?
+	xmlstarlet edit -L -u \
+		"/domain/devices/interface/mac[@address='$1']/../link/@state" \
+		-v "$2" "$tmpdumpxmlfile"
+	std_cmd_err_handler $?
+	virsh -c "$connect_uri" define "$tmpdumpxmlfile" 1>/dev/null
+	std_cmd_err_handler $?
+	output "Achieved virsh domif-setlink bug workaround" 0
+
+	rm "$tmpdumpxmlfile"
 }
 
 
