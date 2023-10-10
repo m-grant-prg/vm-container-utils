@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 202-2022  Mark Grant				#
+# Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
