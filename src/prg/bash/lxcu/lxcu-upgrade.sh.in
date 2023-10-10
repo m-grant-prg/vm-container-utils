@@ -271,7 +271,7 @@ upgrade_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get -- -y dist-upgrade
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo agmaint.sh -- -- -y
+	@bindir@/lxcu-attach.sh -n "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
 
 	upgrade_deb_type basic
