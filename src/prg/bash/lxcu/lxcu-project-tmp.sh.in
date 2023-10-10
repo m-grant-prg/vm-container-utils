@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lxcu-project-tmp.sh					#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -51,45 +50,6 @@
 #				79	Target already exists.		#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 28/09/2020	MG	1.0.1	Created.				#
-# 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
-# 22/11/2020	MG	1.0.3	Use lxcu-copy.sh			#
-# 13/02/2021	MG	1.0.4	Prepend this package executable		#
-#				invocations with bindir.		#
-# 03/09/2021	MG	1.0.5	With lxc v4 lxc start and attach need	#
-#				slightly different privileges. The	#
-#				altered commands also work pre-v4.	#
-# 18/09/2021	MG	1.0.6	Add Fedora support.			#
-# 21/09/2021	MG	1.0.7	Add openSUSE support.			#
-# 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
-# 08/01/2022	MG	1.0.9	Use lxcu-attach.sh AOT systemd-run	#
-#				lxc-attach				#
-# 01/04/2023	MG	1.0.10	Ignore comment lines in install and	#
-#				cache.list file processing.		#
-#				The lxc.mount must be to a relative	#
-#				path.					#
-#				A package index refresh is required for	#
-#				APT. Others are automatic.		#
-# 05/05/2023	MG	1.0.11	Remove unused variable outputprefix.	#
-#				Double quote variables to prevent word	#
-#				splitting and globbing.			#
-#				Remove shellcheck warning for cd	#
-#				failure, covered by std_cmd_err_handler	#
-#				Silence shellcheck use subshell warning	#
-#				as a variable is being assigned.	#
-# 15/05/2023	MG	1.0.12	Use script_exit to tidy up, stopping	#
-#				and destroying the temporary container.	#
-#				Improve config file read error handling.#
-#				Check target does not already exist.	#
 #									#
 #########################################################################
 

@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: ./Makefile.am						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -9,44 +8,6 @@
 # Purpose:								#
 # AutoMake script file to generate vm-container-utils project from	#
 # source.								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 19/08/2020	MG	1.0.1	Initial release.			#
-# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf and	#
-#				man.					#
-# 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
-#				just dist.				#
-#				Add bullseye.				#
-# 13/09/2021	MG	1.0.4	Add misc subdir to the distribution.	#
-# 17/09/2021	MG	1.0.5	Add Fedora.				#
-# 20/09/2021	MG	1.0.6	Add openSUSE.				#
-# 04/11/2021	MG	1.0.7	Fedora: Add 35 and remove 33.		#
-# 28/11/2021	MG	1.0.8	Tighten SPDX tag.			#
-# 03/05/2022	MG	1.0.9	Add jammy.				#
-# 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
-# 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
-# 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
-# 12/10/2022	MG	1.0.13	Remove superfluous disctcheckfake.	#
-# 23/11/2022	MG	1.0.14	Remove EOL 35.				#
-#				Remove EOL 15.3				#
-#				Add 37.					#
-# 30/03/2023	MG	1.0.15	Add Debian testing.			#
-#				Remove stretch.				#
-#				Remove xenial.				#
-# 21/04/2023	MG	1.0.16	Enable use of v1.1.1~rc1 type vesrion	#
-#				numbers for source tarballs.		#
-#				Add 38.					#
-# 06/05/2023	MG	1.0.17	Remove EOL 36.				#
-#				Add bookworm.				#
-#				Remove EOL bionic.			#
-# 09/06/2023	MG	1.0.18	Add 15.5				#
 #									#
 #########################################################################
 

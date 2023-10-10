@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: src/man/5/lxcu/Makefile.am					#
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -8,17 +7,6 @@
 #									#
 # Purpose:								#
 # AutoMake script file to generate conf manual pages from source.	#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 30/09/2020	MG	1.0.1	Initial release.			#
-# 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

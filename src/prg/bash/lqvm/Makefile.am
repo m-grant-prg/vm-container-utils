@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: src/prg/bash/lqvm/Makefile.am				#
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -8,18 +7,6 @@
 #									#
 # Purpose:								#
 # AutoMake script file to generate lqvm scripts from source.		#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 22/08/2020	MG	1.0.1	Initial release.			#
-# 28/11/2021	MG	1.0.2	Tighten SPDX tag.			#
-# 15/12/2021	MG	1.0.3	Add lqvms-backups.sh			#
 #									#
 #########################################################################
 

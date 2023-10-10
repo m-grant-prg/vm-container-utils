@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: ./configure.ac						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -16,7 +15,6 @@
 # please see inline comments at the point of definition:-		#
 #									#
 # Layout: (Only relevant sections will exist).				#
-# ChangeLog : High level ChangeLog					#
 # SECTION  1: Initialisation & Setup					#
 # SECTION  2: Architecture, target and host checks			#
 # SECTION  3: Command line arguments					#
@@ -32,51 +30,6 @@
 # SECTION 13: Check for system services					#
 # SECTION 14: Additional checks & variables				#
 # SECTION 15: Specify the output files					#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 19/08/2020	MG	1.0.1	Initial release.			#
-# 22/09/2020	MG	1.0.2	Separate lqvm and lxcu under conf and	#
-#				man.					#
-# 22/08/2021	MG	1.0.3	Drop config files down to dist/rel from	#
-#				just dist.				#
-#				Add bullseye.				#
-# 17/09/2021	MG	1.0.4	Add Fedora.				#
-# 20/09/2021	MG	1.0.5	Add openSUSE.				#
-# 04/11/2021	MG	1.0.6	Fedora: Add 35 and remove 33.		#
-# 28/11/2021	MG	1.0.7	If git is available and we are inside a	#
-#				git tree then use git describe to add	#
-#				further package version information.	#
-#				Tighten SPDX tag.			#
-#				Add AC_COPYRIGHT macro.			#
-# 05/01/2022	MG	1.0.8	Tidy-up program checks.			#
-#				Add missing program checks for lxc, 	#
-#				xmlstarlet, etc.			#
-# 03/05/2022	MG	1.0.9	Add config for jammy.			#
-# 08/05/2022	MG	1.0.10	Remove EOL openSUSE Leap 15.2		#
-# 23/05/2022	MG	1.0.11	Replace EOL Fedora 34 with 36.		#
-# 14/06/2022	MG	1.0.12	Add openSUSE 15.4			#
-# 12/10/2022	MG	1.0.13	Separate AutoTools generated files from	#
-#				project root.				#
-#				Use AC MSG CHECKING where appropriate.	#
-#				Remove superfluous distcheckkfake.	#
-# 23/11/2022	MG	1.0.14	Remove EOL 35.				#
-#				Remove EOL 15.3				#
-#				Add 37.					#
-# 30/03/2023	MG	1.0.15	Add Debian testing.			#
-#				Remove stretch.				#
-#				Remove xenial.				#
-# 21/04/2023	MG	1.0.16	Add 38.					#
-# 06/05/2023	MG	1.0.17	Remove EOL 36.				#
-#				Add bookworm.				#
-#				Remove EOL bionic.			#
-# 09/06/2023	MG	1.0.18	Add 15.5				#
 #									#
 #########################################################################
 

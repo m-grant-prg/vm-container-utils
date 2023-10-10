@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lqvm-shutdown.sh						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -48,29 +47,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 21/08/2020	MG	1.0.1	Created.				#
-# 14/12/2020	MG	1.0.2	Change -v --vm-name to -n --name.	#
-# 28/11/2021	MG	1.0.3	Tighten SPDX tag.			#
-# 17/03/2022	MG	1.0.4	Add error checking for config file.	#
-#				validate_name() should not error out of	#
-#				pipe if grep has exit code 1 which just	#
-#				means not found.			#
-#				Refactor check that VM is running.	#
-# 05/05/2022	MG	1.0.5	Add pipefail.				#
-# 30/05/2023	MG	1.0.6	Remove unused variable outputprefix.	#
-#				Use "" to prevent globbing and word	#
-#				splitting.				#
-#				Remove unnecessary $ on arithmetic	#
-#				variables.				#
 #									#
 #########################################################################
 

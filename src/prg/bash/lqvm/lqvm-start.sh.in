@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lqvm-start.sh						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -52,35 +51,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 22/08/2020	MG	1.0.1	Created.				#
-# 14/12/2020	MG	1.0.2	Change -n --no-snapshot to -w --without	#
-#				Change -v --vm-name to -n --name.	#
-#				Change snap -v to snap -n.		#
-# 13/02/2021	MG	1.0.3	Prepend this package executable		#
-#				invocations with bindir.		#
-# 02/09/2021	MG	1.0.4	Ensure that Bridge and default have	#
-#				opposite values (up / down).		#
-# 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
-# 05/05/2022	MG	1.0.6	Add pipefail.				#
-#				Add error checking to config file read.	#
-#				Enhance is_vm_running().		#
-# 04/06/2023	MG	1.0.7	Remove unused variable.			#
-#				"" to prevent globbing and word		#
-#				splitting.				#
-#				Use grep -c AOT grep | wc -l		#
-#				$ unnecessary on arithmetic variables.	#
-# 24/08/2023	MG	1.0.8	Introduce workaround for virsh v7.0.0	#
-#				domif-setlink bug.			#
-#				Fix shellcheck warnings.		#
 #									#
 #########################################################################
 

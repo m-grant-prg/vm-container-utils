@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lxcu-upgrade.sh						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -49,45 +48,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 27/09/2020	MG	1.0.1	Created.				#
-# 05/10/2020	MG	1.0.2	Use lxcu-start.sh			#
-# 15/10/2020	MG	1.0.3	Add install.list processing as the list	#
-#				may be changed at any time.		#
-# 13/02/2021	MG	1.0.4	Prepend this package executable		#
-#				invocations with bindir.		#
-# 25/04/2021	MG	1.0.5	Add quirk for old hardware which	#
-#				exhibits latency shutting down the	#
-#				container.				#
-# 27/07/2021	MG	1.0.6	Reduce container start / stop to once,	#
-#				otherwise causes network connectivity	#
-#				problems.				#
-# 22/08/2021	MG	1.0.7	All config files are now under dist/rel	#
-#				AOT just dist.				#
-# 03/09/2021	MG	1.0.8	With lxc v4 lxc start and attach need	#
-# 18/09/2021	MG	1.0.9	Add Fedora support.			#
-# 21/09/2021	MG	1.0.10	Add openSUSE support.			#
-# 28/11/2021	MG	1.0.11	Tighten SPDX tag.			#
-# 17/12/2021	MG	1.0.12	Add dist-upgrade just in case.		#
-# 19/12/2021	MG	1.0.13	Correct dnf list --autoremove to	#
-#				actually remove with dnf autoremove.	#
-# 08/01/2022	MG	1.0.14	Use lxcu-attach.sh AOT systemd-run	#
-#				lxc-attach				#
-# 31/03/2023	MG	1.0.15	Ignore comment lines in install and	#
-#				cache.list file processing.		#
-# 04/05/2023	MG	1.0.16	Remove unused variable outputprefix.	#
-#				Double quote variables to prevent word	#
-#				splitting and globbing.			#
-# 16/05/2023	MG	1.0.17	Improve config file error handling.	#
-#				Centralise error exit.			#
 #									#
 #########################################################################
 

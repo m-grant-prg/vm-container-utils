@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/fedora/38/dev/Makefile.am		#
 # Author: Copyright (C) 2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -8,16 +7,6 @@
 #									#
 # Purpose:								#
 # AutoMake script file to build the lxcu configuration files.		#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 21/04/2023	MG	1.0.1	Initial release.			#
 #									#
 #########################################################################
 

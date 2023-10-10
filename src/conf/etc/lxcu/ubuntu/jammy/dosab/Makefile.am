@@ -1,6 +1,5 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/ubuntu/jammy/dosab/Makefile.am		#
 # Author: Copyright (C) 2022  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -8,16 +7,6 @@
 #									#
 # Purpose:								#
 # AutoMake script file to build the lxcu configuration files.		#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 03/05/2022	MG	1.0.1	Initial release.			#
 #									#
 #########################################################################
 

@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lqvms-backups.sh						#
 # Author: Copyright (C) 2021-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -49,33 +48,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 15/12/2021	MG	1.0.1	Created.				#
-# 10/03/2022	MG	1.0.2	Limit ssh password retries to 0 as the	#
-#				error could be in user name.		#
-# 13/03/2022	MG	1.0.3	Refactor check for running VMs into	#
-#				function.				#
-#				Refactor start VMs into function.	#
-#				Refactor get username and password into	#
-#				function.				#
-#				Refactor perform backups.		#
-# 17/03/2022	MG	1.0.4	Validate VM names before processing.	#
-#				Add error checking to config file read.	#
-# 29/05/2023	MG	1.0.5	Add "" where necessary.			#
-#				Remove unused variable outputprefix.	#
-#				$ unnecessary in (( ))			#
-#				vms should not be an array.		#
-#				Where possible test command exit in if	#
-#				statement, do not use $?.		#
-#				Use read -r so \ are literal.		#
 #									#
 #########################################################################
 

@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lxcu-create.sh						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -49,77 +48,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 23/09/2020	MG	1.0.1	Created.				#
-# 05/10/2020	MG	1.0.2	Replace sleeps with network wait in	#
-#				lxcu-start.sh				#
-# 18/11/2020	MG	1.0.3	Do initial install of apt https prior	#
-#				to adding repo for server-dependency to	#
-#				avoid hang on https comms.		#
-#				Ensure apt update is run after changing	#
-#				repos.					#
-#				Do apt-get update after apt-key update.	#
-# 13/02/2021	MG	1.0.4	Use OBS instead of Bintray.		#
-#				Prepend this package executable		#
-#				invocations with bindir.		#
-# 14/03/2021	MG	1.0.5	Install hermes and OBS / PPA key	#
-#				scripts with apt-key-scripts.sh in	#
-#				debian / ubuntu setup.			#
-# 26/07/2021	MG	1.0.6	Add locale generation.			#
-# 27/07/2021	MG	1.0.7	Reduce container start /stop to once,	#
-#				otherwise causes networking		#
-#				connectivity problems.			#
-# 06/08/2021	MG	1.0.8	Use an alternative keyserver following	#
-#				the demise of sks-keyservers.net	#
-#				Retrieve OBS release number from new	#
-#				debian-releases.conf			#
-# 21/08/2021	MG	1.0.9	Nothing is cast in stone at the dist	#
-#				level, even apt, so put everything	#
-#				under dist/rel.				#
-# 03/09/2021	MG	1.0.10	With lxc v4 lxc start and attach need	#
-#				slightly different privileges. The	#
-#				altered commands also work pre-v4.	#
-# 18/09/2021	MG	1.1.0	Add support for Fedora.			#
-# 20/09/2021	MG	1.2.0	Add support for openSUSE.		#
-# 26/09/2021	MG	1.2.1	Setup some git defaults.		#
-# 28/11/2021	MG	1.2.2	Tighten SPDX tag.			#
-# 11/01/2022	MG	1.2.3	Use lxcu-attach.sh AOT systemd-run	#
-#				lxc-attach				#
-#				Correct dnf list --autoremove to	#
-#				actually remove with dnf autoremove.	#
-#				Standardise locale setup from config	#
-#				file using localectl.			#
-# 23/01/2022	MG	1.2.4	Get OBS repo key from source AOT this	#
-#				package as the key would expire if not	#
-#				updated every 2 years.			#
-# 04/05/2022	MG	1.2.5	Remove set-keymap as set-x11-keymap	#
-#				sets the virtual console which is all	#
-#				that is needed. Also setting the	#
-#				console errors on jammy with keymap not	#
-#				found.					#
-# 23/06/2022	MG	1.2.6	OBS repo URL has changed for 15.4	#
-# 31/03/2023	MG	1.2.7	Ignore comment lines in install and	#
-#				cache.list file processing.		#
-# 05/05/2023	MG	1.2.8	Remove unused variables.		#
-#				Double quote variables to prevent word	#
-#				splitting and globbing.			#
-#				Remove cat and use cmd <		#
-#				Remove arch - unused and unneeded.	#
-# 16/05/2023	MG	1.2.9	Improve config file error handling.	#
-#				Centralise error exit.			#
-#				Tidy up on error exit.			#
-#				Target container must not exist.	#
-# 20/08/2023	MG	1.2.10	lxc-download no longer takes a		#
-#				keyserver option. Fixed by lxc on	#
-#				upgrade to bookworm.			#
 #									#
 #########################################################################
 

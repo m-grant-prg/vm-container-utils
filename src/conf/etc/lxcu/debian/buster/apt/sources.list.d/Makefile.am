@@ -1,7 +1,5 @@
 #########################################################################
 #									#
-# Script ID: src/conf/etc/lxcu/debian/buster/apt/sources.list.d/ \	#
-#							Makefile.am	#
 # Author: Copyright (C) 2020, 2021  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -9,23 +7,6 @@
 #									#
 # Purpose:								#
 # AutoMake script file to build the lxcu configuration files.		#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 22/09/2020	MG	1.0.1	Initial release.			#
-# 11/11/2020	MG	1.0.2	Remove hermes.list as these files are	#
-#				used at container creation and hermes	#
-#				may not be available.			#
-# 11/02/2021	MG	1.0.3	Move from Bintray to OBS.		#
-# 21/08/2021	MG	1.0.4	Drop down the tree to the release	#
-#				directory.				#
-# 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
 #									#
 #########################################################################
 

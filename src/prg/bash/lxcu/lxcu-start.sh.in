@@ -8,7 +8,6 @@
 
 #########################################################################
 #									#
-# Script ID: lxcu-start.sh						#
 # Author: Copyright (C) 2020-2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
@@ -46,36 +45,6 @@
 #		None							#
 #									#
 # Further Info:								#
-#									#
-#########################################################################
-
-#########################################################################
-#									#
-# Changelog								#
-#									#
-# Date		Author	Version	Description				#
-#									#
-# 25/09/2020	MG	1.0.1	Created.				#
-# 05/10/2020	MG	1.0.2	Add wait for network initialisation.	#
-# 14/11/2020	MG	1.0.3	Wait for server-dependency service to	#
-#				complete.				#
-# 03/09/2021	MG	1.0.4	With lxc v4 lxc start and attach need	#
-#				slightly different privileges. The	#
-#				altered commands also work pre-v4.	#
-# 28/11/2021	MG	1.0.5	Tighten SPDX tag.			#
-# 08/01/2022	MG	1.0.6	Use lxcu-attach.sh AOT systemd-run	#
-#				lxc-attach				#
-# 05/05/2023	MG	1.0.7	Remove unused variable outputprefix.	#
-#				Double quote variables to prevent word	#
-#				splitting and globbing.			#
-#				Fix ethernet_bridge typo.		#
-#				Remove unused variable vni.		#
-#				Use grep -c AOT grep | wc -l		#
-#				Remove unnecessary $ from variable	#
-#				names in arithmetic expressions.	#
-# 16/05/2023	MG	1.0.8	Improve config file error handling.	#
-#				Container must exist but must not be	#
-#				running.				#
 #									#
 #########################################################################
 
