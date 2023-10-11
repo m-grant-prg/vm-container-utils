@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvm-shutdown.sh is automatically generated,			#
+#	lqvm-shutdown is automatically generated,			#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -17,7 +17,7 @@
 # A script to shutdown a guest VM from the host. The guest must be	#
 # running the Guest Agent.						#
 #                                                            	  	#
-# Syntax:      lqvm-shutdown.sh [ -h or --help				#
+# Syntax:      lqvm-shutdown [ -h or --help				#
 #			|| -n or --name					#
 #			|| -u or --connect-uri 'connection-URI'		#
 #			|| -V or --version ]				#

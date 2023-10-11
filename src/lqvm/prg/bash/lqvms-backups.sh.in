@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvms-backups.sh is automatically generated,			#
+#	lqvms-backups is automatically generated,			#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -17,7 +17,7 @@
 # A script to start VMs in a user-supplied list and perform either	#
 # daily or weekly backups.						#
 #                                                            	  	#
-# Syntax:      lqvms-backups.sh [ -d or --daily				#
+# Syntax:      lqvms-backups [ -d or --daily				#
 #			|| -h or --help					#
 #			|| -u or --connect-uri 'connection-URI'		#
 #			|| -V or --version				#
@@ -315,7 +315,7 @@ start_vms()
 	local vm
 
 	for vm in $vms; do
-		@bindir@/lqvm-start.sh -w -u "$connect_uri" -n "$vm"
+		@bindir@/lqvm-start -w -u "$connect_uri" -n "$vm"
 		std_cmd_err_handler $?
 		sleep 90
 	done

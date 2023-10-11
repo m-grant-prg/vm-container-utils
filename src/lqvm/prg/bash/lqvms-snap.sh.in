@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvms-snap.sh is automatically generated,			#
+#	lqvms-snap is automatically generated,				#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -16,7 +16,7 @@
 # Purpose:								#
 # A script to control deletion of snapshots on all VMs.			#
 #                                                            	  	#
-# Syntax:      lqvms-snap.sh [ -a or --delete-all			#
+# Syntax:      lqvms-snap [ -a or --delete-all				#
 #			|| -h or --help					#
 #			|| -t or --delete-to-current			#
 #			|| -u or --connect-uri 'connection-URI'		#
@@ -256,7 +256,7 @@ fi
 oldIFS=$IFS
 IFS='
 '
-cmd_template="@bindir@/lqvm-snap.sh"
+cmd_template="@bindir@/lqvm-snap"
 if $delete_all; then
 	cmd_template+=" -a"
 else

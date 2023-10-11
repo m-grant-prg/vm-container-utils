@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvms-sequential-start.sh is automatically generated,		#
+#	lqvms-sequential-start is automatically generated,		#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -17,7 +17,7 @@
 # A script to start VMs listed in the conf file in sequence. The conf	#
 # file also controls the number of VMs to start in parallel.		#
 #                                                            	  	#
-# Syntax:      lqvms-sequential-start.sh [ -h or --help			#
+# Syntax:      lqvms-sequential-start [ -h or --help			#
 #			|| -u or --connect-uri 'connection-URI'		#
 #			|| -V or --version ]				#
 #									#
@@ -232,7 +232,7 @@ for machine in $machines; do
 		std_cmd_err_handler $?
 		sleep 45
 	done
-	@bindir@/lqvm-start.sh -w -u "$connect_uri" -n "$machine"
+	@bindir@/lqvm-start -w -u "$connect_uri" -n "$machine"
 	std_cmd_err_handler $?
 	sleep 120
 done

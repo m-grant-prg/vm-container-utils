@@ -1,13 +1,14 @@
 NAME
-lqvms-sequential-start.sh -- Start a list of VMs sequentially.
+lqvm-shutdown -- Host-based shutdown of a guest VM.
 SYNOPSIS
-lqvms-sequential-start.sh [OPTIONS]
+lqvm-shutdown [OPTIONS]
 DESCRIPTION
-lqvms-sequential-start.sh uses a Key / Value pair in lqvm.conf to provide a list
-of VMs to start sequentially. A further Key / Value pair in lqvm.conf specifies
-how many machines can be running concurrently.
+lqvm-shutdown is run on the host and shuts down a guest. The guest must be
+running the Guest Agent.
 OPTIONS
 -h, --help  Display the help information.
+
+-n, --name The name of the VM to operate on. This is a mandatory option.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
@@ -28,7 +29,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -38,6 +39,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lqvms-backups.sh(1) lqvm.conf(5) lqvm-shutdown.sh(1) lqvm-snap.sh(1)
-lqvms-snap.sh(1) lqvm-start.sh(1)
+lqvms-backups(1) lqvm.conf(5) lqvm-snap(1) lqvms-sequential-start(1)
+lqvms-snap(1) lqvm-start(1)
 

@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvm-snap.sh is automatically generated,			#
+#	lqvm-snap is automatically generated,				#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -18,7 +18,7 @@
 # machines. This includes create, delete and revert for both internal	#
 # and external snapshots.						#
 #                                                            	  	#
-# Syntax:      lqvm-snap.sh [ -a or --delete-all			#
+# Syntax:      lqvm-snap [ -a or --delete-all				#
 #			|| -c or --create 'snapshot-name'		#
 #			|| -d or --delete 'snapshot-name'		#
 #			|| -D or --description 'snapshot-description'	#

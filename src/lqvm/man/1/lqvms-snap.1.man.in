@@ -1,25 +1,23 @@
 NAME
-lqvms-backups.sh -- Perform VM backups
+lqvms-snap -- Delete all or to-current snapshots for all VMs.
 SYNOPSIS
-lqvms-backups.sh [OPTIONS] VM1 VM2 ...
+lqvms-snap [OPTIONS]
 DESCRIPTION
-This script starts each specified VM, performs username and password checking
-for an account with sudo privileges, and then uses ssh to execute an at script
-which does the backups.
-
-It is recommended that the user invoking this script has automated ssh login set
-up for the VMs specified.
+lqvms-snap facilitates the deletion of all or to-current snapshots for all
+avaialble VMs.
 OPTIONS
--d, --daily  Perform a daily backup
+-a, --delete-all  Delete all snapshots for each VM. This option merges the data of each snapshot with the backing store and deletes the snapshots.
 
 -h, --help  Display the help information.
+
+-t, --delete-to-current  Delete all snapshots taken before the current snapshot.
+This option merges the data of each snapshot with the backing store and deletes
+the snapshots.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
 
 -V, --version  Print script version information.
-
--w, --weekly  Perform a weekly backup
 EXIT STATUS
 0 - Success
 
@@ -35,7 +33,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -45,6 +43,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lqvm.conf(5) lqvms-sequential-start.sh(1) lqvm-shutdown.sh(1) lqvm-snap.sh(1)
-lqvms-snap.sh(1) lqvm-start.sh(1)
+lqvms-backups(1) lqvm.conf(5) lqvm-shutdown(1) lqvm-snap(1)
+lqvms-sequential-start(1) lqvm-start(1)
 

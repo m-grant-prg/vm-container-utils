@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lqvm-start.sh is automatically generated,			#
+#	lqvm-start is automatically generated,				#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -16,7 +16,7 @@
 # Purpose:								#
 # A script to start a VM with external, internal or no snapshot.	#
 #                                                            	  	#
-# Syntax:      lqvm-start.sh [ -c or --create 'snapshot-name'		#
+# Syntax:      lqvm-start [ -c or --create 'snapshot-name'		#
 #			|| -D or --description 'snapshot-description'	#
 #			|| -e or --external				#
 #			|| -h or --help					#
@@ -330,7 +330,7 @@ create_snapshot()
 {
 	local cmd
 
-	cmd="@bindir@/lqvm-snap.sh -u $connect_uri"
+	cmd="@bindir@/lqvm-snap -u $connect_uri"
 
 	if $external; then
 		cmd+=" -e"

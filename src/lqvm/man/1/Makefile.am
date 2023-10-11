@@ -11,8 +11,8 @@
 #########################################################################
 
 
-lqvms-backups.sh.1 lqvm-shutdown.sh.1 lqvm-snap.sh.1 \
-	lqvms-sequential-start.sh.1 lqvms-snap.sh.1 lqvm-start.sh.1: Makefile
+lqvms-backups.1 lqvm-shutdown.1 lqvm-snap.1 lqvms-sequential-start.1 \
+	lqvms-snap.1 lqvm-start.1: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	$(edit) $(srcdir)/$(@F).man.in > $@.tmp
@@ -30,22 +30,21 @@ lqvms-backups.sh.1 lqvm-shutdown.sh.1 lqvm-snap.sh.1 \
 	fi; \
 	txt2manwrap $(@F) $$section "LQVM Scripts Manual" $@.tmp $@
 	rm -f $@.tmp
-lqvms-backups.sh.1: $(srcdir)/lqvms-backups.sh.1.man.in
-lqvm-shutdown.sh.1: $(srcdir)/lqvm-shutdown.sh.1.man.in
-lqvm-snap.sh.1: $(srcdir)/lqvm-snap.sh.1.man.in
-lqvms-sequential-start.sh.1: $(srcdir)/lqvms-sequential-start.sh.1.man.in
-lqvms-snap.sh.1: $(srcdir)/lqvms-snap.sh.1.man.in
-lqvm-start.sh.1: $(srcdir)/lqvm-start.sh.1.man.in
+lqvms-backups.1: $(srcdir)/lqvms-backups.1.man.in
+lqvm-shutdown.1: $(srcdir)/lqvm-shutdown.1.man.in
+lqvm-snap.1: $(srcdir)/lqvm-snap.1.man.in
+lqvms-sequential-start.1: $(srcdir)/lqvms-sequential-start.1.man.in
+lqvms-snap.1: $(srcdir)/lqvms-snap.1.man.in
+lqvm-start.1: $(srcdir)/lqvm-start.1.man.in
 
-man_MANS = lqvms-backups.sh.1 lqvm-shutdown.sh.1 lqvm-snap.sh.1 \
-	   lqvms-sequential-start.sh.1 lqvms-snap.sh.1 lqvm-start.sh.1
+man_MANS = lqvms-backups.1 lqvm-shutdown.1 lqvm-snap.1 \
+	   lqvms-sequential-start.1 lqvms-snap.1 lqvm-start.1
 
-EXTRA_DIST = $(srcdir)/lqvms-backups.sh.1.man.in \
-	     $(srcdir)/lqvm-shutdown.sh.1.man.in \
-	     $(srcdir)/lqvm-snap.sh.1.man.in \
-	     $(srcdir)/lqvms-sequential-start.sh.1.man.in \
-	     $(srcdir)/lqvms-snap.sh.1.man.in $(srcdir)/lqvm-start.sh.1.man.in
+EXTRA_DIST = $(srcdir)/lqvms-backups.1.man.in $(srcdir)/lqvm-shutdown.1.man.in \
+	     $(srcdir)/lqvm-snap.1.man.in \
+	     $(srcdir)/lqvms-sequential-start.1.man.in \
+	     $(srcdir)/lqvms-snap.1.man.in $(srcdir)/lqvm-start.1.man.in
 
-CLEANFILES = *.tmp lqvms-backups.sh.1 lqvm-shutdown.sh.1 lqvm-snap.sh.1 \
-	     lqvms-sequential-start.sh.1 lqvms-snap.sh.1 lqvm-start.sh.1
+CLEANFILES = *.tmp lqvms-backups.1 lqvm-shutdown.1 lqvm-snap.1 \
+	     lqvms-sequential-start.1 lqvms-snap.1 lqvm-start.1
 

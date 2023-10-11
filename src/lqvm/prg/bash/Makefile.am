@@ -11,24 +11,24 @@
 #########################################################################
 
 
-lqvms-backups.sh lqvms-sequential-start.sh lqvm-shutdown.sh lqvm-snap.sh \
-	lqvms-snap.sh lqvm-start.sh: Makefile
+lqvms-backups lqvms-sequential-start lqvm-shutdown lqvm-snap lqvms-snap \
+	lqvm-start: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
-	$(edit) $${srcdir}$(@F).in > $@.tmp
+	$(edit) $${srcdir}$(@F).sh.in > $@.tmp
 	mv $@.tmp $@
 	chmod a+x $@
-lqvms-backups.sh: $(srcdir)/lqvms-backups.sh.in
-lqvms-sequential-start.sh: $(srcdir)/lqvms-sequential-start.sh.in
-lqvm-shutdown.sh: $(srcdir)/lqvm-shutdown.sh.in
-lqvm-snap.sh: $(srcdir)/lqvm-snap.sh.in
-lqvms-snap.sh: $(srcdir)/lqvms-snap.sh.in
-lqvm-start.sh: $(srcdir)/lqvm-start.sh.in
+lqvms-backups: $(srcdir)/lqvms-backups.sh.in
+lqvms-sequential-start: $(srcdir)/lqvms-sequential-start.sh.in
+lqvm-shutdown: $(srcdir)/lqvm-shutdown.sh.in
+lqvm-snap: $(srcdir)/lqvm-snap.sh.in
+lqvms-snap: $(srcdir)/lqvms-snap.sh.in
+lqvm-start: $(srcdir)/lqvm-start.sh.in
 
 
-bin_SCRIPTS = lqvms-backups.sh lqvms-sequential-start.sh lqvm-shutdown.sh \
-	      lqvm-snap.sh lqvms-snap.sh lqvm-start.sh
+bin_SCRIPTS = lqvms-backups lqvms-sequential-start lqvm-shutdown lqvm-snap \
+	      lqvms-snap lqvm-start
 
 
 EXTRA_DIST = $(srcdir)/lqvms-backups.sh.in \
@@ -36,6 +36,6 @@ EXTRA_DIST = $(srcdir)/lqvms-backups.sh.in \
 	     $(srcdir)/lqvm-shutdown.sh.in $(srcdir)/lqvm-snap.sh.in \
 	     $(srcdir)/lqvms-snap.sh.in $(srcdir)/lqvm-start.sh.in
 
-CLEANFILES = *.tmp lqvms-backups.sh lqvms-sequential-start.sh lqvm-shutdown.sh \
-	     lqvm-snap.sh lqvms-snap.sh lqvm-start.sh
+CLEANFILES = *.tmp lqvms-backups lqvms-sequential-start lqvm-shutdown \
+	     lqvm-snap lqvms-snap lqvm-start
 

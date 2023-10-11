@@ -1,12 +1,12 @@
 NAME
-lqvm-start.sh -- Start the specified VM with the specified snapshot.
+lqvm-start -- Start the specified VM with the specified snapshot.
 SYNOPSIS
-lqvm-start.sh [OPTIONS]
+lqvm-start [OPTIONS]
 DESCRIPTION
-lqvm-start.sh starts a specified VM with or without an external or internal
+lqvm-start starts a specified VM with or without an external or internal
 snapshot. If a snapshot is to be created it can be named and furnished with a
 description. If a snapshot is specified with -e or -i and no option -c is
-supplied, then an Auto sequence name will be created, (lqvm-snap.sh -s).
+supplied, then an Auto sequence name will be created, (lqvm-snap -s).
 OPTIONS
 -c, --create 'snapshot-name'  Create the named snapshot.
 
@@ -42,7 +42,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -52,6 +52,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lqvms-backups.sh(1) lqvm.conf(5) lqvm-shutdown(1) lqvm-snap.sh(1)
-lqvms-sequential-start.sh(1) lqvms-snap.sh(1)
+lqvms-backups(1) lqvm.conf(5) lqvm-shutdown(1) lqvm-snap(1)
+lqvms-sequential-start(1) lqvms-snap(1)
 
