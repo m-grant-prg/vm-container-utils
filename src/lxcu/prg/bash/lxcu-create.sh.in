@@ -468,7 +468,7 @@ create_deb()
 		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
 			-type f)
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab.sh
+	@bindir@/lxcu-attach -n "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
@@ -583,7 +583,7 @@ create_fedora()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab.sh
+	@bindir@/lxcu-attach -n "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final tidy.
@@ -674,7 +674,7 @@ create_opensuse()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab.sh
+	@bindir@/lxcu-attach -n "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final tidy.
