@@ -1,13 +1,12 @@
 NAME
-lxcu-project-tmp.sh -- Create a temporary project container.
+lxcu-create -- Create a new lxc container of a certain type.
 SYNOPSIS
-lxcu-project-tmp.sh [OPTIONS]
+lxcu-create [OPTIONS]
 DESCRIPTION
-This script clones a standard container, adds the project dependencies and
-copies in the project files. It then attaches to the new container providing a
-home directory which you need to cd to. You can then do your work, build
-testing for example, and then, when finished, on exit the container is
-destroyed.
+lxcu-create will create a container of a certain type for a specified
+distribution and release. These types specify what extra packages to install or
+cache and are specified in the sysconfdir/lxcu directory. The only mandatory
+type is 'basic' so this must always be specified.
 OPTIONS
 -d, --dist 'distribution-name'
 
@@ -15,9 +14,9 @@ OPTIONS
 
 -n, --name 'container name'
 
--p, --project-root 'project root directory'
-
 -r, --rel 'release-name'
+
+-t, --type 'type-name' e.g. basic or dev.....
 
 -V, --version Print script version information
 EXIT STATUS
@@ -33,7 +32,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -43,6 +42,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-attach.sh(1) lxcu-copy.sh(1) lxcu-create.sh(1) lxcu-start.sh(1)
-lxcu-upgrade.sh(1) lxcu.conf(5)
+lxcu-attach(1) lxcu-copy(1) lxcu-project-tmp(1) lxcu-start(1) lxcu-upgrade(1)
+lxcu.conf(5)
 

@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lxcu-start.sh is automatically generated,			#
+#	lxcu-start is automatically generated,				#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -16,7 +16,7 @@
 # Purpose:								#
 # A script to start a linux container.					#
 #									#
-# Syntax:	lxcu-start.sh [ -h or --help				#
+# Syntax:	lxcu-start [ -h or --help				#
 #			|| -n or --name 'container name'		#
 #			|| -V or --version ]				#
 #									#
@@ -266,7 +266,7 @@ declare -i max
 
 ((max=30))
 
-until (@bindir@/lxcu-attach.sh -n "$name" \
+until (@bindir@/lxcu-attach -n "$name" \
 	-- ping -- -c 2 www.google.com &>/dev/null); do
 	err=$?
 	(( count++ ))
@@ -278,7 +278,7 @@ until (@bindir@/lxcu-attach.sh -n "$name" \
 done
 
 # Wait for the server dependency service to complete.
-until ! (@bindir@/lxcu-attach.sh -n "$name" \
+until ! (@bindir@/lxcu-attach -n "$name" \
 	-- sudo systemctl is-active -- -q server-dependency); do
 	sleep 2
 done

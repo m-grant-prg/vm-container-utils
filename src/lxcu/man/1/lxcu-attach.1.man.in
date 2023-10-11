@@ -1,5 +1,5 @@
 NAME
-lxcu-attach.sh -- Attach to a linux container.
+lxcu-attach -- Attach to a linux container.
 SYNOPSIS
 lxcu-attach [OPTIONS]
 DESCRIPTION
@@ -13,13 +13,13 @@ The script must be supplied with --name.
 If no further argument is passed, then a simple lxc-attach is performed leaving
 you in the container shell.
 .br
-lxcu-attach.sh -n test1
+lxcu-attach -n test1
 .br
 
 If a further argument is supplied this is passed to the lxc-attach command
 unmodified and that command is executed in the container.
 .br
-lxcu-attach.sh -n test1 -- sudo apt-get -- -y update
+lxcu-attach -n test1 -- sudo apt-get -- -y update
 OPTIONS
 -h, --help Display this help information
 
@@ -37,7 +37,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2022 Mark Grant.
+Copyright (C) 2022, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -47,6 +47,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-copy.sh(1) lxcu-create.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1)
-lxcu-upgrade.sh(1) lxcu.conf(5)
+lxcu-copy(1) lxcu-create(1) lxcu-project-tmp(1) lxcu-start(1) lxcu-upgrade(1)
+lxcu.conf(5)
 

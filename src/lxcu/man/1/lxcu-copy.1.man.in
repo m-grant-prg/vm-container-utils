@@ -1,22 +1,17 @@
 NAME
-lxcu-create.sh -- Create a new lxc container of a certain type.
+lxcu-copy -- Start a linux container.
 SYNOPSIS
-lxcu-create.sh [OPTIONS]
+lxcu-copy [OPTIONS]
 DESCRIPTION
-lxcu-create.sh will create a container of a certain type for a specified
-distribution and release. These types specify what extra packages to install or
-cache and are specified in the sysconfdir/lxcu directory. The only mandatory
-type is 'basic' so this must always be specified.
+This script copies an existing linux container to a new one. The only extra task
+performed compared to lxc-copy is that the script also copies any extra lxcu
+config files, (such as for bridges).
 OPTIONS
--d, --dist 'distribution-name'
-
 -h, --help Display this help information
 
--n, --name 'container name'
+-n, --from-name 'container name'
 
--r, --rel 'release-name'
-
--t, --type 'type-name' e.g. basic or dev.....
+-N, --to-name 'container name'
 
 -V, --version Print script version information
 EXIT STATUS
@@ -42,6 +37,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-attach.sh(1) lxcu-copy.sh(1) lxcu-project-tmp.sh(1) lxcu-start.sh(1)
-lxcu-upgrade.sh(1) lxcu.conf(5)
+lxcu-attach(1) lxcu-create(1) lxcu-project-tmp(1) lxcu-start(1) lxcu-upgrade(1)
+lxcu.conf(5)
 

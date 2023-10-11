@@ -1,16 +1,21 @@
 NAME
-lxcu-start.sh -- Start a linux container.
+lxcu-upgrade -- Upgrade an lxc container of a certain type.
 SYNOPSIS
-lxcu-start.sh [OPTIONS]
+lxcu-upgrade [OPTIONS]
 DESCRIPTION
-This script starts a linux container. If the bridge key / value pair is set in
-sysconfdir/lxcu.conf then the script will check if the bridge is 'UP', if so it
-will use a config using that bridge. This feature is particularly useful for
-laptops which can have a hard-wired ethernet connection.
+lxcu-upgrade will upgrade a container of a certain type for a specified
+distribution and release. If a type other than basic is specified, 'basic' is
+upgraded first. For an explanation of types please refer to lxcu-createsh(1).
 OPTIONS
+-d, --dist 'distribution-name'
+
 -h, --help Display this help information
 
 -n, --name 'container name'
+
+-r, --rel 'release-name'
+
+-t, --type 'type-name' e.g. basic or dev.....
 
 -V, --version Print script version information
 EXIT STATUS
@@ -26,7 +31,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021 Mark Grant.
+Copyright (C) 2020, 2021, 2023 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
@@ -36,6 +41,6 @@ This is free software: you are free to change and redistribute it.
 .br
 There is NO WARRANTY, to the extent permitted by law.
 SEE ALSO
-lxcu-attach.sh(1) lxcu-copy.sh(1) lxcu-create.sh(1) lxcu-project-tmp.sh(1)
-lxcu-upgrade.sh(1) lxcu.conf(5)
+lxcu-attach(1) lxcu-copy(1) lxcu-create(1) lxcu-project-tmp(1) lxcu-start(1)
+lxcu.conf(5)
 

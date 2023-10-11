@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lxcu-upgrade.sh is automatically generated,			#
+#	lxcu-upgrade is automatically generated,			#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -16,7 +16,7 @@
 # Purpose:								#
 # A script to upgrade linux containers.					#
 #									#
-# Syntax:	lxcu-upgrade.sh [ -d or --dist 'distribution-name'	#
+# Syntax:	lxcu-upgrade [ -d or --dist 'distribution-name'		#
 #			|| -h or --help					#
 #			|| -n or --name 'container name'		#
 #			|| -r or --rel 'release-name'			#
@@ -247,14 +247,14 @@ upgrade_deb_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
@@ -265,13 +265,13 @@ upgrade_deb_type()
 # No return value.
 upgrade_deb()
 {
-	@bindir@/lxcu-start.sh -n "$name"
+	@bindir@/lxcu-start -n "$name"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get update
+	@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo apt-get -- -y dist-upgrade
+	@bindir@/lxcu-attach -n "$name" -- sudo apt-get -- -y dist-upgrade
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo agmaint -- -- -y
+	@bindir@/lxcu-attach -n "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
 
 	upgrade_deb_type basic
@@ -291,14 +291,14 @@ upgrade_fedora_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
@@ -309,12 +309,12 @@ upgrade_fedora_type()
 # No return value.
 upgrade_fedora()
 {
-	@bindir@/lxcu-start.sh -n "$name"
+	@bindir@/lxcu-start -n "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo dnf -- -y autoremove
+	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	upgrade_fedora_type basic
@@ -334,14 +334,14 @@ upgrade_opensuse_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach.sh -n "$name" \
+			| xargs @bindir@/lxcu-attach -n "$name" \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
@@ -352,12 +352,12 @@ upgrade_opensuse_type()
 # No return value.
 upgrade_opensuse()
 {
-	@bindir@/lxcu-start.sh -n "$name"
+	@bindir@/lxcu-start -n "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- refresh
+	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach.sh -n "$name" -- sudo zypper -- -n update
+	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	upgrade_opensuse_type basic

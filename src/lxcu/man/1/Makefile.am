@@ -11,8 +11,8 @@
 #########################################################################
 
 
-lxcu-attach.sh.1 lxcu-copy.sh.1 lxcu-create.sh.1 lxcu-project-tmp.sh.1 \
-	lxcu-start.sh.1 lxcu-upgrade.sh.1: Makefile
+lxcu-attach.1 lxcu-copy.1 lxcu-create.1 lxcu-project-tmp.1 lxcu-start.1 \
+	lxcu-upgrade.1: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	$(edit) $(srcdir)/$(@F).man.in > $@.tmp
@@ -30,21 +30,21 @@ lxcu-attach.sh.1 lxcu-copy.sh.1 lxcu-create.sh.1 lxcu-project-tmp.sh.1 \
 	fi; \
 	txt2manwrap $(@F) $$section "LXCU Scripts Manual" $@.tmp $@
 	rm -f $@.tmp
-lxcu-attach.sh.1: $(srcdir)/lxcu-attach.sh.1.man.in
-lxcu-copy.sh.1: $(srcdir)/lxcu-copy.sh.1.man.in
-lxcu-create.sh.1: $(srcdir)/lxcu-create.sh.1.man.in
-lxcu-project-tmp.sh.1: $(srcdir)/lxcu-project-tmp.sh.1.man.in
-lxcu-start.sh.1: $(srcdir)/lxcu-start.sh.1.man.in
-lxcu-upgrade.sh.1: $(srcdir)/lxcu-upgrade.sh.1.man.in
+lxcu-attach.1: $(srcdir)/lxcu-attach.1.man.in
+lxcu-copy.1: $(srcdir)/lxcu-copy.1.man.in
+lxcu-create.1: $(srcdir)/lxcu-create.1.man.in
+lxcu-project-tmp.1: $(srcdir)/lxcu-project-tmp.1.man.in
+lxcu-start.1: $(srcdir)/lxcu-start.1.man.in
+lxcu-upgrade.1: $(srcdir)/lxcu-upgrade.1.man.in
 
-man_MANS = lxcu-attach.sh.1 lxcu-copy.sh.1 lxcu-create.sh.1 \
-	   lxcu-project-tmp.sh.1 lxcu-start.sh.1 lxcu-upgrade.sh.1
+man_MANS = lxcu-attach.1 lxcu-copy.1 lxcu-create.1 lxcu-project-tmp.1 \
+	   lxcu-start.1 lxcu-upgrade.1
 
-EXTRA_DIST = $(srcdir)/lxcu-attach.sh.1.man.in $(srcdir)/lxcu-copy.sh.1.man.in \
-	     $(srcdir)/lxcu-create.sh.1.man.in \
-	     $(srcdir)/lxcu-project-tmp.sh.1.man.in \
-	     $(srcdir)/lxcu-start.sh.1.man.in $(srcdir)/lxcu-upgrade.sh.1.man.in
+EXTRA_DIST = $(srcdir)/lxcu-attach.1.man.in $(srcdir)/lxcu-copy.1.man.in \
+	     $(srcdir)/lxcu-create.1.man.in \
+	     $(srcdir)/lxcu-project-tmp.1.man.in \
+	     $(srcdir)/lxcu-start.1.man.in $(srcdir)/lxcu-upgrade.1.man.in
 
-CLEANFILES = *.tmp lxcu-attach.sh.1 lxcu-copy.sh.1 lxcu-create.sh.1 \
-	     lxcu-project-tmp.sh.1 lxcu-start.sh.1 lxcu-upgrade.sh.1
+CLEANFILES = *.tmp lxcu-attach.1 lxcu-copy.1 lxcu-create.1 lxcu-project-tmp.1 \
+	     lxcu-start.1 lxcu-upgrade.1
 

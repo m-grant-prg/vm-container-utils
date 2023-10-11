@@ -1,0 +1,48 @@
+NAME
+lxcu-project-tmp -- Create a temporary project container.
+SYNOPSIS
+lxcu-project-tmp [OPTIONS]
+DESCRIPTION
+This script clones a standard container, adds the project dependencies and
+copies in the project files. It then attaches to the new container providing a
+home directory which you need to cd to. You can then do your work, build
+testing for example, and then, when finished, on exit the container is
+destroyed.
+OPTIONS
+-d, --dist 'distribution-name'
+
+-h, --help Display this help information
+
+-n, --name 'container name'
+
+-p, --project-root 'project root directory'
+
+-r, --rel 'release-name'
+
+-V, --version Print script version information
+EXIT STATUS
+0 - Success
+
+1 - General failure
+
+64 - Error in command line
+FILES
+lxcu.conf  The script reads the configuration file to set default values.
+AUTHOR
+Written by Mark Grant.
+REPORTING BUGS
+Report bugs to <m.grant.prg@gmail.com>
+COPYRIGHT
+Copyright (C) 2020, 2021, 2023 Mark Grant.
+.br
+License GPLv3: GNU GPL version 3 only
+.br
+<http://gnu.org/licenses/gpl.html>.
+.br
+This is free software: you are free to change and redistribute it.
+.br
+There is NO WARRANTY, to the extent permitted by law.
+SEE ALSO
+lxcu-attach(1) lxcu-copy(1) lxcu-create(1) lxcu-start(1) lxcu-upgrade(1)
+lxcu.conf(5)
+

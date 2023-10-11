@@ -1,7 +1,7 @@
 #! @bashlocation@
 #########################################################################
 #									#
-#	lxcu-copy.sh is automatically generated,			#
+#	lxcu-copy is automatically generated,				#
 #		please do not modify!					#
 #									#
 #########################################################################
@@ -18,7 +18,7 @@
 # extra thing this does compared to an lxc-copy is that it will create	#
 # any extra lxcu bridge config files.					#
 #									#
-# Syntax:	lxcu-copy.sh [ -h or --help				#
+# Syntax:	lxcu-copy [ -h or --help				#
 #			|| -n or --from-name 'container name' copy from	#
 #			|| -N or --to-name 'container name' copy to	#
 #			|| -V or --version ]				#
@@ -281,14 +281,14 @@ if [[ -n $bridge ]]; then
 fi
 
 # Correct host name on target container.
-@bindir@/lxcu-start.sh -n "$toname"
+@bindir@/lxcu-start -n "$toname"
 std_cmd_err_handler $?
 
-@bindir@/lxcu-attach.sh -n "$toname" \
+@bindir@/lxcu-attach -n "$toname" \
 	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
 std_cmd_err_handler $?
 
-@bindir@/lxcu-attach.sh -n "$toname" \
+@bindir@/lxcu-attach -n "$toname" \
 	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
 std_cmd_err_handler $?
 
