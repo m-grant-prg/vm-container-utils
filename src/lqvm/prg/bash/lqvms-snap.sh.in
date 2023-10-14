@@ -16,11 +16,7 @@
 # Purpose:								#
 # A script to control deletion of snapshots on all VMs.			#
 #                                                            	  	#
-# Syntax:      lqvms-snap [ -a or --delete-all				#
-#			|| -h or --help					#
-#			|| -t or --delete-to-current			#
-#			|| -u or --connect-uri 'connection-URI'		#
-#			|| -V or --version ]				#
+# Syntax:      See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -76,6 +72,8 @@ delete_to_current=false
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V}
+Usage is $0 {-a|-t} [-u CONNECTION]
 Usage is $0 [options]
 	-a or --delete-all Delete all snapshots for all VMs
 	-h or --help Display this help information

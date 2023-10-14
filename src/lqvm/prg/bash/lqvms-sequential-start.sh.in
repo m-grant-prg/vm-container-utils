@@ -17,9 +17,7 @@
 # A script to start VMs listed in the conf file in sequence. The conf	#
 # file also controls the number of VMs to start in parallel.		#
 #                                                            	  	#
-# Syntax:      lqvms-sequential-start [ -h or --help			#
-#			|| -u or --connect-uri 'connection-URI'		#
-#			|| -V or --version ]				#
+# Syntax:      See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -72,6 +70,8 @@ readonly etclocation=@sysconfdir@		# Path to config directory
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V}
+Usage is $0 [-u CONNECTION]
 Usage is $0 [options]
 	-h or --help Display this help information
 	-u or --connect-uri Use the named connection URI

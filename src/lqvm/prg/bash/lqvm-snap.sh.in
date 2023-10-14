@@ -18,19 +18,7 @@
 # machines. This includes create, delete and revert for both internal	#
 # and external snapshots.						#
 #                                                            	  	#
-# Syntax:      lqvm-snap [ -a or --delete-all				#
-#			|| -c or --create 'snapshot-name'		#
-#			|| -d or --delete 'snapshot-name'		#
-#			|| -D or --description 'snapshot-description'	#
-#			|| -e or --external				#
-#			|| -h or --help					#
-#			|| -i or --internal				#
-#			|| -n or --name					#
-#			|| -r or --revert				#
-#			|| -s or --create-auto-seq			#
-#			|| -t or --delete-to-current			#
-#			|| -u or --connect-uri 'connection-URI'		#
-#			|| -V or --version ]				#
+# Syntax:      See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -93,6 +81,12 @@ revert=false
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V}
+Usage is $0 {-a|-r|-t} [-u CONNECTION] -n VM_NAME
+Usage is $0 -c SNAPSHOT_NAME [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION]
+	-n VM_NAME
+Usage is $0 -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
+Usage is $0 -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
 Usage is $0 [options]
 	-a or --delete-all Delete all snapshots for this vm
 	-c or --create 'snapshot-name' Create the named snapshot
