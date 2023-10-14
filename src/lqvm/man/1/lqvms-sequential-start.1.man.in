@@ -1,6 +1,8 @@
 NAME
 lqvms-sequential-start -- Start a list of VMs sequentially.
 SYNOPSIS
+lqvms-sequential-start {-h|-V}
+lqvms-sequential-start [-u CONNECTION]
 lqvms-sequential-start [OPTIONS]
 DESCRIPTION
 lqvms-sequential-start uses a Key / Value pair in lqvm.conf to provide a list

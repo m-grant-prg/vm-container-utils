@@ -1,6 +1,10 @@
 NAME
 lqvm-start -- Start the specified VM with the specified snapshot.
 SYNOPSIS
+lqvm-start {-h|-V}
+lqvm-start -c SNAPSHOT_NAME [-D SNAPSHOT_DESC] {-e|-i|-w}
+	     [-u CONNECTION] -n VM_NAME
+lqvm-start [-D SNAPSHOT_DESC] {-e|-i|-w} [-u CONNECTION] -n VM_NAME
 lqvm-start [OPTIONS]
 DESCRIPTION
 lqvm-start starts a specified VM with or without an external or internal

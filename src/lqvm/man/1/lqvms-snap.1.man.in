@@ -1,6 +1,8 @@
 NAME
 lqvms-snap -- Delete all or to-current snapshots for all VMs.
 SYNOPSIS
+lqvms-snap {-h|-V}
+lqvms-snap {-a|-t} [-u CONNECTION]
 lqvms-snap [OPTIONS]
 DESCRIPTION
 lqvms-snap facilitates the deletion of all or to-current snapshots for all

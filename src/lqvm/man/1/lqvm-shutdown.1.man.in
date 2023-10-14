@@ -1,6 +1,8 @@
 NAME
 lqvm-shutdown -- Host-based shutdown of a guest VM.
 SYNOPSIS
+lqvm-shutdown {-h|-V}
+lqvm-shutdown [-u CONNECTION] -n VM_NAME
 lqvm-shutdown [OPTIONS]
 DESCRIPTION
 lqvm-shutdown is run on the host and shuts down a guest. The guest must be

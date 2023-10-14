@@ -1,7 +1,9 @@
 NAME
 lqvms-backups -- Perform VM backups
 SYNOPSIS
-lqvms-backups [OPTIONS] VM1 VM2 ...
+lqvms-backups {-h|-V}
+lqvms-backups {-d|-w} [-u CONNECTION] VM_NAME ...
+lqvms-backups [OPTIONS] VM_NAME ...
 DESCRIPTION
 This script starts each specified VM, performs username and password checking
 for an account with sudo privileges, and then uses ssh to execute an at script
