@@ -17,10 +17,7 @@
 # A wrapper script for lxc-attach utilising systemd-run to support	#
 # unprivileged containers.						#
 #									#
-# Syntax:	lxcu-attach [ -h or --help				#
-#			|| -n or --name 'container name'		#
-#			|| -V or --version				#
-#			|| command to run in the container ]		#
+# Syntax:	See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -77,6 +74,8 @@ configcli_extra_args=""
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V}
+Usage is $0 -n CONTAINER_NAME CONTAINER_COMMAND
 Usage is $0 [options]
 	-h or --help Display this help information
 	-n or --name 'container name'

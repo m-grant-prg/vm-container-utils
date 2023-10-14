@@ -16,9 +16,7 @@
 # Purpose:								#
 # A script to start a linux container.					#
 #									#
-# Syntax:	lxcu-start [ -h or --help				#
-#			|| -n or --name 'container name'		#
-#			|| -V or --version ]				#
+# Syntax:	See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -75,6 +73,7 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V|-n CONTAINER_NAME}
 Usage is $0 [options]
 	-h or --help Display this help information
 	-n or --name 'container name'

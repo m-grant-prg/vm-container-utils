@@ -18,10 +18,7 @@
 # extra thing this does compared to an lxc-copy is that it will create	#
 # any extra lxcu bridge config files.					#
 #									#
-# Syntax:	lxcu-copy [ -h or --help				#
-#			|| -n or --from-name 'container name' copy from	#
-#			|| -N or --to-name 'container name' copy to	#
-#			|| -V or --version ]				#
+# Syntax:	See usage()						#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -78,6 +75,8 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 usage()
 {
 cat << EOF
+Usage is $0 {-h|-V}
+Usage is $0 -n SOURCE_CONTAINER -N DESTINATION_CONTAINER
 Usage is $0 [options]
 	-h or --help Display this help information
 	-n or --from-name 'container name'
