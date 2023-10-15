@@ -1,6 +1,8 @@
 NAME
 lxcu-copy -- Start a linux container.
 SYNOPSIS
+lxcu-copy {-h|-V}
+lxcu-copy -n SOURCE_CONTAINER -N DESTINATION_CONTAINER
 lxcu-copy [OPTIONS]
 DESCRIPTION
 This script copies an existing linux container to a new one. The only extra task

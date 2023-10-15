@@ -1,6 +1,9 @@
 NAME
 lxcu-project-tmp -- Create a temporary project container.
 SYNOPSIS
+lxcu-project-tmp {-h|-V}
+lxcu-project-tmp [-d DISTRIBUTION] [-r RELEASE] -p PROJECT_ROOT
+		   -n CONTAINER_NAME
 lxcu-project-tmp [OPTIONS]
 DESCRIPTION
 This script clones a standard container, adds the project dependencies and

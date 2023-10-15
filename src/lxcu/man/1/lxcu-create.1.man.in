@@ -1,6 +1,9 @@
 NAME
 lxcu-create -- Create a new lxc container of a certain type.
 SYNOPSIS
+lxcu-create {-h|-V}
+lxcu-create [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE
+	      -n CONTAINER_NAME
 lxcu-create [OPTIONS]
 DESCRIPTION
 lxcu-create will create a container of a certain type for a specified

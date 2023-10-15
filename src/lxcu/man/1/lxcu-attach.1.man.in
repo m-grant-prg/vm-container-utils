@@ -1,6 +1,8 @@
 NAME
 lxcu-attach -- Attach to a linux container.
 SYNOPSIS
+lxcu-attach {-h|-V}
+lxcu-attach -n CONTAINER_NAME CONTAINER_COMMAND
 lxcu-attach [OPTIONS]
 DESCRIPTION
 This script is a wrapper for lxc-attach utilising systemd-run in order to

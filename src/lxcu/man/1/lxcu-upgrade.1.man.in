@@ -1,6 +1,9 @@
 NAME
 lxcu-upgrade -- Upgrade an lxc container of a certain type.
 SYNOPSIS
+lxcu-upgrade {-h|-V}
+lxcu-upgrade [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE
+	       -n CONTAINER_NAME
 lxcu-upgrade [OPTIONS]
 DESCRIPTION
 lxcu-upgrade will upgrade a container of a certain type for a specified
