@@ -1,3 +1,41 @@
+2023-10-16 v1.2.1 Mark Grant <m.grant.prg@gmail.com>
+	* build(deps): bump actions/checkout from 2 to 4
+	dependabot[bot] (1):
+
+	lxcu: man: Update CL syntax
+	lxcu: bash: Update CL help
+	lqvm: man: Update CL syntax
+	lqvm: bash: Update CL help
+	lxcu: Bump lxcu-upgrade to v1.1.0
+	lxcu: Bump lxcu-start to v1.1.0
+	lxcu: Bump lxcu-project-tmp to v1.1.0
+	lxcu: Bump lxcu-create to v1.3.0
+	lxcu: Bump lxcu-copy to v1.1.0
+	lxcu: Bump lxcu-attach to v1.1.0
+	lqvm: Bump lqvm-start to v1.1.0
+	lqvm: Bump lqvms-snap to v1.1.0
+	lqvm: Bump lqvms-sequential-start to v1.1.0
+	lqvm: Bump lqvm-snap to v1.1.0
+	lqvm: Bump lqvm-shutdown to v1.1.0
+	lqvm: Bump lqvms-backups to v1.1.0
+	at: Bump configure to v1.1.0
+	lxcu: Change dosab.sh to dosab
+	lxcu: Drop.sh extension from scripts in $PATH
+	lqvm: Drop .sh extension for scripts in $PATH
+	all: Re-structure into subsystems
+	bash: lxcu: Change agmaint.sh to agmaint
+	all: Update Copyright for 2023
+	all: Remove most in-file ChangeLogs and versioning
+	lxcu: conf: Do not use apt-cacher-ng for jammy
+	at: Upgrade bootstrap.sh to v1.5.7
+	Merge pull request #1 from m-grant-prg/dependabot/github_actions/actions/checkout-4
+	github: Add dependabot version update config
+	lqvms: start: Use "" to prevent globbing and word splitting
+	lqvm: Silence unreachable commands false positive
+	lqvm: Workaround virsh v7.0.0 domif-setlink bug
+	lxcu: Do not pass --keyserver through lxc-create
+	Mark Grant (33):
+
 2023-08-11 v1.2.0 Mark Grant <m.grant.prg@gmail.com>
 	* at: Use standard sequence for sections
 	actions: Remove unnecessary tar
