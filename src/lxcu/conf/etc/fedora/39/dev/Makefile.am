@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2022, 2023  Mark Grant				#
+# Author: Copyright (C) 2023  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/37/dev
+confdir = $(sysconfdir)/lxcu/fedora/39/dev
 
 cache.list install.list: Makefile
 	mkdir -p $(@D)

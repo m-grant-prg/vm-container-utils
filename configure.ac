@@ -372,12 +372,12 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/testing/basic/Makefile
 		src/lxcu/conf/etc/debian/testing/dev/Makefile
 		src/lxcu/conf/etc/debian/testing/dosab/Makefile
+		src/lxcu/conf/etc/fedora/39/basic/Makefile
+		src/lxcu/conf/etc/fedora/39/dev/Makefile
+		src/lxcu/conf/etc/fedora/39/dosab/Makefile
 		src/lxcu/conf/etc/fedora/38/basic/Makefile
 		src/lxcu/conf/etc/fedora/38/dev/Makefile
 		src/lxcu/conf/etc/fedora/38/dosab/Makefile
-		src/lxcu/conf/etc/fedora/37/basic/Makefile
-		src/lxcu/conf/etc/fedora/37/dev/Makefile
-		src/lxcu/conf/etc/fedora/37/dosab/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/basic/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/dev/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/dosab/Makefile
