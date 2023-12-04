@@ -408,10 +408,13 @@ create_deb()
 	@bindir@/lxcu-attach -n "$name" \
 		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
-	# x11 keymap also used for the virtual console.
-	@bindir@/lxcu-attach -n "$name" \
-		-- sudo localectl set-x11-keymap "$localex11keymap"
-	std_cmd_err_handler $?
+	# x11 keymap also used for the virtual console. (bookworm and earlier).
+	if [[ $rel == "buster" || $rel == "bullseye" || $rel == "bookworm" ]]
+	then
+		@bindir@/lxcu-attach -n "$name" \
+			-- sudo localectl set-x11-keymap "$localex11keymap"
+		std_cmd_err_handler $?
+	fi
 
 	# Get the OBS repo key.
 	if [[ $dist == "debian" ]]; then
