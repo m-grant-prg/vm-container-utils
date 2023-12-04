@@ -1,3 +1,9 @@
+2023-12-04 v1.2.3 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: From trixie, X11 and virtual console cannot be set
+	lxcu: Retire 37 (EOL) and add 39 release
+	git: Standardise gitignore file format
+	at: Upgrade bootstrap.sh to v1.6.0
+
 2023-10-21 v1.2.2 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Do not use apt-cacher-ng for Focal
 
