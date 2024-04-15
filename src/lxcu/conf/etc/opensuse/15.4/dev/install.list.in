@@ -10,6 +10,6 @@ autoconf autoconf-archive automake
 libtool pkg-config
 gcc gdb valgrind
 sparse
-clang clang-tools
+clang clang-tools include-what-you-use
 git
 
