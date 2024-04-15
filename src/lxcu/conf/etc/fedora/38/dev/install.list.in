@@ -9,6 +9,6 @@ autoconf autoconf-archive automake
 libtool pkgconf
 gcc gdb valgrind
 sparse
-clang
+clang clang-analyzer
 git
 
