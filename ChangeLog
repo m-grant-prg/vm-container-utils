@@ -1,3 +1,14 @@
+2024-04-16 v1.2.4 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Install include-what-you-use for openSUSE dev
+	lxcu: conf: Install clang-tools for openSUSE dev
+	lxcu: conf: Install the iwyu package for Fedora dev
+	lxcu: conf: Install clang-analyzer for Fedora dev
+	at: Update Copyright for 2024
+	git: Update mailmap to v1.0.4
+	git: Update gitignore to v1.0.12
+	git: Update gitattributes to v1.0.5
+	editors: Update editorconfig to v1.0.6
+
 2023-12-04 v1.2.3 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: From trixie, X11 and virtual console cannot be set
 	lxcu: Retire 37 (EOL) and add 39 release
