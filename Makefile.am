@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2023  Mark Grant				#
+# Author: Copyright (C) 2020-2024  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -46,6 +46,9 @@ SUBDIRS += src/lxcu/conf/etc/debian/testing/apt/trusted.gpg.d
 SUBDIRS += src/lxcu/conf/etc/debian/testing/basic
 SUBDIRS += src/lxcu/conf/etc/debian/testing/dev
 SUBDIRS += src/lxcu/conf/etc/debian/testing/dosab
+SUBDIRS += src/lxcu/conf/etc/fedora/40/basic
+SUBDIRS += src/lxcu/conf/etc/fedora/40/dev
+SUBDIRS += src/lxcu/conf/etc/fedora/40/dosab
 SUBDIRS += src/lxcu/conf/etc/fedora/39/basic
 SUBDIRS += src/lxcu/conf/etc/fedora/39/dev
 SUBDIRS += src/lxcu/conf/etc/fedora/39/dosab
