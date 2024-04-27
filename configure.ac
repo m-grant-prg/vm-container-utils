@@ -348,6 +348,12 @@ AC_CONFIG_FILES([Makefile
 		src/lqvm/man/5/Makefile
 		src/lqvm/prg/bash/Makefile
 		src/lxcu/conf/etc/Makefile
+		src/lxcu/conf/etc/debian/testing/apt/Makefile
+		src/lxcu/conf/etc/debian/testing/apt/sources.list.d/Makefile
+		src/lxcu/conf/etc/debian/testing/apt/trusted.gpg.d/Makefile
+		src/lxcu/conf/etc/debian/testing/basic/Makefile
+		src/lxcu/conf/etc/debian/testing/dev/Makefile
+		src/lxcu/conf/etc/debian/testing/dosab/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/sources.list.d/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/trusted.gpg.d/Makefile
@@ -366,12 +372,6 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/buster/basic/Makefile
 		src/lxcu/conf/etc/debian/buster/dev/Makefile
 		src/lxcu/conf/etc/debian/buster/dosab/Makefile
-		src/lxcu/conf/etc/debian/testing/apt/Makefile
-		src/lxcu/conf/etc/debian/testing/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/debian/testing/apt/trusted.gpg.d/Makefile
-		src/lxcu/conf/etc/debian/testing/basic/Makefile
-		src/lxcu/conf/etc/debian/testing/dev/Makefile
-		src/lxcu/conf/etc/debian/testing/dosab/Makefile
 		src/lxcu/conf/etc/fedora/40/basic/Makefile
 		src/lxcu/conf/etc/fedora/40/dev/Makefile
 		src/lxcu/conf/etc/fedora/40/dosab/Makefile
