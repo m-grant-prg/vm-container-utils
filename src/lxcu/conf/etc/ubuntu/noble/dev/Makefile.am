@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/dev
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/dev
 
 cache.list install.list: Makefile
 	mkdir -p $(@D)

@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/apt/sources.list.d
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/apt/sources.list.d
 
 launchpad.list: Makefile
 	mkdir -p $(@D)

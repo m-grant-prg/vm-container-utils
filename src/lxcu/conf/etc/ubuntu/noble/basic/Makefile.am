@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/basic
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/basic
 
 install.list: Makefile
 	mkdir -p $(@D)

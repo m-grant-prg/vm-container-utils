@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/dosab
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/dosab
 
 hermes.list hermes.mgent.home.available hermes.mgent.home.unavailable \
 	launchpad.list.available launchpad.list.unavailable server.list \

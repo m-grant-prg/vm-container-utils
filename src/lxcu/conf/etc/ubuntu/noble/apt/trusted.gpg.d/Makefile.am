@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/apt/trusted.gpg.d
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/apt/trusted.gpg.d
 
 hermes-keyring.gpg mgrant-utils-ppa-keyring.gpg: Makefile
 	mkdir -p $(@D)

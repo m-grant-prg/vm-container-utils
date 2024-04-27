@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/ubuntu/jammy/apt
+confdir = $(sysconfdir)/lxcu/ubuntu/noble/apt
 
 sources.list: Makefile
 	mkdir -p $(@D)
