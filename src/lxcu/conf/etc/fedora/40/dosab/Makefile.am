@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/39/dosab
+confdir = $(sysconfdir)/lxcu/fedora/40/dosab
 
 hermes.mgent.home.available hermes.mgent.home.unavailable hermes-beta.repo \
 	hermes-stable.repo server.list: Makefile

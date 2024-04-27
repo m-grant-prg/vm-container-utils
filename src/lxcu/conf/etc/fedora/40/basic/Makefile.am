@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/39/basic
+confdir = $(sysconfdir)/lxcu/fedora/40/basic
 
 install.list: Makefile
 	mkdir -p $(@D)

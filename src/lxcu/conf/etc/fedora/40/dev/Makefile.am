@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/fedora/39/dev
+confdir = $(sysconfdir)/lxcu/fedora/40/dev
 
 cache.list install.list: Makefile
 	mkdir -p $(@D)
