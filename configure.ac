@@ -387,18 +387,24 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/opensuse/15.4/basic/Makefile
 		src/lxcu/conf/etc/opensuse/15.4/dev/Makefile
 		src/lxcu/conf/etc/opensuse/15.4/dosab/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/apt/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/apt/trusted.gpg.d/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/basic/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/dev/Makefile
-		src/lxcu/conf/etc/ubuntu/focal/dosab/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/apt/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/apt/sources.list.d/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/apt/trusted.gpg.d/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/basic/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/dev/Makefile
+		src/lxcu/conf/etc/ubuntu/noble/dosab/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/apt/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/apt/sources.list.d/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/basic/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/dev/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/dosab/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/apt/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/apt/sources.list.d/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/apt/trusted.gpg.d/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/basic/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/dev/Makefile
+		src/lxcu/conf/etc/ubuntu/focal/dosab/Makefile
 		src/lxcu/man/1/Makefile
 		src/lxcu/man/5/Makefile
 		src/lxcu/prg/bash/Makefile])
