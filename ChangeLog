@@ -1,3 +1,10 @@
+2024-05-04 v1.2.5 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Correct Ubuntu Noble installation directory
+	lxcu: conf: Correct Fedora 40 installation directory
+	lxcu: conf: Re-order to latest first
+	lxcu: conf: Add Ubuntu Noble
+	lxcu: conf: Add Fedora 40
+
 2024-04-16 v1.2.4 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Install include-what-you-use for openSUSE dev
 	lxcu: conf: Install clang-tools for openSUSE dev
