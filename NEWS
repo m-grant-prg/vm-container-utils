@@ -1,3 +1,7 @@
+Release 1.2.6 2024-05-25
+Remove EOL Fedora 38.
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.5 2024-05-04
 Add Fedora 40.
 Add Ubuntu Noble.

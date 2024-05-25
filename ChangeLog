@@ -1,3 +1,7 @@
+2024-05-25 v1.2.6 Mark Grant <m.grant.prg@gmail.com>
+	* at: lxcu: conf: Remove EOL Fedora 38
+	git: Correct reasoning in gitignore file
+
 2024-05-04 v1.2.5 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Correct Ubuntu Noble installation directory
 	lxcu: conf: Correct Fedora 40 installation directory
