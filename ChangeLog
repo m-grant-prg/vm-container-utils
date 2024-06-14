@@ -1,3 +1,6 @@
+2024-06-14 v1.2.7 Mark Grant <m.grant.prg@gmail.com>
+	* at: lxcu: conf: Replace 15.4 with 15.6
+
 2024-05-25 v1.2.6 Mark Grant <m.grant.prg@gmail.com>
 	* at: lxcu: conf: Remove EOL Fedora 38
 	git: Correct reasoning in gitignore file
