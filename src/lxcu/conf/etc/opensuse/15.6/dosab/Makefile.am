@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2022, 2023  Mark Grant				#
+# Author: Copyright (C) 2024  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/opensuse/15.4/dosab
+confdir = $(sysconfdir)/lxcu/opensuse/15.6/dosab
 
 hermes.mgent.home.available hermes.mgent.home.unavailable hermes-beta.repo \
 	hermes-stable.repo server.list: Makefile

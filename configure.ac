@@ -44,7 +44,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2024  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.1.2 $])
+AC_REVISION([$Revision: 1.1.3 $])
 
 AC_PREREQ([2.69])
 
@@ -378,12 +378,12 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/fedora/39/basic/Makefile
 		src/lxcu/conf/etc/fedora/39/dev/Makefile
 		src/lxcu/conf/etc/fedora/39/dosab/Makefile
+		src/lxcu/conf/etc/opensuse/15.6/basic/Makefile
+		src/lxcu/conf/etc/opensuse/15.6/dev/Makefile
+		src/lxcu/conf/etc/opensuse/15.6/dosab/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/basic/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/dev/Makefile
 		src/lxcu/conf/etc/opensuse/15.5/dosab/Makefile
-		src/lxcu/conf/etc/opensuse/15.4/basic/Makefile
-		src/lxcu/conf/etc/opensuse/15.4/dev/Makefile
-		src/lxcu/conf/etc/opensuse/15.4/dosab/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/apt/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/apt/sources.list.d/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/apt/trusted.gpg.d/Makefile
