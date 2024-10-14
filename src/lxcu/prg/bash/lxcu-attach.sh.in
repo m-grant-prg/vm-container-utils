@@ -128,7 +128,7 @@ trap_exit()
 
 	msg="Script terminating with exit code $exit_code due to trap received."
 	output "$msg" 1
-	std_cmd_err_handler $exit_code
+	std_cmd_err_handler "$exit_code"
 }
 
 # Setup trap
