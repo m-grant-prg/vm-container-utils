@@ -348,6 +348,20 @@ setup_git()
 	std_cmd_err_handler $?
 }
 
+
+# Copy common files from host
+# No parameters
+# No return value
+copy_common_files_from_host()
+{
+	# journald config
+	sudo cp -rv "@sysconfdir@/systemd/journald.conf.d" \
+		"$contlocation/$name/rootfs/etc/systemd"
+	sudo chown -Rv 100000:100000 \
+		"$contlocation/$name/rootfs/etc/systemd/journald.conf.d"
+}
+
+
 # Create the specified type of APT container.
 # Parameters - $1 is the type to create.
 # No return value.
@@ -708,6 +722,8 @@ lxc-create -t download -n "$name"
 std_cmd_err_handler $?
 
 network_config
+
+copy_common_files_from_host
 
 case $dist in
 debian)
