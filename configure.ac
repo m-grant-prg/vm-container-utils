@@ -366,6 +366,9 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/bullseye/basic/Makefile
 		src/lxcu/conf/etc/debian/bullseye/dev/Makefile
 		src/lxcu/conf/etc/debian/bullseye/dosab/Makefile
+		src/lxcu/conf/etc/fedora/41/basic/Makefile
+		src/lxcu/conf/etc/fedora/41/dev/Makefile
+		src/lxcu/conf/etc/fedora/41/dosab/Makefile
 		src/lxcu/conf/etc/fedora/40/basic/Makefile
 		src/lxcu/conf/etc/fedora/40/dev/Makefile
 		src/lxcu/conf/etc/fedora/40/dosab/Makefile
