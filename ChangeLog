@@ -1,3 +1,18 @@
+2024-11-15 v1.2.9 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: bash: Support dnf5 introduced in 41
+	lxcu: conf: Fix 40 to 41 copy and paste error
+	lxcu: conf: Add 41
+	lxcu: conf: Remove EOL 39
+	lxcu: conf: Try Ubuntu with apt-cacher-ng
+	lxcu: bash: Limit systemd journal size
+	lqvm: bash: Double quote to prevent globbing and word splitting
+	lqvm: bash: Silence trap function unreachable code warning
+	lxcu: bash: Double quote to prevent globbing and word splitting
+	lxcu: bash: Silence trap function unreachable code warning
+	lxcu: conf: Start using libssh OpenSSL flavour
+	lxcu: project_tmp look for specific install.list first
+	lqvm: Revert virsh domif-setlink bug v7 to v9 workaround
+
 2024-06-28 v1.2.8 Mark Grant <m.grant.prg@gmail.com>
 	* at: lxcu: conf: Remove EOL buster
 
