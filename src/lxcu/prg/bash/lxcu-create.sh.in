@@ -471,9 +471,15 @@ create_deb()
 		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
 
-	# Set up the dosab files.
+	# Set up my debian keyring
 	@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
+	@bindir@/lxcu-attach -n "$name" \
+		-- sudo apt-get -- -y -o Dpkg::Options::="--force-confnew" \
+			install mgrant-obs-deb-keyring
+	std_cmd_err_handler $?
+
+	# Set up the dosab files.
 	@bindir@/lxcu-attach -n "$name" \
 		-- sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
