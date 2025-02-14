@@ -383,7 +383,7 @@ perform_vms_backups()
 			status=$?
 		else
 			ssh -t "${usernames[$count]}@$vm" \
-				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at\" \"now\""
+				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-diff-backup-locked-shutdown.at\" \"now\""
 			status=$?
 		fi
 		if (( status )); then
