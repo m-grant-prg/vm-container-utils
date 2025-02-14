@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2021-2024  Mark Grant				#
+# Author: Copyright (C) 2021-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.1				# Script version
+readonly version=1.1.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -378,16 +378,12 @@ perform_vms_backups()
 
 	for vm in $vms; do
 		if $weekly; then
-			ssh -t "${usernames[$count]}""@$vm" \
-				'echo '"${passwords[$count]}" \
-				'| sudo -S bash -c ' \
-				'"at -f $(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at now"'
+			ssh -t "${usernames[$count]}@$vm" \
+				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at\" \"now\""
 			status=$?
 		else
-			ssh -t "${usernames[$count]}""@$vm" \
-				'echo '"${passwords[$count]}" \
-				'| sudo -S bash -c ' \
-				'"at -f $(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at now"'
+			ssh -t "${usernames[$count]}@$vm" \
+				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-daily-backup-locked-shutdown.at\" \"now\""
 			status=$?
 		fi
 		if (( status )); then
