@@ -53,17 +53,16 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
 
-daily=false
 declare -a passwords
+script_name=""
 declare -i status=0
 declare -a usernames
 declare vms
-weekly=false
 
 
 #############
@@ -77,13 +76,12 @@ usage()
 {
 cat << EOF
 Usage is $0 {-h|-V}
-Usage is $0 {-d|-w} [-u CONNECTION] VM_NAME ...
+Usage is $0 -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
 Usage is $0 [options]
-	-d or --daily Perform daily backup
 	-h or --help Display this help information
+	-s or --script-name Script to be run
 	-u or --connect-uri Use the named connection URI
 	-V or --version Print script version information
-	-w or --weekly Perform weekly backup
 EOF
 }
 
@@ -171,7 +169,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o dhu:Vw --long daily,help,connect-uri:,version,weekly"
+	tmp="getopt -o hs:u:V --long help,script-name:,connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -180,19 +178,14 @@ proc_CL()
 
 	while true; do
 		case "$1" in
-		-d|--daily)
-			if $weekly; then
-				msg="Options d and w are mutually exclusive."
-				output "$msg" 1
-				script_exit 64
-			fi
-			daily=true
-			shift
-			;;
 		-h|--help)
 			usage
 			shift
 			script_exit 0
+			;;
+		-s|--script-name)
+			script_name=$2
+			shift 2
 			;;
 		-u|--connect-uri)
 			connect_uri=$2
@@ -204,15 +197,6 @@ proc_CL()
 			shift
 			script_exit 0
 			;;
-		-w|--weekly)
-			if $daily; then
-				msg="Options d and w are mutually exclusive."
-				output "$msg" 1
-				script_exit 64
-			fi
-			weekly=true
-			shift
-			;;
 		--)	shift
 			break
 			;;
@@ -223,8 +207,8 @@ proc_CL()
 	done
 
 	# One option has to be selected.
-	if ! $daily && ! $weekly; then
-		msg="Either d or w must be set"
+	if [[ $script_name == "" ]]; then
+		msg="Script name must be specified"
 		output "$msg" 1
 		script_exit 64
 	fi
@@ -377,15 +361,9 @@ perform_vms_backups()
 	local vm
 
 	for vm in $vms; do
-		if $weekly; then
-			ssh -t "${usernames[$count]}@$vm" \
-				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-weekly-backup-locked-shutdown.at\" \"now\""
-			status=$?
-		else
-			ssh -t "${usernames[$count]}@$vm" \
-				"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$(backup-at-scripts-location.sh)/sel-diff-backup-locked-shutdown.at\" \"now\""
-			status=$?
-		fi
+		ssh -t "${usernames[$count]}@$vm" \
+			"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$script_name\" \"now\""
+		status=$?
 		if (( status )); then
 			output "Backup failed for $vm."$'\n' 1
 		else

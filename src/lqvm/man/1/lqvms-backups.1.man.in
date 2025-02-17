@@ -2,7 +2,7 @@ NAME
 lqvms-backups -- Perform VM backups
 SYNOPSIS
 lqvms-backups {-h|-V}
-lqvms-backups {-d|-w} [-u CONNECTION] VM_NAME ...
+lqvms-backups -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
 lqvms-backups [OPTIONS] VM_NAME ...
 DESCRIPTION
 This script starts each specified VM, performs username and password checking
@@ -12,16 +12,14 @@ which does the backups.
 It is recommended that the user invoking this script has automated ssh login set
 up for the VMs specified.
 OPTIONS
--d, --daily  Perform a daily backup
-
 -h, --help  Display the help information.
+
+-s,  --script-name  Mandatory option supplying the script to be invoked.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
 
 -V, --version  Print script version information.
-
--w, --weekly  Perform a weekly backup
 EXIT STATUS
 0 - Success
 
@@ -37,7 +35,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2021, 2023 Mark Grant.
+Copyright (C) 2021, 2023, 2025 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
