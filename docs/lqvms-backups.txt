@@ -1,0 +1,5 @@
+
+Usage
+lqvms-backups -s '$(backup-at-scripts-location.sh)'/sel-diff-backup-locked-shutdown.at Leonidas
+ Note the single quotes to ensure the expansion happens remotely, not locally.
+
