@@ -322,10 +322,10 @@ get_usernames_and_passwords()
 		while ! $ok; do
 			echo "Enter sudo username for $vm:"
 			read -r username
-			usernames[$count]="$username"
+			usernames[count]="$username"
 			echo "Enter sudo password for $vm:"
 			read -rs password
-			passwords[$count]="$password"
+			passwords[count]="$password"
 			ssh -o NumberOfPasswordPrompts=0 \
 				-t "${usernames[$count]}""@$vm" \
 				'echo '"${passwords[$count]}" \
