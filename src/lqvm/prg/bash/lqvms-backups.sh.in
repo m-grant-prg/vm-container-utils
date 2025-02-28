@@ -48,7 +48,8 @@
 #########################################################################
 
 
-set -o pipefail
+set -uo pipefail
+
 
 ##################
 # Init variables #
@@ -58,6 +59,7 @@ readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
 
+declare -i maxconcbackups=1
 declare -a passwords
 script_name=""
 declare -i status=0
@@ -75,9 +77,11 @@ declare vms
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
-Usage is $0 [options]
+Usage is $(basename "$0") {-h|-V}
+Usage is $(basename "$0") [-b MAXCONCBACKUPS] -s SCRIPT_NAME [-u CONNECTION]
+			VM_NAME ...
+Usage is $(basename "$0") [options]
+	-b or --maxconcbackups Maximum number of concurrent backups to run
 	-h or --help Display this help information
 	-s or --script-name Script to be run
 	-u or --connect-uri Use the named connection URI
@@ -149,9 +153,19 @@ proc_config_file()
 	std_cmd_err_handler $?
 	while read -u3 -ra input; do
 		std_cmd_err_handler $?
-		case ${input[0]} in
+		case ${input[0]-} in
 		connecturi)
 			connect_uri=${input[1]}
+			;;
+		maxconcbackups)
+			if (( input[1] <= 0 )); then
+				msg="maxconcbackups in config file must be"
+				msg+=" greater than zero, defaulting to"
+				msg+=" $maxconcbackups"
+				output "$msg" 1
+			else
+				maxconcbackups=${input[1]}
+			fi
 			;;
 		esac
 	done
@@ -169,7 +183,8 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o hs:u:V --long help,script-name:,connect-uri:,version"
+	tmp="getopt -o b:hs:u:V --long maxconcbackups:,help,script-name:"
+	tmp+=",connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -178,6 +193,10 @@ proc_CL()
 
 	while true; do
 		case "$1" in
+		-b|--maxconcbackups)
+			maxconcbackups=$2
+			shift 2
+			;;
 		-h|--help)
 			usage
 			shift
@@ -209,6 +228,12 @@ proc_CL()
 	# One option has to be selected.
 	if [[ $script_name == "" ]]; then
 		msg="Script name must be specified"
+		output "$msg" 1
+		script_exit 64
+	fi
+
+	if (( maxconcbackups <= 0 )); then
+		msg="maxconcbackups must be greater than zero"
 		output "$msg" 1
 		script_exit 64
 	fi
@@ -355,7 +380,9 @@ get_usernames_and_passwords()
 # No return value.
 perform_vms_backups()
 {
+	local backups_WIP=()
 	local -i count=0
+	local -i i
 	local -i status
 	local status_string
 	local vm
@@ -369,12 +396,30 @@ perform_vms_backups()
 		else
 			output "Backup started for $vm."$'\n' 0
 		fi
+
 		(( count+=1 ))
-		# Wait for vm to shutdown
-		is_vm_running "$vm" status_string
-		while $status_string; do
+		backups_WIP+=("$vm")
+
+		# Wait for spare capacity in number of concurrent backups
+		# allowed before attempting to start the next backup.
+		while (( ${#backups_WIP[@]} >= maxconcbackups )); do
 			sleep 45
-			is_vm_running "$vm" status_string
+			for i in "${!backups_WIP[@]}"; do
+				is_vm_running "${backups_WIP[i]}" status_string
+				if ! $status_string; then
+					unset "backups_WIP[i]"
+				fi
+			done
+		done
+	done
+	# Backups to start is exhausted, wait for remaining VMs to shutdown
+	while (( ${#backups_WIP[@]} )); do
+		sleep 45
+		for i in "${!backups_WIP[@]}"; do
+			is_vm_running "${backups_WIP[i]}" status_string
+			if ! $status_string; then
+				unset "backups_WIP[i]"
+			fi
 		done
 	done
 }

@@ -6,6 +6,8 @@ diskname=vda
 bridge=br0
 # The prefix for ethernet interfaces usually enp or eth
 ethernetprefix=enp
+# In backups, how many backups to start concurrently
+maxconcbackups=1
 # In sequential start, how many VMs to start concurrently
 maxconcvms=1
 # The VMs to start when using sequential-start

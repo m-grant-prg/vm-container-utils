@@ -2,7 +2,7 @@ NAME
 lqvms-backups -- Perform VM backups
 SYNOPSIS
 lqvms-backups {-h|-V}
-lqvms-backups -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
+lqvms-backups [-b MAXCONCBACKUPS] -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
 lqvms-backups [OPTIONS] VM_NAME ...
 DESCRIPTION
 This script starts each specified VM, performs username and password checking
@@ -12,9 +12,11 @@ which does the backups.
 It is recommended that the user invoking this script has automated ssh login set
 up for the VMs specified.
 OPTIONS
+-b, --maxconcbackups  Maximum number of backups to run concurrently
+
 -h, --help  Display the help information.
 
--s,  --script-name  Mandatory option supplying the script to be invoked.
+-s, --script-name  Mandatory option supplying the script to be invoked.
 
 -u, --connect-uri 'Connection URI'  Use the named connection URI instead of the
 default stored in lqvm.conf.
