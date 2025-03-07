@@ -1,3 +1,18 @@
+2025-03-07 v1.2.10 Mark Grant <m.grant.prg@gmail.com>
+	* actions: Fix trivial whitespace formatting error
+	lqvm: Add concurrency capability to backups
+	docs: Add Note on expanding a variable remotely
+	lqvm: bash: Remove unnecessary $ in arithmetic variable
+	lqvm: bash: Require script name as an argument
+	lqvm: bash: Change daily in backup-at-scripts to diff
+	lqvm: bash: Use new backup-at-scripts-launcher.sh
+	at: Update Copyright for 2025
+	lxcu: conf: Add duke codename / version
+	lxcu: bash: Keyboard settings not required in Debian
+	lxcu: bash: Overwrite existing keyring at mgrant-obs-deb-keyring install
+	lxcu: bash: Set locale without using localectl in Debian
+Mark Grant (12):
+
 2024-11-15 v1.2.9 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: bash: Support dnf5 introduced in 41
 	lxcu: conf: Fix 40 to 41 copy and paste error

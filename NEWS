@@ -1,3 +1,10 @@
+Release 1.2.10 2025-03-07
+Add capability to run backups concurrently
+Pass the script name as an argument to backups script
+Change scripts named daily to diff (differential) as it is more accurate
+Use the new backup-at-scripts-launcher.sh script
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.9 2024-11-15
 Add new release Fedora 41
 Remove EOL Fedora 39
