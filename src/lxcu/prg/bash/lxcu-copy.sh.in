@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2024  Mark Grant				#
+# Author: Copyright (C) 2020-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.1				# Script version
+readonly version=1.1.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -285,12 +285,8 @@ fi
 @bindir@/lxcu-start -n "$toname"
 std_cmd_err_handler $?
 
-@bindir@/lxcu-attach -n "$toname" \
-	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hostname
-std_cmd_err_handler $?
-
-@bindir@/lxcu-attach -n "$toname" \
-	-- sudo sed -- -i -e "s/$fromname/$toname/" /etc/hosts
+/usr/bin/lxcu-attach -n "$toname" \
+	-- sudo hostnamectl set-hostname "$toname"
 std_cmd_err_handler $?
 
 lxc-stop -n "$toname"
