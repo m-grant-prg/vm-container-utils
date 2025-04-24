@@ -1,0 +1,84 @@
+#########################################################################
+#									#
+# Author: Copyright (C) 2025  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0-only					#
+#									#
+# Purpose:								#
+# Bash completion script.						#
+#									#
+#########################################################################
+
+
+_lxcu_upgrade_proc_opts()
+{
+	local lxcu_dir OPTS
+
+	lxcu_dir="@sysconfdir@/lxcu/$1"
+	if [[ ! -d $lxcu_dir ]]; then
+		return 0
+	fi
+	cd $lxcu_dir 2>&1 >/dev/null
+	OPTS=$(ls -d */ | sed -e 's/\///g' -e 's/apt//g' -e 's/dosab//g')
+	cd - 2>&1 >/dev/null
+	COMPREPLY=($(compgen -W "${OPTS[*]}" -- $2))
+}
+
+
+_lxcu_upgrade()
+{
+	local cur prev OPTS
+	local i dist rel
+
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	case $prev in
+		-d|--dist)
+			_lxcu_upgrade_proc_opts "" "$cur"
+			return 0
+			;;
+		-h|--help)
+			return 0
+			;;
+		-n|--name)
+			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- $cur))
+			return 0
+			;;
+		-r|--rel)
+			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+				if [[ ${COMP_WORDS[i]} == "--dist" ]]; then
+					rel="${COMP_WORDS[i+1]}"
+					_lxcu_upgrade_proc_opts "$rel" "$cur"
+					return 0
+				fi
+			done
+			return 0
+			;;
+		-t|--type)
+			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+				if [[ ${COMP_WORDS[i]} == "--dist" ]]; then
+					dist="${COMP_WORDS[i+1]}"
+				fi
+				if [[ ${COMP_WORDS[i]} == "--rel" ]]; then
+					rel="${COMP_WORDS[i+1]}"
+				fi
+				if [[ -n "$dist" && -n "$rel" ]]; then
+					_lxcu_upgrade_proc_opts "$dist/$rel" \
+						"$cur"
+					return 0
+				fi
+			done
+			return 0
+			;;
+		-V|--version)
+			return 0
+			;;
+	esac
+	OPTS="--dist --help --name --rel --type --version"
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
+	return 0
+}
+complete -F _lxcu_upgrade lxcu-upgrade
+

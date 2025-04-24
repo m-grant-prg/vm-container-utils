@@ -1,0 +1,37 @@
+#########################################################################
+#									#
+# Author: Copyright (C) 2025  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0-only					#
+#									#
+# Purpose:								#
+# Bash completion script.						#
+#									#
+#########################################################################
+
+
+_lxcu_attach()
+{
+	local cur prev OPTS
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	case $prev in
+		-h|--help)
+			return 0
+			;;
+		-n|--name)
+			COMPREPLY=($(compgen -W "$(lxc-ls --running)" -- $cur))
+			return 0
+			;;
+		-V|--version)
+			return 0
+			;;
+	esac
+	OPTS="--help --name --version"
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
+	return 0
+}
+complete -F _lxcu_attach lxcu-attach
+

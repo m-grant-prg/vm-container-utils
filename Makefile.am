@@ -21,6 +21,7 @@ AM_DISTCHECK_CONFIGURE_FLAGS =
 SUBDIRS = src/lqvm/conf/etc
 SUBDIRS += src/lqvm/man/1 src/lqvm/man/5
 SUBDIRS += src/lqvm/prg/bash
+SUBDIRS += src/lxcu/bash-comp
 SUBDIRS += src/lxcu/conf/etc
 SUBDIRS += src/lxcu/conf/etc/debian/testing/apt
 SUBDIRS += src/lxcu/conf/etc/debian/testing/apt/sources.list.d
