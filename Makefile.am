@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2024  Mark Grant				#
+# Author: Copyright (C) 2020-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -64,12 +64,6 @@ SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/apt/trusted.gpg.d
 SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/basic
 SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/dev
 SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/dosab
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/apt
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/apt/sources.list.d
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/apt/trusted.gpg.d
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/basic
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/dev
-SUBDIRS += src/lxcu/conf/etc/ubuntu/focal/dosab
 SUBDIRS += src/lxcu/man/1 src/lxcu/man/5
 SUBDIRS += src/lxcu/prg/bash
 
