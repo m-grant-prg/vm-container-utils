@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2024  Mark Grant				#
+# Author: Copyright (C) 2020-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.1				# Script version
+readonly version=1.1.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -83,7 +83,7 @@ usage()
 cat << EOF
 Usage is $0 {-h|-V}
 Usage is $0 {-a|-r|-t} [-u CONNECTION] -n VM_NAME
-Usage is $0 -c SNAPSHOT_NAME [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION]
+Usage is $0 -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION]
 	-n VM_NAME
 Usage is $0 -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
 Usage is $0 -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
