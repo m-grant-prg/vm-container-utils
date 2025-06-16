@@ -18,7 +18,8 @@ ACLOCAL_AMFLAGS = -I m4
 AM_DISTCHECK_CONFIGURE_FLAGS =
 
 
-SUBDIRS = src/lqvm/conf/etc
+SUBDIRS = src/lqvm/bash-comp
+SUBDIRS += src/lqvm/conf/etc
 SUBDIRS += src/lqvm/man/1 src/lqvm/man/5
 SUBDIRS += src/lqvm/prg/bash
 SUBDIRS += src/lxcu/bash-comp

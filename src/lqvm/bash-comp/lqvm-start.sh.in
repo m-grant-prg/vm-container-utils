@@ -1,0 +1,134 @@
+# shellcheck shell=bash
+#########################################################################
+#									#
+# Author: Copyright (C) 2025  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0-only					#
+#									#
+# Purpose:								#
+# Bash completion script.						#
+#									#
+#########################################################################
+
+
+# Return the connection URI if it was specified on the command line.
+_lqvm_start_cla_uri()
+{
+	local i temp
+
+	for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+		if [[ ${COMP_WORDS[i]} == "--connect-uri" \
+			|| ${COMP_WORDS[i]} == "-u" ]]; then
+			if (( ${#COMP_WORDS[@]} >= i + 1 )); then
+				if [[ ${COMP_WORDS[i+1]:0:1} == "-" ]]; then
+					break
+				fi
+				temp="${COMP_WORDS[i+1]}"
+			fi
+			if (( ${#COMP_WORDS[@]} >= i + 2 )); then
+				if [[ ${COMP_WORDS[i+2]:0:1} == "-" ]]; then
+					break
+				fi
+				temp+="${COMP_WORDS[i+2]}"
+			fi
+			if (( ${#COMP_WORDS[@]} >= i + 3 )); then
+				if [[ ${COMP_WORDS[i+3]:0:1} == "-" ]]; then
+					break
+				fi
+				temp+="${COMP_WORDS[i+3]}"
+			fi
+			break
+		fi
+	done
+	echo "$temp"
+}
+
+# Return the default connection URI if specified in the config file.
+_lqvm_start_conf_file_uri()
+{
+	local etclocation=@sysconfdir@
+	local input=() oldIFS temp
+
+	oldIFS=$IFS
+	IFS="="
+	exec 3<"$etclocation/lqvm.conf"
+	while read -u3 -ra input; do
+		case ${input[0]} in
+		connecturi)
+			temp=${input[1]}
+			break
+			;;
+		esac
+	done
+	exec 3<&-
+	IFS=$oldIFS
+	echo "$temp"
+}
+
+_lqvm_start()
+{
+	local cur prev OPTS
+	local cmd uri
+
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	 _init_completion -n : cur
+	 case $prev in
+		-c|--create)
+			return 0
+			;;
+		-D|--description)
+			return 0
+			;;
+		-e|--external)
+			return 0
+			;;
+		-h|--help)
+			return 0
+			;;
+		-i|--internal)
+			return 0
+			;;
+		-n|--name)
+			# Order of precedence is:-
+			#	Command line
+			#		Config file
+			#			Default virsh setting
+			uri=$(_lqvm_start_cla_uri)
+			if [[ -z $uri ]]; then
+				uri=$(_lqvm_start_conf_file_uri)
+			fi
+			cmd="virsh"
+			if [[ -n $uri ]]; then
+				cmd+=" -c $uri"
+			fi
+			cmd+=" list --name --inactive"
+			OPTS=$( eval "$cmd" )
+			# shellcheck disable=SC2207  # This is _the_ bash
+			# completion pattern, so leave it be.
+			COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+			return 0
+			;;
+		-u|--connect-uri)
+			return 0
+			;;
+		-V|--version)
+			return 0
+			;;
+		-w|--without)
+			return 0
+			;;
+	esac
+	OPTS="-c -D -e -h -i -n -u -V -w"
+	OPTS+=" --connect-uri --create --description --external --help"
+	OPTS+=" --internal --name --version --without"
+	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,
+	# so leave it be.
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+	__ltrim_colon_completions "$cur"
+	return 0
+}
+complete -F _lqvm_start lqvm-start
+

@@ -1,0 +1,44 @@
+#########################################################################
+#									#
+# Author: Copyright (C) 2025  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0-only					#
+#									#
+# Purpose:								#
+# AutoMake script file to generate lqvm utility scripts bash-completion	#
+# from source.								#
+#									#
+#########################################################################
+
+
+bashcompdir = $(datadir)/bash-completion/completions
+
+
+lqvms-backups lqvm-shutdown lqvm-snap lqvms-sequential-start lqvms-snap \
+	lqvm-start: Makefile
+	mkdir -p $(@D)
+	rm -f $@ $@.tmp
+	test -f ./$@.in || srcdir=$(srcdir)/; \
+	$(edit) $${srcdir}$(@F).sh.in > $@.tmp
+	mv $@.tmp $@
+lqvms-backups: $(srcdir)/lqvms-backups.sh.in
+lqvm-shutdown: $(srcdir)/lqvm-shutdown.sh.in
+lqvm-snap: $(srcdir)/lqvm-snap.sh.in
+lqvms-sequential-start: $(srcdir)/lqvms-sequential-start.sh.in
+lqvms-snap: $(srcdir)/lqvms-snap.sh.in
+lqvm-start: $(srcdir)/lqvm-start.sh.in
+
+
+bashcomp_DATA = lqvms-backups lqvm-shutdown lqvm-snap lqvms-sequential-start \
+		lqvms-snap lqvm-start
+
+
+EXTRA_DIST = $(srcdir)/lqvms-backups.sh.in $(srcdir)/lqvm-shutdown.sh.in \
+	     $(srcdir)/lqvm-snap.sh.in $(srcdir)/lqvms-sequential-start.sh.in \
+	     $(srcdir)/lqvms-snap.sh.in $(srcdir)/lqvm-start.sh.in
+
+
+CLEANFILES = *.tmp lqvms-backups lqvm-shutdown lqvm-snap \
+		lqvms-sequential-start lqvms-snap lqvm-start
+

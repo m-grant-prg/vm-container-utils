@@ -1,0 +1,43 @@
+# shellcheck shell=bash
+#########################################################################
+#									#
+# Author: Copyright (C) 2025  Mark Grant				#
+#									#
+# Released under the GPLv3 only.					#
+# SPDX-License-Identifier: GPL-3.0-only					#
+#									#
+# Purpose:								#
+# Bash completion script.						#
+#									#
+#########################################################################
+
+
+_lqvms_sequential_start()
+{
+	local cur prev OPTS
+
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	 _init_completion -n : cur
+	case $prev in
+		-h|--help)
+			return 0
+			;;
+		-u|--connect-uri)
+			return 0
+			;;
+		-V|--version)
+			return 0
+			;;
+	esac
+	OPTS="-h -u -V"
+	OPTS+=" --connect-uri --help --version"
+	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,
+	# so leave it be.
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+	__ltrim_colon_completions "$cur"
+	return 0
+}
+complete -F _lqvms_sequential_start lqvms-sequential-start
+

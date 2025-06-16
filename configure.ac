@@ -17,8 +17,8 @@
 # Parameters general description. For specifics please see inline	#
 # comments at the point of definition:-					#
 # --enable-bash-completion						#
-#	Used to include the bash-completion elements in the build. If	#
-#	not specified on the CL then the default is yes.		#
+#	Used to include the bash-completion elements in the build.	#
+#	If not specified on the CL then the default is yes.		#
 #									#
 # Layout: (Only relevant sections will exist).				#
 # SECTION  1: Initialisation & Setup					#
@@ -381,6 +381,7 @@ AC_MSG_NOTICE(processing output files)
 
 # Project Makefiles to create.
 AC_CONFIG_FILES([Makefile
+		src/lqvm/bash-comp/Makefile
 		src/lqvm/conf/etc/Makefile
 		src/lqvm/man/1/Makefile
 		src/lqvm/man/5/Makefile
