@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 #########################################################################
 #									#
 # Author: Copyright (C) 2025  Mark Grant				#
@@ -15,21 +16,26 @@ _lxcu_project_tmp_proc_opts()
 {
 	local lxcu_dir OPTS
 
-	lxcu_dir="@sysconfdir@/lxcu/$1"
+	lxcu_dir="@sysconfdir@/lxcu"
+	if [[ -n "$1" ]]; then
+		lxcu_dir+="/$1"
+	fi
 	if [[ ! -d $lxcu_dir ]]; then
 		return 0
 	fi
-	cd $lxcu_dir 2>&1 >/dev/null
-	OPTS=$(ls -d */ | sed -e 's/\///g' -e 's/apt//g' -e 's/dosab//g')
-	cd - 2>&1 >/dev/null
-	COMPREPLY=($(compgen -W "${OPTS[*]}" -- $2))
+	OPTS=$(find "$lxcu_dir" -mindepth 1 -maxdepth 1 -type d -print0 \
+		2>/dev/null \
+		| xargs -0 basename -a \
+		| sed -e '/^apt$/d' -e '/^dosab$/d') || return
+	# shellcheck disable=SC2207  # This is _the_ bash completion pattern,
+	# so leave it be.
+	COMPREPLY=($(compgen -W "${OPTS[*]}" -- "$2"))
 }
-
 
 _lxcu_project_tmp()
 {
 	local cur prev OPTS
-	local i dist rel
+	local i dist
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
@@ -43,7 +49,10 @@ _lxcu_project_tmp()
 			return 0
 			;;
 		-n|--name)
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- $cur))
+			# shellcheck disable=SC2207  # This is _the_ bash
+			# completion pattern, so leave it be.
+			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
+				-- "$cur"))
 			return 0
 			;;
 		-p|--project-root)
@@ -52,9 +61,10 @@ _lxcu_project_tmp()
 			;;
 		-r|--rel)
 			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
-				if [[ ${COMP_WORDS[i]} == "--dist" ]]; then
-					rel="${COMP_WORDS[i+1]}"
-					_lxcu_project_tmp_proc_opts "$rel" \
+				if [[ ${COMP_WORDS[i]} == "--dist" \
+					|| ${COMP_WORDS[i]} == "-d" ]]; then
+					dist="${COMP_WORDS[i+1]}"
+					_lxcu_project_tmp_proc_opts "$dist" \
 						"$cur"
 					return 0
 				fi
@@ -65,8 +75,11 @@ _lxcu_project_tmp()
 			return 0
 			;;
 	esac
-	OPTS="--dist --help --name --project-root --rel --version"
-	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
+	OPTS="-d -h -n -p -r -V"
+	OPTS+=" --dist --help --name --project-root --rel --version"
+	# shellcheck disable=SC2207  # This is _the_ bash completion pattern,
+	# so leave it be.
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
 	return 0
 }
 complete -F _lxcu_project_tmp lxcu-project-tmp

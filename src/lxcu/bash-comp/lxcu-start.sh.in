@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 #########################################################################
 #									#
 # Author: Copyright (C) 2025  Mark Grant				#
@@ -22,15 +23,21 @@ _lxcu_start()
 			return 0
 			;;
 		-n|--name)
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- $cur))
+			# shellcheck disable=SC2207  # This is _the_ bash
+			# completion pattern, so leave it be.
+			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
+				-- "$cur"))
 			return 0
 			;;
 		-V|--version)
 			return 0
 			;;
 	esac
-	OPTS="--help --name --version"
-	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
+	OPTS="-h -n -V"
+	OPTS+=" --help --name --version"
+	# shellcheck disable=SC2207  # This is _the_ bash completion pattern,
+	# so leave it be.
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
 	return 0
 }
 complete -F _lxcu_start lxcu-start

@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 #########################################################################
 #									#
 # Author: Copyright (C) 2025  Mark Grant				#
@@ -14,6 +15,7 @@
 _lxcu_copy()
 {
 	local cur prev OPTS
+
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
@@ -22,7 +24,10 @@ _lxcu_copy()
 			return 0
 			;;
 		-n|--from-name)
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- $cur))
+			# shellcheck disable=SC2207  # This is _the_ bash
+			# completion pattern, so leave it be.
+			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
+				-- "$cur"))
 			return 0
 			;;
 		-N|--to-name)
@@ -32,8 +37,11 @@ _lxcu_copy()
 			return 0
 			;;
 	esac
-	OPTS="--help --from-name --to-name --version"
-	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- $cur) )
+	OPTS="-h -n -N -V"
+	OPTS+=" --help --from-name --to-name --version"
+	# shellcheck disable=SC2207  # This is _the_ bash completion pattern,
+	# so leave it be.
+	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
 	return 0
 }
 complete -F _lxcu_copy lxcu-copy
