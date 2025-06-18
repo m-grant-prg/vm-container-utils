@@ -19,19 +19,12 @@ _lxcu_start()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	case $prev in
-		-h|--help)
-			return 0
-			;;
-		-n|--name)
-			# shellcheck disable=SC2207  # This is _the_ bash
-			# completion pattern, so leave it be.
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
-				-- "$cur"))
-			return 0
-			;;
-		-V|--version)
-			return 0
-			;;
+	-n|--name)
+		# shellcheck disable=SC2207  # This is _the_ bash completion
+		# pattern, so leave it be.
+		COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- "$cur"))
+		return 0
+		;;
 	esac
 	OPTS="-h -n -V"
 	OPTS+=" --help --name --version"

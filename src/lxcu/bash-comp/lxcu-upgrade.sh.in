@@ -42,53 +42,44 @@ _lxcu_upgrade()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	case $prev in
-		-d|--dist)
-			_lxcu_upgrade_proc_opts "" "$cur"
-			return 0
-			;;
-		-h|--help)
-			return 0
-			;;
-		-n|--name)
-			# shellcheck disable=SC2207  # This is _the_ bash
-			# completion pattern, so leave it be.
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
-				-- "$cur"))
-			return 0
-			;;
-		-r|--rel)
-			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
-				if [[ ${COMP_WORDS[i]} == "--dist" \
-					|| ${COMP_WORDS[i]} == "-d" ]]; then
-					dist="${COMP_WORDS[i+1]}"
-					_lxcu_upgrade_proc_opts "$dist" \
-						"$cur"
-					return 0
-				fi
-			done
-			return 0
-			;;
-		-t|--type)
-			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
-				if [[ ${COMP_WORDS[i]} == "--dist" \
-					|| ${COMP_WORDS[i]} == "-d" ]]; then
-					dist="${COMP_WORDS[i+1]}"
-				fi
-				if [[ ${COMP_WORDS[i]} == "--rel" \
-					|| ${COMP_WORDS[i]} == "-r" ]]; then
-					rel="${COMP_WORDS[i+1]}"
-				fi
-				if [[ -n "$dist" && -n "$rel" ]]; then
-					_lxcu_upgrade_proc_opts "$dist/$rel" \
-						"$cur"
-					return 0
-				fi
-			done
-			return 0
-			;;
-		-V|--version)
-			return 0
-			;;
+	-d|--dist)
+		_lxcu_upgrade_proc_opts "" "$cur"
+		return 0
+		;;
+	-n|--name)
+		# shellcheck disable=SC2207  # This is _the_ bash completion
+		# pattern, so leave it be.
+		COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- "$cur"))
+		return 0
+		;;
+	-r|--rel)
+		for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+			if [[ ${COMP_WORDS[i]} == "--dist" \
+				|| ${COMP_WORDS[i]} == "-d" ]]; then
+				dist="${COMP_WORDS[i+1]}"
+				_lxcu_upgrade_proc_opts "$dist" "$cur"
+				return 0
+			fi
+		done
+		return 0
+		;;
+	-t|--type)
+		for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+			if [[ ${COMP_WORDS[i]} == "--dist" \
+				|| ${COMP_WORDS[i]} == "-d" ]]; then
+				dist="${COMP_WORDS[i+1]}"
+			fi
+			if [[ ${COMP_WORDS[i]} == "--rel" \
+				|| ${COMP_WORDS[i]} == "-r" ]]; then
+				rel="${COMP_WORDS[i+1]}"
+			fi
+			if [[ -n "$dist" && -n "$rel" ]]; then
+				_lxcu_upgrade_proc_opts "$dist/$rel" "$cur"
+				return 0
+			fi
+		done
+		return 0
+		;;
 	esac
 	OPTS="-d -h -n -r -t -V"
 	OPTS+=" --dist --help --name --rel --type --version"

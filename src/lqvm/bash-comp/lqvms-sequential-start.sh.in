@@ -14,23 +14,11 @@
 
 _lqvms_sequential_start()
 {
-	local cur prev OPTS
+	local cur OPTS
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
-	case $prev in
-		-h|--help)
-			return 0
-			;;
-		-u|--connect-uri)
-			return 0
-			;;
-		-V|--version)
-			return 0
-			;;
-	esac
 	OPTS="-h -u -V"
 	OPTS+=" --connect-uri --help --version"
 	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,

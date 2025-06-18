@@ -41,39 +41,31 @@ _lxcu_project_tmp()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	case $prev in
-		-d|--dist)
-			_lxcu_project_tmp_proc_opts "" "$cur"
-			return 0
-			;;
-		-h|--help)
-			return 0
-			;;
-		-n|--name)
-			# shellcheck disable=SC2207  # This is _the_ bash
-			# completion pattern, so leave it be.
-			COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" \
-				-- "$cur"))
-			return 0
-			;;
-		-p|--project-root)
-			_filedir -d
-			return 0
-			;;
-		-r|--rel)
-			for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
-				if [[ ${COMP_WORDS[i]} == "--dist" \
-					|| ${COMP_WORDS[i]} == "-d" ]]; then
-					dist="${COMP_WORDS[i+1]}"
-					_lxcu_project_tmp_proc_opts "$dist" \
-						"$cur"
-					return 0
-				fi
-			done
-			return 0
-			;;
-		-V|--version)
-			return 0
-			;;
+	-d|--dist)
+		_lxcu_project_tmp_proc_opts "" "$cur"
+		return 0
+		;;
+	-n|--name)
+		# shellcheck disable=SC2207  # This is _the_ bash completion
+		# pattern, so leave it be.
+		COMPREPLY=($(compgen -W "$(lxc-ls --stopped)" -- "$cur"))
+		return 0
+		;;
+	-p|--project-root)
+		_filedir -d
+		return 0
+		;;
+	-r|--rel)
+		for ((i = $(( COMP_CWORD - 1 )) ; i >= 0 ; i--)); do
+			if [[ ${COMP_WORDS[i]} == "--dist" \
+				|| ${COMP_WORDS[i]} == "-d" ]]; then
+				dist="${COMP_WORDS[i+1]}"
+				_lxcu_project_tmp_proc_opts "$dist" "$cur"
+				return 0
+			fi
+		done
+		return 0
+		;;
 	esac
 	OPTS="-d -h -n -p -r -V"
 	OPTS+=" --dist --help --name --project-root --rel --version"

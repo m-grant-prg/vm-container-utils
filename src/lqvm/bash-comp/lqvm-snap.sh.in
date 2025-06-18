@@ -76,62 +76,26 @@ _lqvm_snap()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
 	 case $prev in
-		-a|--delete-all)
-			return 0
-			;;
-		-c|--create)
-			return 0
-			;;
-		-d|--delete)
-			return 0
-			;;
-		-D|--description)
-			return 0
-			;;
-		-e|--external)
-			return 0
-			;;
-		-h|--help)
-			return 0
-			;;
-		-i|--internal)
-			return 0
-			;;
-		-n|--name)
-			# Order of precedence is:-
-			#	Command line
-			#		Config file
-			#			Default virsh setting
-			uri=$(_lqvm_snap_cla_uri)
-			if [[ -z $uri ]]; then
-				uri=$(_lqvm_snap_conf_file_uri)
-			fi
-			cmd="virsh"
-			if [[ -n $uri ]]; then
-				cmd+=" -c $uri"
-			fi
-			cmd+=" list --name --inactive"
-			OPTS=$( eval "$cmd" )
-			# shellcheck disable=SC2207  # This is _the_ bash
-			# completion pattern, so leave it be.
-			COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
-			return 0
-			;;
-		-r|--revert)
-			return 0
-			;;
-		-s|--create-auto-seq)
-			return 0
-			;;
-		-t|--delete-to-current)
-			return 0
-			;;
-		-u|--connect-uri)
-			return 0
-			;;
-		-V|--version)
-			return 0
-			;;
+	-n|--name)
+		# Order of precedence is:-
+		#	Command line
+		#		Config file
+		#			Default virsh setting
+		uri=$(_lqvm_snap_cla_uri)
+		if [[ -z $uri ]]; then
+			uri=$(_lqvm_snap_conf_file_uri)
+		fi
+		cmd="virsh"
+		if [[ -n $uri ]]; then
+			cmd+=" -c $uri"
+		fi
+		cmd+=" list --name --inactive"
+		OPTS=$( eval "$cmd" )
+		# shellcheck disable=SC2207  # This is _the_ bash completion
+		# pattern, so leave it be.
+		COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+		return 0
+		;;
 	esac
 	OPTS="-a -c -d -D -e -h -i -n -r -s -t -u -V"
 	OPTS+=" --connect-uri --create --create-auto-seq --delete --delete-all"
