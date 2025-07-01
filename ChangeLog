@@ -1,3 +1,16 @@
+2025-07-01 v1.2.11 Mark Grant <m.grant.prg@gmail.com>
+	* lqvm: lxcu: bash-comp: Remove empty case elements
+	lxcu: bash-comp: Fix shellcheck warnings
+	lqvm: Add bash completion
+	lqvm: Correct syntax in snap help and manual page
+	lqvm: Correct syntax in start help and manual page
+	lxcu: conf: Add 42
+	lxcu: Remove 40 - EOL
+	lxcu: Add bash completion
+	lxcu: conf: Remove focal - EOL
+	lxcu: Change host name with hostnamectl
+Mark Grant (10)
+
 2025-03-07 v1.2.10 Mark Grant <m.grant.prg@gmail.com>
 	* actions: Fix trivial whitespace formatting error
 	lqvm: Add concurrency capability to backups

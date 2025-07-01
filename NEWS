@@ -1,3 +1,10 @@
+Release 1.2.11 2025-07-01
+Add bash completion
+Add 42
+Remove 40 - EOL
+Remove Focal - EOL
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.10 2025-03-07
 Add capability to run backups concurrently
 Pass the script name as an argument to backups script
