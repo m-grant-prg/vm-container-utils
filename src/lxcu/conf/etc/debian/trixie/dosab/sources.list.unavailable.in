@@ -1,0 +1,10 @@
+# apt sources file.
+
+deb https://deb.debian.org/debian @rel@ main contrib non-free non-free-firmware
+
+deb https://deb.debian.org/debian-security/ @rel@-security main contrib non-free non-free-firmware
+
+
+deb https://deb.debian.org/debian @rel@-updates main contrib non-free non-free-firmware
+
+
