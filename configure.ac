@@ -50,7 +50,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2025  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.2.0 $])
+AC_REVISION([$Revision: 1.2.1 $])
 
 AC_PREREQ([2.69])
 
@@ -400,12 +400,6 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/bookworm/basic/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dev/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dosab/Makefile
-		src/lxcu/conf/etc/debian/bullseye/apt/Makefile
-		src/lxcu/conf/etc/debian/bullseye/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/debian/bullseye/apt/trusted.gpg.d/Makefile
-		src/lxcu/conf/etc/debian/bullseye/basic/Makefile
-		src/lxcu/conf/etc/debian/bullseye/dev/Makefile
-		src/lxcu/conf/etc/debian/bullseye/dosab/Makefile
 		src/lxcu/conf/etc/fedora/42/basic/Makefile
 		src/lxcu/conf/etc/fedora/42/dev/Makefile
 		src/lxcu/conf/etc/fedora/42/dosab/Makefile
