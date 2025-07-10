@@ -394,6 +394,12 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/testing/basic/Makefile
 		src/lxcu/conf/etc/debian/testing/dev/Makefile
 		src/lxcu/conf/etc/debian/testing/dosab/Makefile
+		src/lxcu/conf/etc/debian/trixie/apt/Makefile
+		src/lxcu/conf/etc/debian/trixie/apt/sources.list.d/Makefile
+		src/lxcu/conf/etc/debian/trixie/apt/trusted.gpg.d/Makefile
+		src/lxcu/conf/etc/debian/trixie/basic/Makefile
+		src/lxcu/conf/etc/debian/trixie/dev/Makefile
+		src/lxcu/conf/etc/debian/trixie/dosab/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/sources.list.d/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/trusted.gpg.d/Makefile
