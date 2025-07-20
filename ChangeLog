@@ -1,3 +1,7 @@
+2025-07-20 v1.2.13 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Perform missing conversion from testing to trixie
+Mark Grant (1):
+
 2025-07-20 v1.2.12 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Add trixie
 	lxcu: conf: Remove bullseye - EOL

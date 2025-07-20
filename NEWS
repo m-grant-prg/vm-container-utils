@@ -1,3 +1,7 @@
+Release 1.2.13 2025-07-20
+Fix Trixie installation
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.12 2025-07-20
 Add Trixie
 Remove Bullseye - EOL
