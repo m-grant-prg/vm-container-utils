@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2023  Mark Grant				#
+# Author: Copyright (C) 2023-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -11,7 +11,7 @@
 #########################################################################
 
 
-confdir = $(sysconfdir)/lxcu/debian/testing/apt/trusted.gpg.d
+confdir = $(sysconfdir)/lxcu/debian/trixie/apt/trusted.gpg.d
 
 hermes-keyring.gpg: Makefile
 	mkdir -p $(@D)
