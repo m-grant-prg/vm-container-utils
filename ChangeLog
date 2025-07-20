@@ -1,3 +1,9 @@
+2025-07-20 v1.2.12 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: conf: Add trixie
+	lxcu: conf: Remove bullseye - EOL
+	actions: Set dependabot to target stable and old stable branches
+Mark Grant (3):
+
 2025-07-01 v1.2.11 Mark Grant <m.grant.prg@gmail.com>
 	* lqvm: lxcu: bash-comp: Remove empty case elements
 	lxcu: bash-comp: Fix shellcheck warnings

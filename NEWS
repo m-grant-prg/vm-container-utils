@@ -1,3 +1,8 @@
+Release 1.2.12 2025-07-20
+Add Trixie
+Remove Bullseye - EOL
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.11 2025-07-01
 Add bash completion
 Add 42
