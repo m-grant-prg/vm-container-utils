@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.1.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -75,9 +75,11 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 -n SOURCE_CONTAINER -N DESTINATION_CONTAINER
-Usage is $0 [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") -n SOURCE_CONTAINER -N DESTINATION_CONTAINER
+Usage is:-
+$(basename "$0") [options]
 	-h or --help Display this help information
 	-n or --from-name 'container name'
 	-N or --to-name 'container name'
