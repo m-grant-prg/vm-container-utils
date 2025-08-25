@@ -54,7 +54,7 @@ set -uo pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.0				# Script version
+readonly version=1.2.1				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -77,10 +77,11 @@ declare vms
 usage()
 {
 cat << EOF
-Usage is $(basename "$0") {-h|-V}
-Usage is $(basename "$0") [-b MAXCONCBACKUPS] -s SCRIPT_NAME [-u CONNECTION]
-			VM_NAME ...
-Usage is $(basename "$0") [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") [-b MAXCONCBACKUPS] -s SCRIPT_NAME [-u CONNECTION] VM_NAME ...
+Usage is:-
+$(basename "$0") [options]
 	-b or --maxconcbackups Maximum number of concurrent backups to run
 	-h or --help Display this help information
 	-s or --script-name Script to be run
