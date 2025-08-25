@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2024  Mark Grant				#
+# Author: Copyright (C) 2020-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.1				# Script version
+readonly version=1.1.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -72,9 +72,11 @@ delete_to_current=false
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 {-a|-t} [-u CONNECTION]
-Usage is $0 [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") {-a|-t} [-u CONNECTION]
+Usage is:-
+$(basename "$0") [options]
 	-a or --delete-all Delete all snapshots for all VMs
 	-h or --help Display this help information
 	-t or --delete-to-current Delete all snapshots taken before the current

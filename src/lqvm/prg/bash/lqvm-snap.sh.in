@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.1.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -81,13 +81,14 @@ revert=false
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 {-a|-r|-t} [-u CONNECTION] -n VM_NAME
-Usage is $0 -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION]
-	-n VM_NAME
-Usage is $0 -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
-Usage is $0 -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
-Usage is $0 [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") {-a|-r|-t} [-u CONNECTION] -n VM_NAME
+$(basename "$0") -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION] -n VM_NAME
+$(basename "$0") -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
+$(basename "$0") -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
+Usage is:-
+$(basename "$0") [options]
 	-a or --delete-all Delete all snapshots for this vm
 	-c or --create 'snapshot-name' Create the named snapshot
 	-d or --delete 'snapshot-name' Delete the named snapshot

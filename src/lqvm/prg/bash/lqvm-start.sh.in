@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.1.3				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -75,12 +75,13 @@ without=false
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i}
-	[-u CONNECTION] -n VM_NAME
-Usage is $0 [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
-Usage is $0 -w [-u CONNECTION] -n VM_NAME
-Usage is $0 [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION] -n VM_NAME
+$(basename "$0") [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
+$(basename "$0") -w [-u CONNECTION] -n VM_NAME
+Usage is:-
+$(basename "$0") [options]
 	-c or --create 'snapshot-name' Create the snapshot using 'snapshot-name'
 	-D or --description 'snapshot-description' Plain text description
 	-e or --external Create an external snapshot
