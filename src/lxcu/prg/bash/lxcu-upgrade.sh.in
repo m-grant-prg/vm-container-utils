@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2024  Mark Grant				#
+# Author: Copyright (C) 2020-2025  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.1				# Script version
+readonly version=1.1.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -73,10 +73,11 @@ export DBUS_SESSION_BUS_ADDRESS="unix:path=${XDG_RUNTIME_DIR}/bus"
 usage()
 {
 cat << EOF
-Usage is $0 {-h|-V}
-Usage is $0 [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE
-			-n CONTAINER_NAME
-Usage is $0 [options]
+Usage is:-
+$(basename "$0") {-h|-V}
+$(basename "$0") [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE -n CONTAINER_NAME
+Usage is:-
+$(basename "$0") [options]
 	-d or --dist 'distribution-name'
 	-h or --help Display this help information
 	-n or --name 'container name'
