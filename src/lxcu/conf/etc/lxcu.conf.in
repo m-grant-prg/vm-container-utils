@@ -1,6 +1,6 @@
 # Default distro etc
 dist=debian
-rel=bullseye
+rel=trixie
 # Container location
 contlocation=/home/$USER/.local/share/lxc
 # If a bridge is available assign it here, otherwise leave as bridge=
