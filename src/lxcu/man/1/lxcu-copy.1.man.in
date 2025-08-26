@@ -1,5 +1,5 @@
 NAME
-lxcu-copy -- Start a linux container.
+lxcu-copy --  Copy a linux container.
 SYNOPSIS
 lxcu-copy {-h|-V}
 lxcu-copy -n SOURCE_CONTAINER -N DESTINATION_CONTAINER
@@ -29,7 +29,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021, 2023 Mark Grant.
+Copyright (C) 2020, 2021, 2023, 2025 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

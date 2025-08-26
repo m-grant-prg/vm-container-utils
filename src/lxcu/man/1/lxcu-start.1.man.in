@@ -1,7 +1,8 @@
 NAME
 lxcu-start -- Start a linux container.
 SYNOPSIS
-lxcu-start {-h|-V|-n CONTAINER_NAME}
+lxcu-start {-h|-V}
+lxcu-start CONTAINER_NAME
 lxcu-start [OPTIONS]
 DESCRIPTION
 This script starts a linux container. If the bridge key / value pair is set in
@@ -10,8 +11,6 @@ will use a config using that bridge. This feature is particularly useful for
 laptops which can have a hard-wired ethernet connection.
 OPTIONS
 -h, --help Display this help information
-
--n, --name 'container name'
 
 -V, --version Print script version information
 EXIT STATUS
@@ -27,7 +26,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021, 2023 Mark Grant.
+Copyright (C) 2020, 2021, 2023, 2025 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

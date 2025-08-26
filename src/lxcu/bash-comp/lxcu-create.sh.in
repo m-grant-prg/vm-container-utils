@@ -74,8 +74,8 @@ _lxcu_create()
 		return 0
 		;;
 	esac
-	OPTS="-d -h -n -r -t -V"
-	OPTS+=" --dist --help --name --rel --type --version"
+	OPTS="-d -h -r -t -V"
+	OPTS+=" --dist --help --rel --type --version"
 	# shellcheck disable=SC2207  # This is _the_ bash completion pattern,
 	# so leave it be.
 	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )

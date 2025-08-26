@@ -54,7 +54,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 # Ensure environment variables are set.
@@ -76,11 +76,10 @@ usage()
 cat << EOF
 Usage is:-
 $(basename "$0") {-h|-V}
-$(basename "$0") -n CONTAINER_NAME CONTAINER_COMMAND
+$(basename "$0") CONTAINER_NAME CONTAINER_COMMAND
 Usage is:-
 $(basename "$0") [options]
 	-h or --help Display this help information
-	-n or --name 'container name'
 	-V or --version Print script version information
 	Optional command to run in the container
 EOF
@@ -145,7 +144,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o hn:V --long help,name:,version"
+	tmp="getopt -o hV --long help,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -158,10 +157,6 @@ proc_CL()
 			usage
 			shift
 			script_exit 0
-			;;
-		-n|--name)
-			name=$2
-			shift 2
 			;;
 		-V|--version)
 			printf "%s Script version %s\n" "$0" $version
@@ -178,9 +173,24 @@ proc_CL()
 		esac
 	done
 
+	if (( $# >= 1 )); then
+		name=$1
+		shift
+	fi
+
 	# Container name must be specified.
 	if [[ -z $name ]]; then
 		output "Container name must be specified." 1
+		std_cmd_err_handler 64
+	fi
+
+	# Container must exist and must be running.
+	if (( ! $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
+		output "Container $name must exist." 1
+		std_cmd_err_handler 64
+	fi
+	if (( $(lxc-ls -1 --stopped --filter="^$name$" | wc -l) )); then
+		output "Container $name must be running." 1
 		std_cmd_err_handler 64
 	fi
 

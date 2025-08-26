@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.3.3				# Script version
+readonly version=1.4.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
@@ -77,12 +77,11 @@ usage()
 cat << EOF
 Usage is:-
 $(basename "$0") {-h|-V}
-$(basename "$0") [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE -n CONTAINER_NAME
+$(basename "$0") [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE CONTAINER_NAME
 Usage is:-
 $(basename "$0") [options]
 	-d or --dist 'distribution-name'
 	-h or --help Display this help information
-	-n or --name 'container name'
 	-r or --rel 'release-name'
 	-t or --type 'type-name' e.g. basic or dev.....
 	-V or --version Print script version information
@@ -253,8 +252,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o d:hn:r:t:V --long dist:,help,name:,rel:"
-	tmp+=",type:,version"
+	tmp="getopt -o d:hr:t:V --long dist:,help,rel:,type:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -271,16 +269,6 @@ proc_CL()
 			usage
 			shift
 			script_exit 0
-			;;
-		-n|--name)
-			# Target container must not exist.
-			if (( $(lxc-ls -1 --filter="^$2$" | wc -l) )); then
-				msg="Target container $2 must not exist."
-				output "$msg" 1
-				std_cmd_err_handler 64
-			fi
-			name=$2
-			shift 2
 			;;
 		-r|--rel)
 			rel=$2
@@ -306,15 +294,24 @@ proc_CL()
 		esac
 	done
 
-	# Script does not accept other arguments.
-	if (( $# > 0 )); then
-		output "Invalid argument." 1
+	# The mandatory and only non-option argument must be the container name
+	if (( $# == 1 )); then
+		name=$1
+	else
+		output "One argument must be specified, the container name." 1
 		std_cmd_err_handler 64
 	fi
 
-	# At least container name and type must be specified.
-	if [[ -z $name || -z $type ]]; then
-		output "At least name and type must be specified." 1
+	# Target container must not exist.
+	if (( $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
+		msg="Target container $name must not exist."
+		output "$msg" 1
+		std_cmd_err_handler 64
+	fi
+
+	# The type must also be specified.
+	if [[ -z $type ]]; then
+		output "The type must be specified." 1
 		std_cmd_err_handler 64
 	fi
 }
@@ -341,10 +338,10 @@ network_config()
 # No return value.
 setup_git()
 {
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- git -- config --system user.email "$gitemail"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- git -- config --system user.name "$gitname"
 	std_cmd_err_handler $?
 }
@@ -371,14 +368,14 @@ create_deb_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
@@ -412,24 +409,24 @@ create_deb()
 
 	# Initially install apt https transport, apt utils, certificates, curl,
 	# gnupg and sudo.
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- apt-get update
+	@bindir@/lxcu-attach "$name" -- apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach "-n $name -vPATH=$PATH:/sbin:/usr/sbin" \
-		-- apt-get -- -y install apt-transport-https apt-utils \
+	@bindir@/lxcu-attach "$name" -- -vPATH=$PATH:/sbin:/usr/sbin \
+		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates curl gnupg sudo
 	std_cmd_err_handler $?
 
 	# Set the locale.
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo sed -- -i -e "s/\# $localelang/$localelang/" \
 			@sysconfdir@/locale.gen
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo locale-gen "$localelang"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo update-locale LANG="$localelang"
 	std_cmd_err_handler $?
 
@@ -466,15 +463,15 @@ create_deb()
 			-maxdepth 1 -type f)
 
 	# Set up my debian keyring
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
+	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo apt-get -- -y -o Dpkg::Options::="--force-confnew" \
 			install mgrant-obs-deb-keyring
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
@@ -492,30 +489,30 @@ create_deb()
 		$(find "$contlocation/$name/rootfs/etc/dosab" -maxdepth 1 \
 			-type f)
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab
+	@bindir@/lxcu-attach "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final fundamental installs.
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
+	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get -- -y install apt
+	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	if [[ $rel == "xenial" ]]; then
-		@bindir@/lxcu-attach -n "$name" -- sudo apt-key update
+		@bindir@/lxcu-attach "$name" -- sudo apt-key update
 		std_cmd_err_handler $?
-		@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
+		@bindir@/lxcu-attach "$name" -- sudo apt-get update
 		std_cmd_err_handler $?
 	fi
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get -- -y install agmaint
+	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo agmaint -- -- -y
+	@bindir@/lxcu-attach "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo apt-key-scripts -- --install \
 		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
 	std_cmd_err_handler $?
 	if [[ $dist == "ubuntu" ]]; then
-		@bindir@/lxcu-attach -n "$name" \
+		@bindir@/lxcu-attach "$name" \
 			-- sudo apt-key-scripts -- --install \
 			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
 		std_cmd_err_handler $?
@@ -540,11 +537,11 @@ create_fedora_type()
 		# 41 and greater use dnf5 & a bug means we cannot use the group
 		# text name, we have to use the id
 		if (( rel >= 41 )); then
-			@bindir@/lxcu-attach -n "$name" -- sudo dnf \
+			@bindir@/lxcu-attach "$name" -- sudo dnf \
 				-- -y group install "development-tools"
 			std_cmd_err_handler $?
 		else
-			@bindir@/lxcu-attach -n "$name" -- sudo dnf \
+			@bindir@/lxcu-attach "$name" -- sudo dnf \
 				-- -y group install "Development Tools"
 			std_cmd_err_handler $?
 		fi
@@ -553,14 +550,14 @@ create_fedora_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
@@ -575,7 +572,7 @@ create_fedora_type()
 # No return value.
 create_fedora()
 {
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
 
 	# Set dnf to keep download only packagfes in the cache.
@@ -584,38 +581,38 @@ create_fedora()
 	std_cmd_err_handler $?
 
 	# Set locale.
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo localectl set-x11-keymap "$localex11keymap"
 	std_cmd_err_handler $?
 
 	# Initial installs.
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo dnf -- -y install 'dnf-command(config-manager)'
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
 	# 41 and greater use dnf5 syntax
 	if (( rel >= 41 )); then
-		@bindir@/lxcu-attach -n "$name" \
+		@bindir@/lxcu-attach "$name" \
 			-- sudo dnf config-manager addrepo -- --from-repofile \
 			https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
 		std_cmd_err_handler $?
 	else
-		@bindir@/lxcu-attach -n "$name" \
+		@bindir@/lxcu-attach "$name" \
 			-- sudo dnf config-manager -- --add-repo \
 			https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
 		std_cmd_err_handler $?
 	fi
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo dnf -- -y install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
@@ -623,13 +620,13 @@ create_fedora()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab
+	@bindir@/lxcu-attach "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y autoremove
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	create_fedora_type basic
@@ -648,7 +645,7 @@ create_opensuse_type()
 {
 	# Install the development tools.
 	if [[ $1 == "dev" ]]; then
-		@bindir@/lxcu-attach -n "$name" \
+		@bindir@/lxcu-attach "$name" \
 			-- sudo zypper -- -n install -t pattern devel_basis
 		std_cmd_err_handler $?
 	fi
@@ -656,14 +653,14 @@ create_opensuse_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
@@ -678,35 +675,35 @@ create_opensuse_type()
 # No return value.
 create_opensuse()
 {
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
 
 	# Set locale.
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- refresh
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- -n update
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo zypper -- -n install glibc-locale
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo localectl set-locale LANG="$localelang"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo localectl set-x11-keymap "$localex11keymap"
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo zypper addrepo https://download.opensuse.org/repositories/home:m-grant-prg/"$rel"/home:m-grant-prg.repo
 	std_cmd_err_handler $?
 
 	# Set up the dosab files.
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- refresh
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- -n update
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" \
+	@bindir@/lxcu-attach "$name" \
 		-- sudo zypper -- -n install server-dependency
 	std_cmd_err_handler $?
 	sudo cp -v "$etclocation/$dist/$rel"/dosab/* \
@@ -714,13 +711,13 @@ create_opensuse()
 	std_cmd_err_handler $?
 	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/dosab"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dosab
+	@bindir@/lxcu-attach "$name" -- sudo dosab
 	std_cmd_err_handler $?
 
 	# Final tidy.
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- refresh
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- -n update
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	create_opensuse_type basic

@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -74,11 +74,11 @@ usage()
 {
 cat << EOF
 Usage is:-
-$(basename "$0") {-h|-V|-n CONTAINER_NAME}
+$(basename "$0") {-h|-V}
+$(basename "$0") CONTAINER_NAME
 Usage is:-
 $(basename "$0") [options]
 	-h or --help Display this help information
-	-n or --name 'container name'
 	-V or --version Print script version information
 EOF
 }
@@ -181,7 +181,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o hn:V --long help,name:,version"
+	tmp="getopt -o hV --long help,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -194,10 +194,6 @@ proc_CL()
 			usage
 			shift
 			script_exit 0
-			;;
-		-n|--name)
-			name=$2
-			shift 2
 			;;
 		-V|--version)
 			printf "%s Script version %s\n" "$0" $version
@@ -214,17 +210,14 @@ proc_CL()
 		esac
 	done
 
-	# Script does not accept other arguments.
-	if (( $# > 0 )); then
-		output "Invalid argument." 1
+	# The mandatory and only non-option argument must be the container name
+	if (( $# == 1 )); then
+		name=$1
+	else
+		output "One argument must be specified, the container name." 1
 		std_cmd_err_handler 64
 	fi
 
-	# Container name must be specified.
-	if [[ -z $name ]]; then
-		output "Container name must be specified." 1
-		std_cmd_err_handler 64
-	fi
 	# Container must exist but must not be running.
 	if (( ! $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
 		output "Container $name must exist." 1
@@ -269,7 +262,7 @@ declare -i max
 
 ((max=30))
 
-until (@bindir@/lxcu-attach -n "$name" \
+until (@bindir@/lxcu-attach "$name" \
 	-- ping -- -c 2 www.google.com &>/dev/null); do
 	err=$?
 	(( count++ ))
@@ -281,7 +274,7 @@ until (@bindir@/lxcu-attach -n "$name" \
 done
 
 # Wait for the server dependency service to complete.
-until ! (@bindir@/lxcu-attach -n "$name" \
+until ! (@bindir@/lxcu-attach "$name" \
 	-- sudo systemctl is-active -- -q server-dependency); do
 	sleep 2
 done

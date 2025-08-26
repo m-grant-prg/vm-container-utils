@@ -2,30 +2,28 @@ NAME
 lxcu-attach -- Attach to a linux container.
 SYNOPSIS
 lxcu-attach {-h|-V}
-lxcu-attach -n CONTAINER_NAME CONTAINER_COMMAND
+lxcu-attach CONTAINER_NAME CONTAINER_COMMAND
 lxcu-attach [OPTIONS]
 DESCRIPTION
 This script is a wrapper for lxc-attach utilising systemd-run in order to
 support unprivileged containers.
 .br
 
-The script must be supplied with --name.
+The script must be supplied with the container name.
 .br
 
 If no further argument is passed, then a simple lxc-attach is performed leaving
 you in the container shell.
 .br
-lxcu-attach -n test1
+lxcu-attach test1
 .br
 
 If a further argument is supplied this is passed to the lxc-attach command
 unmodified and that command is executed in the container.
 .br
-lxcu-attach -n test1 -- sudo apt-get -- -y update
+lxcu-attach test1 -- sudo apt-get -- -y update
 OPTIONS
 -h, --help Display this help information
-
--n, --name 'container name'
 
 -V, --version Print script version information
 EXIT STATUS
@@ -39,7 +37,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2022, 2023 Mark Grant.
+Copyright (C) 2022, 2023, 2025 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br
