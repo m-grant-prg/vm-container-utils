@@ -3,7 +3,7 @@ lxcu-upgrade -- Upgrade an lxc container of a certain type.
 SYNOPSIS
 lxcu-upgrade {-h|-V}
 lxcu-upgrade [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE
-	       -n CONTAINER_NAME
+		CONTAINER_NAME
 lxcu-upgrade [OPTIONS]
 DESCRIPTION
 lxcu-upgrade will upgrade a container of a certain type for a specified
@@ -13,8 +13,6 @@ OPTIONS
 -d, --dist 'distribution-name'
 
 -h, --help Display this help information
-
--n, --name 'container name'
 
 -r, --rel 'release-name'
 
@@ -34,7 +32,7 @@ Written by Mark Grant.
 REPORTING BUGS
 Report bugs to <m.grant.prg@gmail.com>
 COPYRIGHT
-Copyright (C) 2020, 2021, 2023 Mark Grant.
+Copyright (C) 2020, 2021, 2023, 2025 Mark Grant.
 .br
 License GPLv3: GNU GPL version 3 only
 .br

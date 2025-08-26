@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -75,12 +75,11 @@ usage()
 cat << EOF
 Usage is:-
 $(basename "$0") {-h|-V}
-$(basename "$0") [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE -n CONTAINER_NAME
+$(basename "$0") [-d DISTRIBUTION] [-r RELEASE] -t CONTAINER_TYPE CONTAINER_NAME
 Usage is:-
 $(basename "$0") [options]
 	-d or --dist 'distribution-name'
 	-h or --help Display this help information
-	-n or --name 'container name'
 	-r or --rel 'release-name'
 	-t or --type 'type-name' e.g. basic or dev.....
 	-V or --version Print script version information
@@ -182,7 +181,7 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o d:hn:r:t:V --long dist:,help,name:,rel:,type:,version"
+	tmp="getopt -o d:hr:t:V --long dist:,help,rel:,type:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -199,10 +198,6 @@ proc_CL()
 			usage
 			shift
 			script_exit 0
-			;;
-		-n|--name)
-			name=$2
-			shift 2
 			;;
 		-r|--rel)
 			rel=$2
@@ -227,15 +222,27 @@ proc_CL()
 		esac
 	done
 
-	# Script does not accept other arguments.
-	if (( $# > 0 )); then
-		output "Invalid argument." 1
+	# The mandatory and only non-option argument must be the container name
+	if (( $# == 1 )); then
+		name=$1
+	else
+		output "One argument must be specified, the container name." 1
 		std_cmd_err_handler 64
 	fi
 
-	# At least container name and type must be specified.
-	if [[ -z $name || -z $type ]]; then
-		output "At least name and type must be specified." 1
+	# Container must exist but must not be running.
+	if (( ! $(lxc-ls -1 --filter="^$name$" | wc -l) )); then
+		output "Container $name must exist." 1
+		std_cmd_err_handler 64
+	fi
+	if (( $(lxc-ls -1 --running --filter="^$name$" | wc -l) )); then
+		output "Container $name must not be running." 1
+		std_cmd_err_handler 64
+	fi
+
+	# The type must also be specified.
+	if [[ -z $type ]]; then
+		output "The type must be specified." 1
 		std_cmd_err_handler 64
 	fi
 }
@@ -248,14 +255,14 @@ upgrade_deb_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo apt-get -- -yd install
 		std_cmd_err_handler $?
 	fi
@@ -266,13 +273,13 @@ upgrade_deb_type()
 # No return value.
 upgrade_deb()
 {
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get update
+	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo apt-get -- -y dist-upgrade
+	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y dist-upgrade
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo agmaint -- -- -y
+	@bindir@/lxcu-attach "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
 
 	upgrade_deb_type basic
@@ -292,14 +299,14 @@ upgrade_fedora_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo dnf -- -y install --downloadonly
 		std_cmd_err_handler $?
 	fi
@@ -310,12 +317,12 @@ upgrade_fedora_type()
 # No return value.
 upgrade_fedora()
 {
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y update --refresh
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y update --refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo dnf -- -y autoremove
+	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y autoremove
 	std_cmd_err_handler $?
 
 	upgrade_fedora_type basic
@@ -335,14 +342,14 @@ upgrade_opensuse_type()
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/install.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
 	fi
 	if [[ -e $etclocation/$dist/$rel/$1/cache.list ]]; then
 		grep -v '^[[:blank:]]*#' \
 			"$etclocation/$dist/$rel/$1/cache.list" \
-			| xargs @bindir@/lxcu-attach -n "$name" \
+			| xargs @bindir@/lxcu-attach "$name" \
 			-- sudo zypper -- -n install --download-only
 		std_cmd_err_handler $?
 	fi
@@ -353,12 +360,12 @@ upgrade_opensuse_type()
 # No return value.
 upgrade_opensuse()
 {
-	@bindir@/lxcu-start -n "$name"
+	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
 
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- refresh
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- refresh
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach -n "$name" -- sudo zypper -- -n update
+	@bindir@/lxcu-attach "$name" -- sudo zypper -- -n update
 	std_cmd_err_handler $?
 
 	upgrade_opensuse_type basic
