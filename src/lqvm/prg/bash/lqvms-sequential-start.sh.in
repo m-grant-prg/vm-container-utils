@@ -236,7 +236,7 @@ for machine in $machines; do
 		std_cmd_err_handler $?
 		sleep 45
 	done
-	@bindir@/lqvm-start -w -u "$connect_uri" -n "$machine"
+	@bindir@/lqvm-start -w -u "$connect_uri" "$machine"
 	std_cmd_err_handler $?
 	sleep 120
 done

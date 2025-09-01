@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.3				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -83,10 +83,10 @@ usage()
 cat << EOF
 Usage is:-
 $(basename "$0") {-h|-V}
-$(basename "$0") {-a|-r|-t} [-u CONNECTION] -n VM_NAME
-$(basename "$0") -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION] -n VM_NAME
-$(basename "$0") -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
-$(basename "$0") -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
+$(basename "$0") {-a|-r|-t} [-u CONNECTION] VM_NAME
+$(basename "$0") -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION] VM_NAME
+$(basename "$0") -d SNAPSHOT_NAME [-u CONNECTION] VM_NAME
+$(basename "$0") -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] VM_NAME
 Usage is:-
 $(basename "$0") [options]
 	-a or --delete-all Delete all snapshots for this vm
@@ -96,7 +96,6 @@ $(basename "$0") [options]
 	-e or --external Use external snapshots
 	-h or --help Display this help information
 	-i or --internal Use internal snapshots
-	-n or --name The name of the VM to operate on
 	-r or --revert Revert to the state before this snapshot was taken
 	-s or --create-auto-seq Create an automatically named sequential
 				snapshot
@@ -194,8 +193,8 @@ proc_CL()
 	local msg
 	local tmp
 
-	tmp="getopt -o ac:d:D:ehin:rstu:V --long delete-all,create:,delete:"
-	tmp+=",description:,external,help,internal,name:,revert,create-auto-seq"
+	tmp="getopt -o ac:d:D:ehirstu:V --long delete-all,create:,delete:"
+	tmp+=",description:,external,help,internal,revert,create-auto-seq"
 	tmp+=",delete-to-current,connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
@@ -271,10 +270,6 @@ proc_CL()
 			intextset=true
 			shift
 			;;
-		-n|--name)
-			name=$2
-			shift 2
-			;;
 		-r|--revert)
 			if $delete_all || $create || $delete \
 				|| $create_auto_seq \
@@ -330,9 +325,12 @@ proc_CL()
 		esac
 	done
 
-	# Script does not accept other arguments.
-	if (( $# > 0 )); then
-		output "Invalid argument." 1
+	# The mandatory and only non-option argument must be the VM name
+	if (( $# == 1 )); then
+		name=$1
+		shift
+	else
+		output "One argument must be specified, the VM name." 1
 		script_exit 64
 	fi
 
@@ -352,10 +350,6 @@ proc_CL()
 		fi
 	elif ! $external && ! $internal; then
 		output "Either e or i must be set." 1
-		script_exit 64
-	fi
-	if [[ -z $name ]]; then
-		output "Option n must be set." 1
 		script_exit 64
 	fi
 }

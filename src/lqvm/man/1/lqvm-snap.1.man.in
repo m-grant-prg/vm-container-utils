@@ -2,11 +2,11 @@ NAME
 lqvm-snap -- Manage the internal and external snapshots for a VM.
 SYNOPSIS
 lqvm-snap {-h|-V}
-lqvm-snap {-a|-r|-t} [-u CONNECTION] -n VM_NAME
+lqvm-snap {-a|-r|-t} [-u CONNECTION] VM_NAME
 lqvm-snap -c SNAPSHOT_NAME -D SNAPSHOT_DESC {-e|-i} [-u CONNECTION]
-	    -n VM_NAME
-lqvm-snap -d SNAPSHOT_NAME [-u CONNECTION] -n VM_NAME
-lqvm-snap -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] -n VM_NAME
+		VM_NAME
+lqvm-snap -d SNAPSHOT_NAME [-u CONNECTION] VM_NAME
+lqvm-snap -s [-D SNAPSHOT_DESC] {-e|-i} [-u CONNECTION] VM_NAME
 lqvm-snap [OPTIONS]
 DESCRIPTION
 lqvm-snap facilitates the creation, deletion and revertion of internal and
@@ -29,8 +29,6 @@ with the creation options.
 
 -i, --internal  Use internal snapshots. With external, can only / must be used
 with the creation options.
-
--n, --name The name of the VM to operate on.
 
 -r, --revert  Revert to the state before this snapshot was taken. The current
 snapshot is deleted, (ie removed), without affecting the backing store, hence
