@@ -75,30 +75,26 @@ _lqvm_shutdown()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
-	 case $prev in
-	-n|--name)
-		# Order of precedence is:-
-		#	Command line
-		#		Config file
-		#			Default virsh setting
-		uri=$(_lqvm_shutdown_cla_uri)
-		if [[ -z $uri ]]; then
-			uri=$(_lqvm_shutdown_conf_file_uri)
-		fi
-		cmd="virsh"
-		if [[ -n $uri ]]; then
-			cmd+=" -c $uri"
-		fi
-		cmd+=" list --name"
-		OPTS=$( eval "$cmd" )
-		# shellcheck disable=SC2207  # This is _the_ bash completion
-		# pattern, so leave it be.
-		COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
-		return 0
-		;;
-	esac
+
 	OPTS="-h -n -u -V"
 	OPTS+=" --connect-uri --help --name --version"
+	# Add list of VMs
+	# URI order of precedence is:-
+	#	Command line
+	#		Config file
+	#			Default virsh setting
+	uri=$(_lqvm_shutdown_cla_uri)
+	if [[ -z $uri ]]; then
+		uri=$(_lqvm_shutdown_conf_file_uri)
+	fi
+	cmd="virsh"
+	if [[ -n $uri ]]; then
+		cmd+=" -c $uri"
+	fi
+	cmd+=" list --name"
+	OPTS+=" "
+	OPTS+=$( eval "$cmd" )
+
 	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,
 	# so leave it be.
 	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )

@@ -325,7 +325,7 @@ start_vms()
 	local vm
 
 	for vm in $vms; do
-		@bindir@/lqvm-start -w -u "$connect_uri" -n "$vm"
+		@bindir@/lqvm-start -w -u "$connect_uri" "$vm"
 		std_cmd_err_handler $?
 		sleep 90
 	done

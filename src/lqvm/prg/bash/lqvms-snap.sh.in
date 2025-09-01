@@ -272,7 +272,7 @@ std_cmd_err_handler $?
 for machine in $machines; do
 	name=$(echo "$machine" | awk '
 		{ print $2 }')
-	cmd="$cmd_template -n $name"
+	cmd="$cmd_template $name"
 	eval "$cmd"
 	std_cmd_err_handler $?
 done

@@ -54,7 +54,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.1.2				# Script version
+readonly version=1.2.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -72,11 +72,10 @@ usage()
 cat << EOF
 Usage is:-
 $(basename "$0") {-h|-V}
-$(basename "$0") [-u CONNECTION] -n VM_NAME
+$(basename "$0") [-u CONNECTION] VM_NAME
 Usage is:-
 $(basename "$0") [options]
 	-h or --help Display this help information
-	-n or --name The name of the VM to operate on
 	-u or --connect-uri Use the named connection URI
 	-V or --version Print script version information
 EOF
@@ -165,7 +164,7 @@ proc_CL()
 	local GETOPTTEMP
 	local tmp
 
-	tmp="getopt -o hn:u:V --long help,name:,connect-uri:,version"
+	tmp="getopt -o hu:V --long help,connect-uri:,version"
 	GETOPTTEMP=$($tmp -n "$0" -- "$@")
 	std_cmd_err_handler $?
 
@@ -178,10 +177,6 @@ proc_CL()
 			usage
 			shift
 			script_exit 0
-			;;
-		-n|--name)
-			name=$2
-			shift 2
 			;;
 		-u|--connect-uri)
 			connect_uri=$2
@@ -202,14 +197,12 @@ proc_CL()
 		esac
 	done
 
-	# Script does not accept other arguments.
-	if (( $# > 0 )); then
-		output "Invalid argument." 1
-		script_exit 64
-	fi
-
-	if [[ -z $name ]]; then
-		output "Option n must be set." 1
+	# The mandatory and only non-option argument must be the VM name
+	if (( $# == 1 )); then
+		name=$1
+		shift
+	else
+		output "One argument must be specified, the VM name." 1
 		script_exit 64
 	fi
 }
