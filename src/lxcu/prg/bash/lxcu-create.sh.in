@@ -413,7 +413,7 @@ create_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach "$name" -- -vPATH=$PATH:/sbin:/usr/sbin \
+	@bindir@/lxcu-attach "$name" -- -vPATH="$PATH":/sbin:/usr/sbin \
 		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates curl gnupg sudo
 	std_cmd_err_handler $?
