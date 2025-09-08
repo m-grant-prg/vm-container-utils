@@ -1,3 +1,19 @@
+2025-09-08 v1.3.2 Mark Grant <m.grant.prg@gmail.com>
+	* build(deps): bump actions/checkout from 4 to 5
+dependabot[bot] (1):
+
+	lxcu: man: Fix spelling mistake
+	v1.3.2-rc1
+	lqvm: Make VM name the object not an option (-n)
+	lxcu: Fix double quote shellcheck warning
+	lxcu: conf: Make trixie the default release
+	lxcu: Use @bindir@ AOT accidental hard-coding
+	lxcu: Make container name the object not an option (-n)
+	lqvm: Standardise on basename $0 in help texts
+	lxcu: Standardise on basename $0 in help texts
+	Merge pull request #5 from m-grant-prg/dependabot/github_actions/tip/actions/checkout-5
+Mark Grant (10):
+
 2025-07-21 v1.3.1 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: conf: Perform missing conversion from testing to trixie
 Mark Grant (1):
