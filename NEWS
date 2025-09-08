@@ -1,3 +1,7 @@
+Release 1.2.14 2025-09-08
+Make the container name / VM name the object of the command, not an option.
+For technical change information please refer to the ChangeLog.
+
 Release 1.2.13 2025-07-20
 Fix Trixie installation
 For technical change information please refer to the ChangeLog.
