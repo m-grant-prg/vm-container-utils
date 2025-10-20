@@ -211,9 +211,8 @@ proc_CL()
 
 proc_CL "$@"
 
-cmd="systemd-run --quiet --user --scope -p Delegate=yes lxc-attach -n $name"
-cmd+=" $configcli_extra_args"
-
+cmd="systemd-run --quiet --user --scope --property \"Delegate=yes\""
+cmd+=" -- lxc-attach -n $name $configcli_extra_args"
 eval "$cmd"
 std_cmd_err_handler $?
 

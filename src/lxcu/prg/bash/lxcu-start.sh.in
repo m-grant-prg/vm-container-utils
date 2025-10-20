@@ -238,7 +238,8 @@ proc_config_file
 
 proc_CL "$@"
 
-cmd="systemd-run --quiet --user --scope -p \"Delegate=yes\" lxc-start -n $name"
+cmd="systemd-run --quiet --user --scope --property \"Delegate=yes\""
+cmd+=" -- lxc-start -n $name"
 
 if [[ -n $bridge ]]; then
 	# Enable / disable bridge VNI depending on hard-wired ethernet port

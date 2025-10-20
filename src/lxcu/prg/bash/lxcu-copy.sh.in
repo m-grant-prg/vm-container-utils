@@ -267,7 +267,8 @@ proc_config_file
 
 proc_CL "$@"
 
-lxc-copy -n "$fromname" -N "$toname"
+systemd-run --quiet --user --scope --property "Delegate=yes" \
+	-- lxc-copy -n "$fromname" -N "$toname"
 std_cmd_err_handler $?
 
 # Any bridge to provide a config file for?

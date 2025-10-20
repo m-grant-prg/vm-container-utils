@@ -738,7 +738,8 @@ proc_config_file
 
 proc_CL "$@"
 
-lxc-create -t download -n "$name"
+systemd-run --quiet --user --scope --property "Delegate=yes" \
+	-- lxc-create -t download -n "$name"
 std_cmd_err_handler $?
 
 network_config
