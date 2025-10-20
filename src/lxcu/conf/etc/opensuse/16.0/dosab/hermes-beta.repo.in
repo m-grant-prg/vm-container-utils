@@ -1,0 +1,9 @@
+[hermes-beta]
+name=Hermes openSUSE Leap $releasever beta repo
+enabled=1
+autorefresh=1
+baseurl=http://hermes.mgent.home/rpmrepos/opensuse/leap/$releasever/beta
+type=rpm-md
+gpgcheck=1
+gpgkey=http://hermes.mgent.home/rpmrepos/opensuse/leap/$releasever/beta/repodata/repomd.xml.key
+keeppackages=0
