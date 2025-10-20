@@ -1,4 +1,4 @@
-#! @bashlocation@
+! @bashlocation@
 #########################################################################
 #									#
 #	lxcu-create is automatically generated,				#
@@ -497,12 +497,6 @@ create_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
-	if [[ $rel == "xenial" ]]; then
-		@bindir@/lxcu-attach "$name" -- sudo apt-key update
-		std_cmd_err_handler $?
-		@bindir@/lxcu-attach "$name" -- sudo apt-get update
-		std_cmd_err_handler $?
-	fi
 	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo agmaint -- -- -y
@@ -534,17 +528,9 @@ create_fedora_type()
 {
 	# Install the development tools group.
 	if [[ $1 == "dev" ]]; then
-		# 41 and greater use dnf5 & a bug means we cannot use the group
-		# text name, we have to use the id
-		if (( rel >= 41 )); then
-			@bindir@/lxcu-attach "$name" -- sudo dnf \
-				-- -y group install "development-tools"
-			std_cmd_err_handler $?
-		else
-			@bindir@/lxcu-attach "$name" -- sudo dnf \
-				-- -y group install "Development Tools"
-			std_cmd_err_handler $?
-		fi
+		@bindir@/lxcu-attach "$name" -- sudo dnf -- -y \
+			group install "development-tools"
+		std_cmd_err_handler $?
 	fi
 
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
@@ -596,18 +582,10 @@ create_fedora()
 	std_cmd_err_handler $?
 
 	# Add the opeSUSE Build Service repository.
-	# 41 and greater use dnf5 syntax
-	if (( rel >= 41 )); then
-		@bindir@/lxcu-attach "$name" \
-			-- sudo dnf config-manager addrepo -- --from-repofile \
-			https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
-		std_cmd_err_handler $?
-	else
-		@bindir@/lxcu-attach "$name" \
-			-- sudo dnf config-manager -- --add-repo \
-			https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
-		std_cmd_err_handler $?
-	fi
+	@bindir@/lxcu-attach "$name" \
+		-- sudo dnf config-manager addrepo -- --from-repofile \
+		https://download.opensuse.org/repositories/home:m-grant-prg/Fedora_"$rel"/home:m-grant-prg.repo
+	std_cmd_err_handler $?
 
 	# Set up the dosab files.
 	@bindir@/lxcu-attach "$name" -- sudo dnf -- -y update --refresh
