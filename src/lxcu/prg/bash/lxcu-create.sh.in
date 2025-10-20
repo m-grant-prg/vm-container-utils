@@ -465,10 +465,13 @@ create_deb()
 	# Set up my debian keyring
 	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach "$name" \
-		-- sudo apt-get -- -y -o Dpkg::Options::="--force-confnew" \
+	if [[ $dist != "ubuntu" ]]; then
+		@bindir@/lxcu-attach "$name" \
+			-- sudo apt-get -- -y -o \
+			Dpkg::Options::="--force-confnew" \
 			install mgrant-obs-deb-keyring
-	std_cmd_err_handler $?
+		std_cmd_err_handler $?
+	fi
 
 	# Set up the dosab files.
 	@bindir@/lxcu-attach "$name" \
