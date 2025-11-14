@@ -76,9 +76,9 @@ _lqvm_start()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
 
-	OPTS="-c -D -e -h -i -n -u -V -w"
+	OPTS="-c -D -e -h -i -u -V -w"
 	OPTS+=" --connect-uri --create --description --external --help"
-	OPTS+=" --internal --name --version --without"
+	OPTS+=" --internal --version --without"
 
 	# URI order of precedence is:-
 	#	Command line

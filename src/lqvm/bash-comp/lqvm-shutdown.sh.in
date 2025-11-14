@@ -76,8 +76,8 @@ _lqvm_shutdown()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
 
-	OPTS="-h -n -u -V"
-	OPTS+=" --connect-uri --help --name --version"
+	OPTS="-h -u -V"
+	OPTS+=" --connect-uri --help --version"
 	# Add list of VMs
 	# URI order of precedence is:-
 	#	Command line

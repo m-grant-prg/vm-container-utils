@@ -76,10 +76,10 @@ _lqvm_snap()
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	 _init_completion -n : cur
 
-	OPTS="-a -c -d -D -e -h -i -n -r -s -t -u -V"
+	OPTS="-a -c -d -D -e -h -i -r -s -t -u -V"
 	OPTS+=" --connect-uri --create --create-auto-seq --delete --delete-all"
 	OPTS+=" --delete-to-current --description --external --help --internal"
-	OPTS+=" --name --revert --version"
+	OPTS+=" --revert --version"
 
 	# Add list of VMs
 	# URI order of precedence is:-
