@@ -81,7 +81,8 @@ _lqvms_backups()
 		return 0
 		;;
 	esac
-	OPTS="--connect-uri --help --maxconcbackups --script-name --version"
+	OPTS="-b -h -s -u -V"
+	OPTS+=" --connect-uri --help --maxconcbackups --script-name --version"
 	# Order of precedence is:-
 	#	Command line
 	#		Config file
