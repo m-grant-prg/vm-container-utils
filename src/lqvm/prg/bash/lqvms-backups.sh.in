@@ -54,7 +54,7 @@ set -uo pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.1				# Script version
+readonly version=1.2.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -390,7 +390,7 @@ perform_vms_backups()
 
 	for vm in $vms; do
 		ssh -t "${usernames[$count]}@$vm" \
-			"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh \"$script_name\" \"now\""
+			"echo ${passwords[$count]} | sudo -S bash backup-at-scripts-launcher.sh -t \"now\" \"$script_name\""
 		status=$?
 		if (( status )); then
 			output "Backup failed for $vm."$'\n' 1
