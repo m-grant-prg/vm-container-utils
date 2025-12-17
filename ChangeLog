@@ -1,3 +1,30 @@
+2025-12-17 v1.3.3 Mark Grant <m.grant.prg@gmail.com>
+	* build(deps): bump actions/checkout from 5 to 6
+dependabot[bot] (1):
+
+	bash: New format of backup-at-scripts-launcher.sh CL
+	Merge pull request #6 from m-grant-prg/dependabot/github_actions/tip/actions/checkout-6
+	at: Upgrade bootstrap.sh to v1.6.2
+	v1.3.3-rc6
+	lqvm: bash-comp: Remove missed -n --name option
+	lqvm: bash-comp: Add missing short options
+	v1.3.3-rc5
+	lxcu: conf: Add 43
+	lxcu: conf: Remove 41 - EOL
+	v1.3.3-rc4
+	lxcu: conf: Remove iwyu from 16.0
+	at: Upgrade bootstrap.sh to v1.6.1
+	v1.3.3-rc3
+	lxcu: Do not install my debian keyring on Ubuntu
+	v1.3.3-rc2
+	lxcu: Correct typo on hashpling
+	v1.3.3-rc1
+	lxcu: Remove conditionals on EOL releases
+	lxcu: Add 16.0
+	lxcu: Remove EOL 15.5
+	lxcu: Correct and standardise on systemd-run commands
+Mark Grant (21):
+
 2025-09-08 v1.3.2 Mark Grant <m.grant.prg@gmail.com>
 	* build(deps): bump actions/checkout from 4 to 5
 dependabot[bot] (1):
