@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2025  Mark Grant				#
+# Author: Copyright (C) 2020-2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.0				# Script version
+readonly version=1.2.1				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@		# Path to config directory
@@ -375,19 +375,23 @@ process_bridge()
 	if (($(ip link show | grep -c "$ethernet_prefix.*$bridge.*state UP")))
 	then
 		std_cmd_err_handler $?
+		output "Selecting bridge network interface $bridge" 0
 		virsh -c "$connect_uri" domif-setlink "$name" \
 			"$bridge_mac_addr" up
 		std_cmd_err_handler $?
 		if [[ -n $default_mac_addr ]]; then
+			output "De-selecting non-bridge interface." 0
 			virsh -c "$connect_uri" domif-setlink \
 				"$name" "$default_mac_addr" down
 			std_cmd_err_handler $?
 		fi
 	else
+		output "De-selecting bridge network interface $bridge" 0
 		virsh -c "$connect_uri" domif-setlink "$name" \
 			"$bridge_mac_addr" down
 		std_cmd_err_handler $?
 		if [[ -n $default_mac_addr ]]; then
+			output "Selecting non-bridge interface." 0
 			virsh -c "$connect_uri" domif-setlink "$name" \
 				"$default_mac_addr" up
 			std_cmd_err_handler $?
