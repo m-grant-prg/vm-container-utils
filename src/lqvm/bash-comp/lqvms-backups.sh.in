@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 #########################################################################
 #									#
-# Author: Copyright (C) 2025  Mark Grant				#
+# Author: Copyright (C) 2025, 2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -13,7 +13,7 @@
 
 
 # Return the connection URI if it was specified on the command line.
-_lqvm_backups_cla_uri()
+_lqvms_backups_cla_uri()
 {
 	local i temp
 
@@ -45,7 +45,7 @@ _lqvm_backups_cla_uri()
 }
 
 # Return the default connection URI if specified in the config file.
-_lqvm_backups_conf_file_uri()
+_lqvms_backups_conf_file_uri()
 {
 	local etclocation=@sysconfdir@
 	local input=() oldIFS temp
@@ -87,9 +87,9 @@ _lqvms_backups()
 	#	Command line
 	#		Config file
 	#			Default virsh setting
-	uri=$(_lqvm_backups_cla_uri)
+	uri=$(_lqvms_backups_cla_uri)
 	if [[ -z $uri ]]; then
-		uri=$(_lqvm_backups_conf_file_uri)
+		uri=$(_lqvms_backups_conf_file_uri)
 	fi
 	cmd="virsh"
 	if [[ -n $uri ]]; then
