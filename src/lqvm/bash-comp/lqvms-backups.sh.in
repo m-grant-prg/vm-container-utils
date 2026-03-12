@@ -74,6 +74,8 @@ _lqvms_backups()
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	# The connection URI can contain colons. Treat colon as part of word,
+	# not as word break.
 	_init_completion -n : cur
 	case $prev in
 	-s|--script-name)

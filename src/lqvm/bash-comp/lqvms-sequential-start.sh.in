@@ -18,6 +18,8 @@ _lqvms_sequential_start()
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
+	# The connection URI can contain colons. Treat colon as part of word,
+	# not as word break.
 	_init_completion -n : cur
 	OPTS="-h -u -V"
 	OPTS+=" --connect-uri --help --version"
