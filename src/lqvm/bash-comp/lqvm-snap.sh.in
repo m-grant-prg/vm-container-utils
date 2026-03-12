@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 #########################################################################
 #									#
-# Author: Copyright (C) 2025  Mark Grant				#
+# Author: Copyright (C) 2025, 2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -74,7 +74,7 @@ _lqvm_snap()
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
 	prev="${COMP_WORDS[COMP_CWORD-1]}"
-	 _init_completion -n : cur
+	_init_completion -n : cur
 
 	OPTS="-a -c -d -D -e -h -i -r -s -t -u -V"
 	OPTS+=" --connect-uri --create --create-auto-seq --delete --delete-all"

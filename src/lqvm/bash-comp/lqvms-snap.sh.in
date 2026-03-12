@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 #########################################################################
 #									#
-# Author: Copyright (C) 2025  Mark Grant				#
+# Author: Copyright (C) 2025, 2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -18,7 +18,7 @@ _lqvms_snap()
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	 _init_completion -n : cur
+	_init_completion -n : cur
 	OPTS="-a -h -t -u -V"
 	OPTS+=" --connect-uri --delete-all --delete-to-current --help --version"
 	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,
