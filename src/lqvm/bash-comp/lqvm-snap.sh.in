@@ -68,14 +68,25 @@ _lqvm_snap_conf_file_uri()
 
 _lqvm_snap()
 {
-	local cur OPTS
+	local cur prev OPTS
 	local cmd uri
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	# The connection URI can contain colons. Treat colon as part of word,
 	# not as word break.
 	_init_completion -n : cur
+	case $prev in
+	-u|--connect-uri)
+		OPTS="qemu:///session qemu:///system"
+		# shellcheck disable=SC2207  # This is _the_ bash
+		# completion pattern, so leave it be.
+		COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+		__ltrim_colon_completions "$cur"
+		return 0
+		;;
+	esac
 
 	OPTS="-a -c -d -D -e -h -i -r -s -t -u -V"
 	OPTS+=" --connect-uri --create --create-auto-seq --delete --delete-all"
@@ -102,7 +113,6 @@ _lqvm_snap()
 	# shellcheck disable=SC2207  # This is _the_ bash # completion pattern,
 	# so leave it be.
 	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
-	__ltrim_colon_completions "$cur"
 	return 0
 }
 complete -F _lqvm_snap lqvm-snap
