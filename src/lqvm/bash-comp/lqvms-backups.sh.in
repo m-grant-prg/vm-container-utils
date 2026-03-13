@@ -82,6 +82,14 @@ _lqvms_backups()
 		_filedir
 		return 0
 		;;
+	-u|--connect-uri)
+		OPTS="qemu:///session qemu:///system"
+		# shellcheck disable=SC2207  # This is _the_ bash
+		# completion pattern, so leave it be.
+		COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
+		__ltrim_colon_completions "$cur"
+		return 0
+		;;
 	esac
 	OPTS="-b -h -s -u -V"
 	OPTS+=" --connect-uri --help --maxconcbackups --script-name --version"
@@ -103,7 +111,6 @@ _lqvms_backups()
 	# shellcheck disable=SC2207  # This is _the_ bash
 	# completion pattern, so leave it be.
 	COMPREPLY=( $(compgen -W "${OPTS[*]}" -- "$cur") )
-	__ltrim_colon_completions "$cur"
 	return 0
 }
 complete -F _lqvms_backups lqvms-backups
