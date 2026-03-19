@@ -1,3 +1,25 @@
+2026-03-19 v1.3.4 Mark Grant <m.grant.prg@gmail.com>
+	* v1.3.4-rc2
+	lqvm: bash-comp: start: Add qemu system and session suggestions
+	lqvm: bash-comp: s-snap: Add qemu system and session suggestions
+	lqvm: bash-comp: sequential-start: Add qemu system and session suggestions
+	lqvm: bash-comp: snap: Add qemu system and session suggestions
+	lqvm: bash-comp: shutdown: Add qemu system and session suggestions
+	lqvm: bash-comp: Remove unused variable
+	lqvm: bash-comp: backups: Add qemu system and session suggestions
+	lqvm: bash-comp: Add comment about colons in connection URI
+	lqvm: bash-comp: Remove stray space character
+	lqvm: bash-comp: Correct erroneous lqvm to lqvms
+	at: Upgrade bootstrap.sh to v1.7.1
+	at: Remove old signature file before creating a new one
+	v1.3.4-rc1
+	lqvm: Emit network action information on VM start
+	at: Upgrade bootstrap.sh to v1.7.0
+	at: Add sign_tarball target
+	at: Leave source tarball name same as distribution tarball
+	at: Update Copyright for 2026
+Mark Grant (19):
+
 2025-12-17 v1.3.3 Mark Grant <m.grant.prg@gmail.com>
 	* build(deps): bump actions/checkout from 5 to 6
 dependabot[bot] (1):
