@@ -1,0 +1,6 @@
+Types: deb
+URIs: http://hermes.mgent.home/aptrepos/debian
+Suites: @rel@
+Components: stable beta
+Signed-By: @datarootdir@/keyrings/hermes-keyring.pgp
+

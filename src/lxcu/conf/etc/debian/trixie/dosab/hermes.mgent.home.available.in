@@ -7,9 +7,9 @@
 #mount /mnt/hermesshare/share
 
 # Add my APT repository on that server to my apt sources.
-cp /etc/dosab/hermes.list /etc/apt/sources.list.d
+cp /etc/dosab/hermes.sources /etc/apt/sources.list.d
 
 # Official and third-party source lists.
-cp /etc/dosab/obs.list.available /etc/apt/sources.list.d/obs.list
-cp /etc/dosab/sources.list.available /etc/apt/sources.list
+cp /etc/dosab/debian.sources.available /etc/apt/sources.list.d/debian.sources
+cp /etc/dosab/obs.sources.available /etc/apt/sources.list.d/obs.sources
 

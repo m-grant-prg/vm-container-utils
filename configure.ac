@@ -50,7 +50,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2026  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.2.4 $])
+AC_REVISION([$Revision: 1.2.5 $])
 
 AC_PREREQ([2.69])
 
@@ -435,21 +435,15 @@ AC_CONFIG_FILES([Makefile
 		src/lqvm/prg/bash/Makefile
 		src/lxcu/bash-comp/Makefile
 		src/lxcu/conf/etc/Makefile
-		src/lxcu/conf/etc/debian/testing/apt/Makefile
 		src/lxcu/conf/etc/debian/testing/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/debian/testing/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/debian/testing/basic/Makefile
 		src/lxcu/conf/etc/debian/testing/dev/Makefile
 		src/lxcu/conf/etc/debian/testing/dosab/Makefile
-		src/lxcu/conf/etc/debian/trixie/apt/Makefile
 		src/lxcu/conf/etc/debian/trixie/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/debian/trixie/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/debian/trixie/basic/Makefile
 		src/lxcu/conf/etc/debian/trixie/dev/Makefile
 		src/lxcu/conf/etc/debian/trixie/dosab/Makefile
-		src/lxcu/conf/etc/debian/bookworm/apt/Makefile
 		src/lxcu/conf/etc/debian/bookworm/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/debian/bookworm/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/debian/bookworm/basic/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dev/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dosab/Makefile
@@ -465,15 +459,11 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/opensuse/15.6/basic/Makefile
 		src/lxcu/conf/etc/opensuse/15.6/dev/Makefile
 		src/lxcu/conf/etc/opensuse/15.6/dosab/Makefile
-		src/lxcu/conf/etc/ubuntu/noble/apt/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/ubuntu/noble/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/basic/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/dev/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/dosab/Makefile
-		src/lxcu/conf/etc/ubuntu/jammy/apt/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/apt/sources.list.d/Makefile
-		src/lxcu/conf/etc/ubuntu/jammy/apt/trusted.gpg.d/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/basic/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/dev/Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/dosab/Makefile

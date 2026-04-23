@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2023  Mark Grant				#
+# Author: Copyright (C) 2023-2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -13,17 +13,18 @@
 
 confdir = $(sysconfdir)/lxcu/debian/bookworm/apt/sources.list.d
 
-obs.list: Makefile
+debian.sources obs.sources: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-obs.list: $(srcdir)/obs.list.in
+debian.sources: $(srcdir)/debian.sources.in
+obs.sources: $(srcdir)/obs.sources.in
 
-conf_DATA = obs.list
+conf_DATA = debian.sources obs.sources
 
-EXTRA_DIST = $(srcdir)/obs.list.in
+EXTRA_DIST = $(srcdir)/debian.sources.in $(srcdir)/obs.sources.in
 
-CLEANFILES = *.tmp obs.list
+CLEANFILES = *.tmp debian.sources obs.sources
 

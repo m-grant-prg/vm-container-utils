@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2023-2025  Mark Grant				#
+# Author: Copyright (C) 2025, 2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -13,35 +13,40 @@
 
 confdir = $(sysconfdir)/lxcu/debian/trixie/dosab
 
-obs.list.available obs.list.unavailable hermes.list \
-	hermes.mgent.home.available hermes.mgent.home.unavailable server.list \
-	sources.list.available sources.list.unavailable: Makefile
+debian.sources.available debian.sources.unavailable \
+	hermes.mgent.home.available hermes.mgent.home.unavailable \
+	hermes.sources obs.sources.available obs.sources.unavailable \
+	server.list: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-obs.list.available: $(srcdir)/obs.list.available.in
-obs.list.unavailable: $(srcdir)/obs.list.unavailable.in
-hermes.list: $(srcdir)/hermes.list.in
+debian.sources.available: $(srcdir)/debian.sources.available.in
+debian.sources.unavailable: $(srcdir)/debian.sources.unavailable.in
 hermes.mgent.home.available: $(srcdir)/hermes.mgent.home.available.in
 hermes.mgent.home.unavailable: $(srcdir)/hermes.mgent.home.unavailable.in
+hermes.sources: $(srcdir)/hermes.sources.in
+obs.sources.available: $(srcdir)/obs.sources.available.in
+obs.sources.unavailable: $(srcdir)/obs.sources.unavailable.in
 server.list: $(srcdir)/server.list.in
-sources.list.available: $(srcdir)/sources.list.available.in
-sources.list.unavailable: $(srcdir)/sources.list.unavailable.in
 
-conf_DATA = obs.list.available obs.list.unavailable hermes.list \
+conf_DATA = debian.sources.available debian.sources.unavailable \
 	    hermes.mgent.home.available hermes.mgent.home.unavailable \
-	    server.list sources.list.available sources.list.unavailable
+	    hermes.sources obs.sources.available obs.sources.unavailable \
+	    server.list
 
-EXTRA_DIST = $(srcdir)/obs.list.available.in \
-	$(srcdir)/obs.list.unavailable.in $(srcdir)/hermes.list.in \
-	$(srcdir)/hermes.mgent.home.available.in \
-	$(srcdir)/hermes.mgent.home.unavailable.in $(srcdir)/server.list.in \
-	$(srcdir)/sources.list.available.in \
-	$(srcdir)/sources.list.unavailable.in
+EXTRA_DIST = $(srcdir)/debian.sources.available.in \
+	     $(srcdir)/debian.sources.unavailable.in \
+	     $(srcdir)/hermes.mgent.home.available.in \
+	     $(srcdir)/hermes.mgent.home.unavailable.in \
+	     $(srcdir)/hermes.sources.in \
+	     $(srcdir)/obs.sources.available.in \
+	     $(srcdir)/obs.sources.unavailable.in \
+	     $(srcdir)/server.list.in
 
-CLEANFILES = *.tmp obs.list.available obs.list.unavailable hermes.list \
-	hermes.mgent.home.available hermes.mgent.home.unavailable server.list \
-	sources.list.available sources.list.unavailable
+CLEANFILES = *.tmp debian.sources.available debian.sources.unavailable \
+	    hermes.mgent.home.available hermes.mgent.home.unavailable \
+	    hermes.sources obs.sources.available obs.sources.unavailable \
+	    server.list
 

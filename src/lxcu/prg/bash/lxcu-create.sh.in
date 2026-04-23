@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2025  Mark Grant				#
+# Author: Copyright (C) 2020-2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.4.0				# Script version
+readonly version=1.4.1				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
@@ -391,22 +391,6 @@ create_deb_type()
 # No return value.
 create_deb()
 {
-	# Set up the initial apt files, (just sources.list).
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo cp -v $(find "$etclocation/$dist/$rel/apt" -maxdepth 1 -type f) \
-		"$contlocation/$name/rootfs/etc/apt"
-	std_cmd_err_handler $?
-	sudo chown -v 100000:100000 "$contlocation/$name/rootfs/etc/apt"
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
-	std_cmd_err_handler $?
-
 	# Initially install apt https transport, apt utils, certificates, curl,
 	# gnupg and sudo.
 	@bindir@/lxcu-start "$name"
@@ -430,42 +414,72 @@ create_deb()
 		-- sudo update-locale LANG="$localelang"
 	std_cmd_err_handler $?
 
-	# Get the OBS repo key.
+	# Set up the initial apt files
+	# shellcheck disable=SC2046 # Word splitting required.
+	sudo cp -v $(find "$etclocation/$dist/$rel/apt/sources.list.d" \
+		-maxdepth 1 -type f) \
+		"$contlocation/$name/rootfs/etc/apt/sources.list.d"
+	std_cmd_err_handler $?
+	sudo chown -Rv 100000:100000 \
+		"$contlocation/$name/rootfs/etc/apt/sources.list.d"
+	std_cmd_err_handler $?
+	# Remove old-fashioned sources.list
+	sudo rm -v "$contlocation/$name/rootfs/etc/apt/sources.list"
+	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
+	sudo sed -i -e "s|@rel@|$rel|g" \
+		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
+			-maxdepth 1 -type f)
+	std_cmd_err_handler $?
+	# shellcheck disable=SC2046 # Word splitting required.
+	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
+		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
+			-maxdepth 1 -type f)
+
+	# Get the OBS and hermes repo keys
 	if [[ $dist == "debian" ]]; then
-		curl -fsSL "https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key" \
-			| gpg --dearmor \
-			| sudo tee "$contlocation/$name/rootfs/etc/apt/trusted.gpg.d/home_m-grant-prg.gpg" > /dev/null
+		@bindir@/lxcu-attach "$name" \
+			-- sh -- -c "curl -fsSL \
+				https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
+				| gpg --dearmor \
+				| sudo tee @datarootdir@/keyrings/home_m-grant-prg.pgp > /dev/null"
 		std_cmd_err_handler $?
 	fi
+	@bindir@/lxcu-attach "$name" \
+		-- sh -- -c "curl -fsSL \
+			http://hermes.mgent.home/aptrepos/hermes.gpg \
+			| gpg --dearmor \
+			| sudo tee @datarootdir@/keyrings/hermes-keyring.pgp > /dev/null"
+	std_cmd_err_handler $?
 
-	# Set up the other initial apt files.
-	sudo cp -rv "$etclocation/$dist/$rel"/apt/* \
-		"$contlocation/$name/rootfs/etc/apt"
-	std_cmd_err_handler $?
-	sudo chown -Rv 100000:100000 "$contlocation/$name/rootfs/etc/apt"
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt" -maxdepth 1 -type f)
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@rel@|$rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
-			-maxdepth 1 -type f)
-	std_cmd_err_handler $?
-	# shellcheck disable=SC2046 # Word splitting required.
-	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
-		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
-			-maxdepth 1 -type f)
+	# Get the PPA key
+	if [[ $dist == "ubuntu" ]]; then
+		# Initialise direcetories etc
+		@bindir@/lxcu-attach "$name" -- sudo gpg -- --list-keys
+		std_cmd_err_handler $?
+		@bindir@/lxcu-attach "$name" \
+			-- sudo gpg -- --no-default-keyring \
+			--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
+			--keyserver keyserver.ubuntu.com \
+			--recv-keys d1946372ba01d17602a2ccd372ddd80b3669565c \
+			75d5b0010422caa19fd3d40454880941b1bf7415
+		std_cmd_err_handler $?
+
+		@bindir@/lxcu-attach "$name" \
+			-- sudo gpg -- --export --no-default-keyring \
+			--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
+			--output \
+			@datarootdir@/keyrings/mgrant-utils-ppa-keyring.pgp
+		std_cmd_err_handler $?
+		@bindir@/lxcu-attach "$name" \
+			-- sudo rm -- -vf @datarootdir@/keyrings/tmp-keyring.gpg
+		std_cmd_err_handler $?
+	fi
 
 	# Set up my debian keyring
 	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	if [[ $dist != "ubuntu" ]]; then
+	if [[ $dist == "debian" ]]; then
 		@bindir@/lxcu-attach "$name" \
 			-- sudo apt-get -- -y -o \
 			Dpkg::Options::="--force-confnew" \
@@ -504,16 +518,6 @@ create_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
-	@bindir@/lxcu-attach "$name" \
-		-- sudo apt-key-scripts -- --install \
-		/usr/share/agmaint/trusted.sh.d/add-hermes.sh
-	std_cmd_err_handler $?
-	if [[ $dist == "ubuntu" ]]; then
-		@bindir@/lxcu-attach "$name" \
-			-- sudo apt-key-scripts -- --install \
-			/usr/share/agmaint/trusted.sh.d/add-mgrant-utils-ppa.sh
-		std_cmd_err_handler $?
-	fi
 
 	create_deb_type basic
 	if [[ $type != "basic" ]]; then

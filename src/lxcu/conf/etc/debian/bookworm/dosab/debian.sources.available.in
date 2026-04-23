@@ -1,0 +1,12 @@
+Types: deb
+URIs: http://hermes.mgent.home:3142/HTTPS///deb.debian.org/debian
+Suites: @rel@ @rel@-updates @rel@-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: @datarootdir@/keyrings/debian-archive-keyring.gpg
+
+Types: deb
+URIs: http://hermes.mgent.home:3142/HTTPS///security.debian.org/debian-security
+Suites: @rel@-security
+Components: main contrib non-free non-free-firmware
+Signed-By: @datarootdir@/keyrings/debian-archive-keyring.gpg
+

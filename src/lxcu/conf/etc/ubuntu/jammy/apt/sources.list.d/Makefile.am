@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2022, 2023  Mark Grant				#
+# Author: Copyright (C) 2022, 2023, 2026  Mark Grant			#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -13,17 +13,18 @@
 
 confdir = $(sysconfdir)/lxcu/ubuntu/jammy/apt/sources.list.d
 
-launchpad.list: Makefile
+launchpad.sources ubuntu.sources: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-launchpad.list: $(srcdir)/launchpad.list.in
+launchpad.sources: $(srcdir)/launchpad.sources.in
+ubuntu.sources: $(srcdir)/ubuntu.sources.in
 
-conf_DATA = launchpad.list
+conf_DATA = launchpad.sources ubuntu.sources
 
-EXTRA_DIST = $(srcdir)/launchpad.list.in
+EXTRA_DIST = $(srcdir)/launchpad.sources.in $(srcdir)/ubuntu.sources.in
 
-CLEANFILES = *.tmp launchpad.list
+CLEANFILES = *.tmp launchpad.sources ubuntu.sources
 

@@ -1,6 +1,6 @@
 #########################################################################
 #									#
-# Author: Copyright (C) 2022, 2023  Mark Grant				#
+# Author: Copyright (C) 2022, 2023, 2026  Mark Grant			#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -13,37 +13,39 @@
 
 confdir = $(sysconfdir)/lxcu/ubuntu/jammy/dosab
 
-hermes.list hermes.mgent.home.available hermes.mgent.home.unavailable \
-	launchpad.list.available launchpad.list.unavailable server.list \
-	sources.list.available sources.list.unavailable: Makefile
+hermes.sources hermes.mgent.home.available hermes.mgent.home.unavailable \
+	launchpad.sources.available launchpad.sources.unavailable server.list \
+	ubuntu.sources.available ubuntu.sources.unavailable: Makefile
 	mkdir -p $(@D)
 	rm -f $@ $@.tmp
 	test -f ./$@.in || srcdir=$(srcdir)/; \
 	$(edit) $${srcdir}$(@F).in > $@.tmp
 	mv $@.tmp $@
-hermes.list: $(srcdir)/hermes.list.in
+hermes.sources: $(srcdir)/hermes.sources.in
 hermes.mgent.home.available: $(srcdir)/hermes.mgent.home.available.in
 hermes.mgent.home.unavailable: $(srcdir)/hermes.mgent.home.unavailable.in
-launchpad.list.available: $(srcdir)/launchpad.list.available.in
-launchpad.list.unavailable: $(srcdir)/launchpad.list.unavailable.in
+launchpad.sources.available: $(srcdir)/launchpad.sources.available.in
+launchpad.sources.unavailable: $(srcdir)/launchpad.sources.unavailable.in
 server.list: $(srcdir)/server.list.in
-sources.list.available: $(srcdir)/sources.list.available.in
-sources.list.unavailable: $(srcdir)/sources.list.unavailable.in
+ubuntu.sources.available: $(srcdir)/ubuntu.sources.available.in
+ubuntu.sources.unavailable: $(srcdir)/ubuntu.sources.unavailable.in
 
-conf_DATA = hermes.list hermes.mgent.home.available \
-	hermes.mgent.home.unavailable launchpad.list.available \
-	launchpad.list.unavailable server.list sources.list.available \
-	sources.list.unavailable
+conf_DATA = hermes.sources hermes.mgent.home.available \
+	    hermes.mgent.home.unavailable launchpad.sources.available \
+	    launchpad.sources.unavailable server.list ubuntu.sources.available \
+	    ubuntu.sources.unavailable
 
-EXTRA_DIST = $(srcdir)/hermes.list.in $(srcdir)/hermes.mgent.home.available.in \
-	$(srcdir)/hermes.mgent.home.unavailable.in \
-	$(srcdir)/launchpad.list.available.in \
-	$(srcdir)/launchpad.list.unavailable.in $(srcdir)/server.list.in \
-	$(srcdir)/sources.list.available.in \
-	$(srcdir)/sources.list.unavailable.in
+EXTRA_DIST = $(srcdir)/hermes.sources.in \
+	     $(srcdir)/hermes.mgent.home.available.in \
+	     $(srcdir)/hermes.mgent.home.unavailable.in \
+	     $(srcdir)/launchpad.sources.available.in \
+	     $(srcdir)/launchpad.sources.unavailable.in \
+	     $(srcdir)/server.list.in \
+	     $(srcdir)/ubuntu.sources.available.in \
+	     $(srcdir)/ubuntu.sources.unavailable.in
 
-CLEANFILES = *.tmp hermes.list hermes.mgent.home.available \
-	hermes.mgent.home.unavailable launchpad.list.available \
-	launchpad.list.unavailable server.list sources.list.available \
-	sources.list.unavailable
+CLEANFILES = *.tmp hermes.sources hermes.mgent.home.available \
+	     hermes.mgent.home.unavailable launchpad.sources.available \
+	     launchpad.sources.unavailable server.list \
+	     ubuntu.sources.available ubuntu.sources.unavailable
 
