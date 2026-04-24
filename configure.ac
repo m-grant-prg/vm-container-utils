@@ -459,6 +459,10 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/opensuse/15.6/basic/Makefile
 		src/lxcu/conf/etc/opensuse/15.6/dev/Makefile
 		src/lxcu/conf/etc/opensuse/15.6/dosab/Makefile
+		src/lxcu/conf/etc/ubuntu/resolute/apt/sources.list.d/Makefile
+		src/lxcu/conf/etc/ubuntu/resolute/basic/Makefile
+		src/lxcu/conf/etc/ubuntu/resolute/dev/Makefile
+		src/lxcu/conf/etc/ubuntu/resolute/dosab/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/apt/sources.list.d/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/basic/Makefile
 		src/lxcu/conf/etc/ubuntu/noble/dev/Makefile

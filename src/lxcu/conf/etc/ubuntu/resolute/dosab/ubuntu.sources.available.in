@@ -1,0 +1,12 @@
+Types: deb
+URIs: http://hermes.mgent.home:3142/archive.ubuntu.com/ubuntu/
+Suites: @rel@ @rel@-updates
+Components: main restricted universe multiverse
+Signed-By: @datarootdir@/keyrings/ubuntu-archive-keyring.gpg
+
+Types: deb
+URIs: http://hermes.mgent.home:3142/security.ubuntu.com/ubuntu/
+Suites: @rel@-security
+Components: main restricted universe multiverse
+Signed-By: @datarootdir@/keyrings/ubuntu-archive-keyring.gpg
+

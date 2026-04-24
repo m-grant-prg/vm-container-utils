@@ -1,0 +1,6 @@
+Types: deb
+URIs: http://hermes.mgent.home:3142/HTTPS///ppa.launchpadcontent.net/m-grant-prg/utils/ubuntu
+Suites: @rel@
+Components: main
+Signed-By: @datarootdir@/keyrings/mgrant-utils-ppa-keyring.pgp
+
