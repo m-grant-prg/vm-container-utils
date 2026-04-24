@@ -53,7 +53,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.4.1				# Script version
+readonly version=1.5.0				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to lxcu config directory
@@ -363,7 +363,7 @@ copy_common_files_from_host()
 # Create the specified type of APT container.
 # Parameters - $1 is the type to create.
 # No return value.
-create_deb_type()
+create_deb_ubu_type()
 {
 	if [[ -e $etclocation/$dist/$rel/$1/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
@@ -386,13 +386,12 @@ create_deb_type()
 
 }
 
-# Create an APT container.
+# Initially install apt https transport, apt utils, certificates, curl,
+# gnupg and sudo.
 # No parameters.
 # No return value.
-create_deb()
+deb_ubu_initial_pkg_installs()
 {
-	# Initially install apt https transport, apt utils, certificates, curl,
-	# gnupg and sudo.
 	@bindir@/lxcu-start "$name"
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- apt-get update
@@ -401,8 +400,13 @@ create_deb()
 		apt-get -- -y install apt-transport-https apt-utils \
 		ca-certificates curl gnupg sudo
 	std_cmd_err_handler $?
+}
 
-	# Set the locale.
+# Set the locale.
+# No parameters.
+# No return value.
+deb_ubu_set_locale()
+{
 	@bindir@/lxcu-attach "$name" \
 		-- sudo sed -- -i -e "s/\# $localelang/$localelang/" \
 			@sysconfdir@/locale.gen
@@ -413,8 +417,13 @@ create_deb()
 	@bindir@/lxcu-attach "$name" \
 		-- sudo update-locale LANG="$localelang"
 	std_cmd_err_handler $?
+}
 
-	# Set up the initial apt files
+# Set up the initial apt files
+# No parameters.
+# No return value.
+deb_ubu_initial_apt_setup()
+{
 	# shellcheck disable=SC2046 # Word splitting required.
 	sudo cp -v $(find "$etclocation/$dist/$rel/apt/sources.list.d" \
 		-maxdepth 1 -type f) \
@@ -435,59 +444,84 @@ create_deb()
 	sudo sed -i -e "s|@obs_rel@|$obs_rel|g" \
 		$(find "$contlocation/$name/rootfs/etc/apt/sources.list.d" \
 			-maxdepth 1 -type f)
+}
 
-	# Get the OBS and hermes repo keys
-	if [[ $dist == "debian" ]]; then
-		@bindir@/lxcu-attach "$name" \
-			-- sh -- -c "curl -fsSL \
-				https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
-				| gpg --dearmor \
-				| sudo tee @datarootdir@/keyrings/home_m-grant-prg.pgp > /dev/null"
-		std_cmd_err_handler $?
-	fi
+# Retrieve keys valid for debian and ubuntu
+# No parameters.
+# No return value.
+deb_ubu_retrieve_keys()
+{
 	@bindir@/lxcu-attach "$name" \
 		-- sh -- -c "curl -fsSL \
 			http://hermes.mgent.home/aptrepos/hermes.gpg \
 			| gpg --dearmor \
-			| sudo tee @datarootdir@/keyrings/hermes-keyring.pgp > /dev/null"
+			| sudo tee @datarootdir@/keyrings/hermes-keyring.pgp \
+			> /dev/null"
 	std_cmd_err_handler $?
+}
 
-	# Get the PPA key
-	if [[ $dist == "ubuntu" ]]; then
-		# Initialise direcetories etc
-		@bindir@/lxcu-attach "$name" -- sudo gpg -- --list-keys
+# Retrieve debian only keys
+# No parameters.
+# No return value.
+deb_retrieve_keys()
+{
+	@bindir@/lxcu-attach "$name" \
+		-- sh -- -c "curl -fsSL \
+		https://download.opensuse.org/repositories/home:m-grant-prg/Debian_$obs_rel/Release.key \
+		| gpg --dearmor \
+		| sudo tee @datarootdir@/keyrings/home_m-grant-prg.pgp \
+		> /dev/null"
 		std_cmd_err_handler $?
-		@bindir@/lxcu-attach "$name" \
-			-- sudo gpg -- --no-default-keyring \
-			--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
-			--keyserver keyserver.ubuntu.com \
-			--recv-keys d1946372ba01d17602a2ccd372ddd80b3669565c \
-			75d5b0010422caa19fd3d40454880941b1bf7415
-		std_cmd_err_handler $?
-
-		@bindir@/lxcu-attach "$name" \
-			-- sudo gpg -- --export --no-default-keyring \
-			--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
-			--output \
-			@datarootdir@/keyrings/mgrant-utils-ppa-keyring.pgp
-		std_cmd_err_handler $?
-		@bindir@/lxcu-attach "$name" \
-			-- sudo rm -- -vf @datarootdir@/keyrings/tmp-keyring.gpg
-		std_cmd_err_handler $?
-	fi
-
-	# Set up my debian keyring
 	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
-	if [[ $dist == "debian" ]]; then
-		@bindir@/lxcu-attach "$name" \
-			-- sudo apt-get -- -y -o \
-			Dpkg::Options::="--force-confnew" \
-			install mgrant-obs-deb-keyring
-		std_cmd_err_handler $?
-	fi
+}
 
-	# Set up the dosab files.
+# Retrieve ubuntu only keys
+# No parameters.
+# No return value.
+ubu-retrieve_keys()
+{
+	# Get the PPA key
+	# Initialise directories etc
+	@bindir@/lxcu-attach "$name" -- sudo gpg -- --list-keys
+	std_cmd_err_handler $?
+	@bindir@/lxcu-attach "$name" \
+		-- sudo gpg -- --no-default-keyring \
+		--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
+		--keyserver keyserver.ubuntu.com \
+		--recv-keys d1946372ba01d17602a2ccd372ddd80b3669565c \
+		75d5b0010422caa19fd3d40454880941b1bf7415
+	std_cmd_err_handler $?
+
+	@bindir@/lxcu-attach "$name" \
+		-- sudo gpg -- --export --no-default-keyring \
+		--keyring @datarootdir@/keyrings/tmp-keyring.gpg \
+		--output @datarootdir@/keyrings/mgrant-utils-ppa-keyring.pgp
+	std_cmd_err_handler $?
+	@bindir@/lxcu-attach "$name" \
+		-- sudo rm -- -vf @datarootdir@/keyrings/tmp-keyring.gpg
+	std_cmd_err_handler $?
+	@bindir@/lxcu-attach "$name" -- sudo apt-get update
+	std_cmd_err_handler $?
+}
+
+# Set up my OBS debian keyring
+# No parameters.
+# No return value.
+deb_install_obs_keyring()
+{
+	@bindir@/lxcu-attach "$name" \
+		-- sudo apt-get -- -y -o \
+		Dpkg::Options::="--force-confnew" \
+		install mgrant-obs-deb-keyring
+	std_cmd_err_handler $?
+}
+
+# Set up the dosab files.
+# No parameters.
+# No return value.
+deb_ubu_dosab_setup()
+{
 	@bindir@/lxcu-attach "$name" \
 		-- sudo apt-get -- -y install server-dependency
 	std_cmd_err_handler $?
@@ -508,20 +542,43 @@ create_deb()
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo dosab
 	std_cmd_err_handler $?
-
-	# Final fundamental installs.
 	@bindir@/lxcu-attach "$name" -- sudo apt-get update
 	std_cmd_err_handler $?
+}
+
+# Final fundamental installs.
+# No parameters.
+# No return value.
+deb_ubu_final_set_installs()
+{
 	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install apt
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo apt-get -- -y install agmaint
 	std_cmd_err_handler $?
 	@bindir@/lxcu-attach "$name" -- sudo agmaint -- -- -y
 	std_cmd_err_handler $?
+}
 
-	create_deb_type basic
+# Create an Debian / Ubuntu container.
+# No parameters.
+# No return value.
+create_deb_ubu()
+{
+	deb_ubu_initial_pkg_installs
+	deb_ubu_set_locale
+	deb_ubu_initial_apt_setup
+	deb_ubu_retrieve_keys
+	if [[ $dist == "debian" ]]; then
+		deb_retrieve_keys
+		deb_install_obs_keyring
+	else
+		ubu-retrieve_keys
+	fi
+	deb_ubu_dosab_setup
+	deb_ubu_final_set_installs
+	create_deb_ubu_type basic
 	if [[ $type != "basic" ]]; then
-		create_deb_type "$type"
+		create_deb_ubu_type "$type"
 	fi
 
 	lxc-stop -n "$name"
@@ -733,7 +790,7 @@ copy_common_files_from_host
 
 case $dist in
 debian)
-	create_deb
+	create_deb_ubu
 	;;
 fedora)
 	create_fedora
@@ -742,7 +799,7 @@ opensuse)
 	create_opensuse
 	;;
 ubuntu)
-	create_deb
+	create_deb_ubu
 	;;
 *)
 	output "Unknown distribution." 1
