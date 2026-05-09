@@ -50,7 +50,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2026  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.2.5 $])
+AC_REVISION([$Revision: 1.2.6 $])
 
 AC_PREREQ([2.69])
 
@@ -447,6 +447,9 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/debian/bookworm/basic/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dev/Makefile
 		src/lxcu/conf/etc/debian/bookworm/dosab/Makefile
+		src/lxcu/conf/etc/fedora/44/basic/Makefile
+		src/lxcu/conf/etc/fedora/44/dev/Makefile
+		src/lxcu/conf/etc/fedora/44/dosab/Makefile
 		src/lxcu/conf/etc/fedora/43/basic/Makefile
 		src/lxcu/conf/etc/fedora/43/dev/Makefile
 		src/lxcu/conf/etc/fedora/43/dosab/Makefile

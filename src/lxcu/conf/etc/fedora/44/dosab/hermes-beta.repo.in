@@ -1,0 +1,10 @@
+[hermes-beta]
+name=Hermes beta (Fedora_$releasever)
+baseurl=http://hermes.mgent.home/rpmrepos/fedora/$releasever/beta
+enabled=1
+metadata_expire=7d
+repo_gpgcheck=0
+type=rpm
+gpgcheck=1
+gpgkey=http://hermes.mgent.home/rpmrepos/hermes.gpg
+skip_if_unavailable=False
