@@ -1,3 +1,13 @@
+2026-05-10 v1.3.5 Mark Grant <m.grant.prg@gmail.com>
+	* v1.3.5-rc2
+	lxcu: Add 44
+	v1.3.5-rc1
+	lxcu: Add resolute
+	lxcu: Refactor Debian / Ubuntu in create
+	lxcu: Use DEB822 format sources and retrieve keys
+	at: Add distro info for Installation Directories
+Mark Grant (7):
+
 2026-03-19 v1.3.4 Mark Grant <m.grant.prg@gmail.com>
 	* v1.3.4-rc2
 	lqvm: bash-comp: start: Add qemu system and session suggestions
