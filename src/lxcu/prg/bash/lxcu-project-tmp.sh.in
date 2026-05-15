@@ -377,7 +377,8 @@ esac
 	"home/$USER/$project/" build/
 std_cmd_err_handler $?
 @bindir@/lxc-attach "$project" \
-	-- /bin/bash -c 'HOME=/build/atbuild && cd $HOME && exec /bin/bash'
+	-- @bindir@/bash -c \
+	'HOME=/build/atbuild && cd $HOME && exec @bindir@/bash'
 std_cmd_err_handler $?
 
 # And exit.
