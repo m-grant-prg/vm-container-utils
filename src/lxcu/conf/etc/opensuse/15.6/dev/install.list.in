@@ -5,6 +5,7 @@
 #	Your own packages, to avoid circular dependencies (chicken and egg).
 # It should contain things like clang, git etc, if required.
 
+rsync
 at-spi2-atk-gtk2
 autoconf autoconf-archive automake
 libtool pkg-config
