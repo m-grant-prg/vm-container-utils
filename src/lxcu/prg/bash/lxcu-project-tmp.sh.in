@@ -376,7 +376,8 @@ esac
 @bindir@/lxcu-attach "$project" -- rsync -- -rlptDvh \
 	"home/$USER/$project/" build/
 std_cmd_err_handler $?
-@bindir@/lxcu-attach "$project" -- -vHOME=/build/atbuild
+@bindir@/lxc-attach "$project" \
+	-- /bin/bash -- -c 'HOME=/build/atbuild && cd "$HOME" && exec /bin/bash'
 std_cmd_err_handler $?
 
 # And exit.
