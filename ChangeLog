@@ -1,3 +1,15 @@
+2026-05-19 v1.3.6 Mark Grant <m.grant.prg@gmail.com>
+	* lxcu: at: conf: Remove 15.6 - EOL
+	v1.3.6-rc3
+	lxcu: project-tmp: Use @bindir@ AOT /bin
+	lxcu: project-tmp: Remove incorrect --
+	v1.3.6-rc2
+	lxcu: project-tmp: Leave user in /build/atbuild
+	lxcu: project-tmp: Use rsync for project file copy
+	v1.3.6-rc1
+	lxcu: at: conf: Remove 42
+Mark Grant (9):
+
 2026-05-10 v1.3.5 Mark Grant <m.grant.prg@gmail.com>
 	* v1.3.5-rc2
 	lxcu: Add 44
