@@ -1,6 +1,0 @@
-# If the server is avalable perform all the following commands.
-
-# Add my RPM repository on that server.
-cp /etc/dosab/hermes-stable.repo /etc/zypp/repos.d
-cp /etc/dosab/hermes-beta.repo /etc/zypp/repos.d
-
