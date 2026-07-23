@@ -1,3 +1,12 @@
+2026-07-23 v1.3.7 Mark Grant <m.grant.prg@gmail.com>
+	* build(deps): bump actions/checkout from 6 to 7
+dependabot[bot] (1):
+
+	lxcu: Remove bookworm EOL
+	Merge pull request #9 from m-grant-prg/dependabot/github_actions/tip/actions/checkout-7
+	at: Upgrade bootstrap.sh to v1.7.2
+Mark Grant (3):
+
 2026-05-19 v1.3.6 Mark Grant <m.grant.prg@gmail.com>
 	* lxcu: at: conf: Remove 15.6 - EOL
 	v1.3.6-rc3
