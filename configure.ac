@@ -50,7 +50,7 @@ AC_COPYRIGHT([Copyright (C) 2020-2026  Mark Grant
 	      This script is free to copy or distribute under the terms set out
 	      in the package license. See COPYING for details.])
 
-AC_REVISION([$Revision: 1.2.8 $])
+AC_REVISION([$Revision: 1.2.9 $])
 
 AC_PREREQ([2.69])
 
@@ -380,6 +380,8 @@ AC_MSG_NOTICE(processing additional checks and variables)
 #
 AC_SUBST([edit], ["$AWK \
 		'{ \
+		gsub(/@topsrcdir[@]/,"'"$(top_srcdir)"'"); \
+		gsub(/@topbuilddir[@]/,"'"$(top_builddir)"'"); \
 		gsub(/@bashlocation[@]/,"'"$(BASH)"'"); \
 		gsub(/@pkgversion[@]/,"'"$(pkgversion)"'"); \
 		gsub(/@prefix[@]/,"'"$(prefix)"'"); \
@@ -466,7 +468,9 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/conf/etc/ubuntu/jammy/dosab/Makefile
 		src/lxcu/man/1/Makefile
 		src/lxcu/man/5/Makefile
-		src/lxcu/prg/bash/Makefile])
+		src/lxcu/prg/bash/Makefile
+		src/tests/shellcheck/Makefile
+		src/tests/run-tests/Makefile])
 
 AC_OUTPUT
 

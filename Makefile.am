@@ -55,6 +55,8 @@ SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/dev
 SUBDIRS += src/lxcu/conf/etc/ubuntu/jammy/dosab
 SUBDIRS += src/lxcu/man/1 src/lxcu/man/5
 SUBDIRS += src/lxcu/prg/bash
+SUBDIRS += src/tests/shellcheck
+SUBDIRS += src/tests/run-tests
 
 
 doc_DATA = AUTHORS ChangeLog COPYING NEWS README
