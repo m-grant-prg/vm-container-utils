@@ -1,7 +1,7 @@
 # shellcheck shell=bash
 #########################################################################
 #									#
-# Author: Copyright (C) 2025  Mark Grant				#
+# Author: Copyright (C) 2025, 2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -14,11 +14,10 @@
 
 _lxcu_attach()
 {
-	local cur prev OPTS
+	local cur OPTS
 
 	COMPREPLY=()
 	cur="${COMP_WORDS[COMP_CWORD]}"
-	prev="${COMP_WORDS[COMP_CWORD-1]}"
 	OPTS="-h -V"
 	OPTS+=" --help --version"
 	OPTS+=" $(lxc-ls --running)"
