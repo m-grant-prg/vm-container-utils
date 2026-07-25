@@ -8,7 +8,7 @@
 
 #########################################################################
 #									#
-# Author: Copyright (C) 2020-2025  Mark Grant				#
+# Author: Copyright (C) 2020-2026  Mark Grant				#
 #									#
 # Released under the GPLv3 only.					#
 # SPDX-License-Identifier: GPL-3.0-only					#
@@ -196,8 +196,8 @@ proc_CL()
 			script_exit 0
 			;;
 		-V|--version)
-			printf "%s Script version %s\n" "$0" $version
-			printf "%s Package version %s\n" "$0" $packageversion
+			printf "%s Script version %s\n" "$0" "$version"
+			printf "%s Package version %s\n" "$0" "$packageversion"
 			shift
 			script_exit 0
 			;;
@@ -269,7 +269,7 @@ until (@bindir@/lxcu-attach "$name" \
 	(( count++ ))
 	if (( count == max )); then
 		output "Networking not functioning." 1
-		std_cmd_err_handler $err
+		std_cmd_err_handler "$err"
 	fi
 	sleep 2
 done
