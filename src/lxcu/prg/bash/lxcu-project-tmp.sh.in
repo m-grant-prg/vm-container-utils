@@ -377,6 +377,10 @@ esac
 @bindir@/lxcu-attach "$project" -- rsync -- -rlptDvh \
 	"home/$USER/$project/" build/
 std_cmd_err_handler $?
+
+# The HOME= part must not be evaluated immediately, only after the attach hence
+# single quote AOT double quotes.
+# shellcheck disable=SC2016
 @bindir@/lxc-attach "$project" \
 	-- @bindir@/bash -c \
 	'HOME=/build/atbuild && cd $HOME && exec @bindir@/bash'
