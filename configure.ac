@@ -380,8 +380,8 @@ AC_MSG_NOTICE(processing additional checks and variables)
 #
 AC_SUBST([edit], ["$AWK \
 		'{ \
-		gsub(/@topsrcdir[@]/,"'"$(top_srcdir)"'"); \
-		gsub(/@topbuilddir[@]/,"'"$(top_builddir)"'"); \
+		gsub(/@abstopsrcdir[@]/,"'"$(abs_top_srcdir)"'"); \
+		gsub(/@abstopbuilddir[@]/,"'"$(abs_top_builddir)"'"); \
 		gsub(/@bashlocation[@]/,"'"$(BASH)"'"); \
 		gsub(/@pkgversion[@]/,"'"$(pkgversion)"'"); \
 		gsub(/@prefix[@]/,"'"$(prefix)"'"); \
