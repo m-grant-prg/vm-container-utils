@@ -211,6 +211,11 @@ if test "x$BASH" = "xno" ; then
 	AC_MSG_ERROR(bash not found)
 fi
 
+AC_PATH_PROG([ENV], [env], [no])
+if test "x$ENV" = "xno" ; then
+	AC_MSG_ERROR([env not found])
+fi
+
 AC_CHECK_PROG(TAR, tar, yes, no)
 if test "x$TAR" = "xno" ; then
 	AC_MSG_ERROR(tar not found)
@@ -388,6 +393,7 @@ AC_SUBST([edit], ["$AWK \
 		gsub(/@abstopsrcdir[@]/,"'"$(abs_top_srcdir)"'"); \
 		gsub(/@abstopbuilddir[@]/,"'"$(abs_top_builddir)"'"); \
 		gsub(/@bashlocation[@]/,"'"$(BASH)"'"); \
+		gsub(/@envlocation[@]/,"'"$(ENV)"'"); \
 		gsub(/@pkgversion[@]/,"'"$(pkgversion)"'"); \
 		gsub(/@prefix[@]/,"'"$(prefix)"'"); \
 		gsub(/@exec_prefix[@]/,"'"$(exec_prefix)"'"); \

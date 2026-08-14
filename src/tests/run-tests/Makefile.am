@@ -11,5 +11,6 @@
 #########################################################################
 
 
-TESTS = ../shellcheck/run-shellcheck.sh
+TESTS = ../shellcheck/run-dot-sh-dot-in-pattern.sh
+TESTS += ../shellcheck/shellcheck-inline-dot-sh.sh
 

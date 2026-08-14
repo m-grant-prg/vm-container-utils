@@ -1,8 +1,8 @@
-#! @bashlocation@
+#! @envlocation@ bash
 #########################################################################
 #									#
-#	run-shellcheck.sh is automatically generated,			#
-#		please do not modify!					#
+#	script shellcheck-dot-xx-dot-in-pattern.sh is automatically	#
+#	generated, please do not modify!				#
 #									#
 #########################################################################
 
@@ -15,11 +15,10 @@
 #									#
 # Purpose:								#
 # Script which runs shellcheck on:-					#
-#		foo or foo.sh in the build tree which has been		#
-#			generated from foo.sh.in in the source tree.	#
-#		bar.sh in the source tree.				#
+#		foo or foo.$1 in the build tree which has been		#
+#			generated from foo.$1.in in the source tree.	#
 #									#
-# Syntax:	run-shellcheck.sh					#
+# Syntax:	shellcheck-dot-xx-dot-in-pattern.sh sh			#
 #									#
 # Exit codes used:-							#
 # Bash standard Exit Codes:	0 - success				#
@@ -59,9 +58,11 @@ cd "$(dirname "$0")"
 # Init variables #
 ##################
 # shellcheck disable=SC2034		# Unused variable left, possibly useful
-readonly version=1.0.0			# set version variable
+readonly version=1.0.1			# set version variable
 # shellcheck disable=SC2034		# Unused variable left, possibly useful
 readonly packageversion=@pkgversion@	# Version of the complete package
+
+readonly base_ext="$1"			# sh or at etc
 
 
 #############
@@ -114,38 +115,31 @@ trap trap_exit SIGHUP SIGINT SIGQUIT SIGTERM
 # Main #
 ########
 
-# For each file like path/to/foo.sh.in in the source tree, look in the build
+# For each file like path/to/foo.$1.in in the source tree, look in the build
 # tree for:-
 #	buildrootdir/path/to/foo (basename match, no extension)
 # and
-#	buildrootdir/path/to/foo.sh (basename match with .sh)
+#	buildrootdir/path/to/foo.$1 (basename match with .$1)
 #
 # We want this command to operate without expansion
 # shellcheck disable=SC2016
 mapfile -t targets < <(
-	find @abstopsrcdir@ -type f -name '*.sh.in' -print0 |
-		xargs -0 -n1 bash -c '
+	find @abstopsrcdir@ -type f -name '*.'"$base_ext"'.in' -print0 |
+		xargs -0 -I{} bash -c '
 	filepath="$1"
-	# strip abstopsrcdir gives path/to/foo.sh.in
+	base_ext1="$2"
+	# strip abstopsrcdir gives path/to/foo.$1.in
 	relfilepath1="${filepath#@abstopsrcdir@/}"
-	# strip .sh.in gives path/to/foo
-	relfilepath2="${relfilepath1%.sh.in}"
+	# strip .$1.in gives path/to/foo
+	relfilepath2="${relfilepath1%.$base_ext1.in}"
 	# produce abstopbuilddir/path/to/foo
 	targetfilepath1="@abstopbuilddir@/$relfilepath2"
-	# produce abstopbuilddir/path/to/foo.sh
-	targetfilepath2="@abstopbuilddir@/$relfilepath2.sh"
+	# produce abstopbuilddir/path/to/foo.$1
+	targetfilepath2="@abstopbuilddir@/$relfilepath2.$base_ext1"
 	if [ -f "$targetfilepath1" ]; then echo "$targetfilepath1"; fi
 	if [ -f "$targetfilepath2" ]; then echo "$targetfilepath2"; fi
-	' bash
+	' _ {} "$base_ext"
 	)
-
-# Also include any *.sh that exists under abstopsrcdir (source-tree only).
-# abstopsrcdir might be /home/Projects/Dev-Tools/mge-make-check-lib/atbuild/..
-# so need to make it /home/Projects/Dev-Tools/mge-make-check-lib
-while IFS= read -r -d '' f; do
-	targets+=("$f")
-done < <(find "$(realpath "@abstopsrcdir@")" -path '@abstopbuilddir@' \
-		-prune -o -type f -name '*.sh' -print0)
 
 if [ "${#targets[@]}" -eq 0 ]; then
 	output "No scripts found." "0"
