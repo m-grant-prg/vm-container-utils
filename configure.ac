@@ -392,7 +392,6 @@ AC_SUBST([edit], ["$AWK \
 		'{ \
 		gsub(/@abstopsrcdir[@]/,"'"$(abs_top_srcdir)"'"); \
 		gsub(/@abstopbuilddir[@]/,"'"$(abs_top_builddir)"'"); \
-		gsub(/@bashlocation[@]/,"'"$(BASH)"'"); \
 		gsub(/@envlocation[@]/,"'"$(ENV)"'"); \
 		gsub(/@pkgversion[@]/,"'"$(pkgversion)"'"); \
 		gsub(/@prefix[@]/,"'"$(prefix)"'"); \
