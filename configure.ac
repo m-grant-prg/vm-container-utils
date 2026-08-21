@@ -480,7 +480,7 @@ AC_CONFIG_FILES([Makefile
 		src/lxcu/man/5/Makefile
 		src/lxcu/prg/bash/Makefile
 		src/tests/shellcheck/Makefile
-		src/tests/run-tests/Makefile])
+		src/run-tests/Makefile])
 
 AC_OUTPUT
 
