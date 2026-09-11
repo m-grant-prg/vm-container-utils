@@ -55,7 +55,7 @@ set -o pipefail
 ##################
 # Init variables #
 ##################
-readonly version=1.2.1				# Script version
+readonly version=1.2.2				# Script version
 readonly packageversion=@pkgversion@		# Package version
 
 readonly etclocation=@sysconfdir@/lxcu		# Path to config directory
@@ -262,15 +262,15 @@ apt_install()
 {
 	@bindir@/lxcu-attach "$project" -- sudo apt-get update
 	std_cmd_err_handler $?
-	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+	if [[ -e $projectroot/build-depends/$dist/$rel/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/$rel/install.list" \
+			"$projectroot/build-depends/$dist/$rel/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
-	elif [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+	elif [[ -e $projectroot/build-depends/$dist/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/install.list" \
+			"$projectroot/build-depends/$dist/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo apt-get -- -y install
 		std_cmd_err_handler $?
@@ -282,15 +282,15 @@ apt_install()
 # No return value.
 dnf_install()
 {
-	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+	if [[ -e $projectroot/build-depends/$dist/$rel/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/$rel/install.list" \
+			"$projectroot/build-depends/$dist/$rel/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
-	elif [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+	elif [[ -e $projectroot/build-depends/$dist/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/install.list" \
+			"$projectroot/build-depends/$dist/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo dnf -- -y install
 		std_cmd_err_handler $?
@@ -302,15 +302,15 @@ dnf_install()
 # No return value.
 zypper_install()
 {
-	if [[ -e $projectroot/lxcu/$dist/$rel/install.list ]]; then
+	if [[ -e $projectroot/build-depends/$dist/$rel/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/$rel/install.list" \
+			"$projectroot/build-depends/$dist/$rel/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
-	elif [[ -e $projectroot/lxcu/$dist/install.list ]]; then
+	elif [[ -e $projectroot/build-depends/$dist/install.list ]]; then
 		grep -v '^[[:blank:]]*#' \
-			"$projectroot/lxcu/$dist/install.list" \
+			"$projectroot/build-depends/$dist/install.list" \
 			| xargs @bindir@/lxcu-attach "$project" \
 			-- sudo zypper -- -n install
 		std_cmd_err_handler $?
