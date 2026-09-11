@@ -1,0 +1,18 @@
+This directory can be used with either lxcu-project-tmp or
+chroot-project-tmp to install build dependencies of this project in the
+container or chroot.
+
+The install.txt files can appear either at distribution or release level,
+ie:-
+
+Either project-root
+		|------	build-depends
+				|------	debian
+					|------	install.txt
+
+or	project-root
+		|------	build-depends
+				|------	debian
+					|------	trixie
+						|------	install.txt
+
